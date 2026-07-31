@@ -1,0 +1,227 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  height: 50px;
+  background-color: #282828;
+  border-bottom: 1px solid #383838;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: var(--font-ui);
+  user-select: none;
+}
+
+.navLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #eff1f6;
+  text-decoration: none;
+}
+
+.brandLogo {
+  flex-shrink: 0;
+}
+
+.brandName {
+  letter-spacing: -0.02em;
+}
+
+.mainNav {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  height: 50px;
+}
+
+.navItem {
+  color: #9da0a8;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  height: 100%;
+  padding: 0 0.2rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  color: #eff1f6;
+}
+
+.active {
+  color: #eff1f6 !important;
+  border-bottom-color: #eff1f6;
+  font-weight: 600;
+}
+
+.storeLink {
+  color: #ffa116;
+}
+
+.storeLink:hover {
+  color: #ffc01e;
+}
+
+.caret {
+  font-size: 0.7rem;
+  margin-top: 1px;
+}
+
+.navDropdown {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #383838;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  color: #9da0a8;
+  width: 140px;
+  transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.searchBar:focus-within {
+  width: 190px;
+  background-color: #424242;
+  color: #eff1f6;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eff1f6;
+  font-size: 0.82rem;
+  width: 100%;
+}
+
+.searchInput::placeholder {
+  color: #8c8c8c;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: #9da0a8;
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.iconBtn:hover {
+  color: #eff1f6;
+  background-color: #383838;
+}
+
+.streakBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.streakBadge:hover {
+  background-color: #383838;
+}
+
+.streakCount {
+  color: #9da0a8;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatarCircle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #424242;
+  color: #eff1f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: none;
+  color: #9da0a8;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+}
+
+.logoutBtn:hover {
+  color: #eff1f6;
+}
+
+.authLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.loginLink {
+  color: #9da0a8;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.loginLink:hover {
+  color: #eff1f6;
+}
+
+.premiumBtn {
+  background: linear-gradient(135deg, #ffa116 0%, #ffc01e 100%);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.premiumBtn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}

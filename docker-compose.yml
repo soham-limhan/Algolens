@@ -1,0 +1,68 @@
+services:
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: algolens
+      POSTGRES_USER: algolens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U algolens"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Backend ────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://algolens:${POSTGRES_PASSWORD:-changeme}@db:5432/algolens
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      SANDBOX_IMAGE_NAME: algolens-sandbox:latest
+      SANDBOX_CPU_QUOTA: 50000
+      SANDBOX_CPU_PERIOD: 100000
+      SANDBOX_MEMORY_MB: 256
+      SANDBOX_PIDS_LIMIT: 64
+      SANDBOX_WALL_TIMEOUT_S: 10
+      BENCHMARK_INPUT_SIZES: "100,1000,10000,100000,1000000"
+      BENCHMARK_REPETITIONS: 3
+      CORS_ORIGINS: "http://localhost:5173,http://localhost:3000,${FRONTEND_URL:-}"
+      LOG_LEVEL: INFO
+      LOG_FILE: /app/logs/algolens.log
+    volumes:
+      - ./logs:/app/logs
+      # Mount Docker socket so the API can spawn sandbox containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8000:8000"
+
+  # ── React Frontend ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:80"
+
+  # ── Sandbox Base Image ─────────────────────────────────────────────────────
+  # Not a running service — built once and used by the API when spawning containers.
+  # To build: docker build -t algolens-sandbox:latest ./backend/sandbox/
+  # (This is handled by 'docker compose build' if using BuildKit profiles.)
+
+volumes:
+  postgres_data:

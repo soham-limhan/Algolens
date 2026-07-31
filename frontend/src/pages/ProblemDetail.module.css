@@ -1,0 +1,493 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 60px);
+}
+
+/* ── Left panel: description ──────────────────────────────── */
+.description {
+  padding: 2rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+}
+
+.problemHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.title { font-size: 1.3rem; font-weight: 700; }
+
+.complexity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+.sep { color: var(--border); }
+
+.desc { font-size: 0.92rem; line-height: 1.75; color: var(--text-primary); }
+.desc p { margin-bottom: 1rem; }
+.desc strong { color: var(--accent-light); }
+.desc code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+.desc pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* ── Right panel: editor ──────────────────────────────────── */
+.editorPanel {
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+}
+
+.editorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: #181b24;
+}
+
+.editorTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.codeIcon {
+  color: var(--accent);
+}
+
+/* ── Separate Language Selector Box ─────────────────────── */
+.languageBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.25rem 0.35rem 0.25rem 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.languageBox:hover {
+  border-color: rgba(249, 115, 22, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.languageBoxLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.languageSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 2.2rem 0.35rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23f97316' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.65rem center;
+  background-repeat: no-repeat;
+  background-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.languageSelect:hover {
+  border-color: var(--accent);
+  background-color: #262a3d;
+}
+
+.languageSelect:focus,
+.languageSelect:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
+}
+
+.languageSelect option {
+  background-color: #1a1d27;
+  color: #e8eaf0;
+  padding: 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+}
+
+.monacoWrapper { flex: 1; overflow: hidden; }
+
+/* ── Test Cases Panel below editor ────────────────────────── */
+.testCasesPanel {
+  background: #161822;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  max-height: 220px;
+  min-height: 130px;
+  overflow: hidden;
+}
+
+.testCasesHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.45rem 1rem;
+  background: #11131a;
+  border-bottom: 1px solid var(--border);
+}
+
+.testCasesTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.caseTabs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+}
+
+.caseTab {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.caseTab:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-light);
+}
+
+.caseTabActive {
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.caseBody {
+  padding: 0.6rem 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.caseGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.caseField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.caseLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.caseCode {
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+/* ── Simulation & Live Execution Results ──────────────────── */
+.simulationPanel {
+  background: #13151f;
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 140px;
+}
+
+.simulationHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.simulationSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.simStep {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  transition: all 0.2s ease;
+}
+
+.simStepActive {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.stepDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.simStepActive .stepDot {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+}
+
+.resultsPanel {
+  background: #161822;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  max-height: 240px;
+  min-height: 140px;
+  overflow: hidden;
+}
+
+.resultsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 1rem;
+  background: #11131a;
+  border-bottom: 1px solid var(--border);
+}
+
+.verdictGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.verdictBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.verdictPassed {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--accepted);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.verdictFailed {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--wrong);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.complexityTag {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+.complexityTag strong {
+  color: var(--accent-light);
+}
+
+.tabPassed {
+  border-color: rgba(34, 197, 94, 0.4);
+  color: var(--accepted);
+}
+
+.tabFailed {
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--wrong);
+}
+
+.resetBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  text-decoration: underline;
+  margin-left: auto;
+}
+.resetBtn:hover {
+  color: var(--text-primary);
+}
+
+.caseGrid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.outputPassed {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.outputFailed {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.05);
+  color: #fda4af;
+}
+
+.failureBox {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.failureTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--wrong);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.failurePre {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #fca5a5;
+  white-space: pre-wrap;
+  margin: 0;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.hintBox {
+  background: rgba(249, 115, 22, 0.08);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.hintTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.hintText {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.submitBar {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #333;
+  background: #252526;
+  gap: 1rem;
+}
+
+.submitError {
+  font-size: 0.82rem;
+  color: var(--wrong);
+}
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; height: auto; }
+  .description { border-right: none; border-bottom: 1px solid var(--border); max-height: 40vh; }
+  .editorPanel { height: 60vh; }
+}

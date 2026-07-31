@@ -1,0 +1,811 @@
+/* ============================================================
+   ProblemList.module.css — LeetCode Dark Mode Layout & Styling
+   ============================================================ */
+
+.container {
+  display: flex;
+  min-height: calc(100vh - 50px);
+  background-color: #1a1a1a;
+  color: #eff1f6;
+  font-family: var(--font-ui);
+}
+
+/* ── Left Sidebar ────────────────────────────────────────── */
+.leftSidebar {
+  width: 170px;
+  padding: 1rem 0.5rem;
+  border-right: 1px solid #282828;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #9da0a8;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebarItem:hover {
+  background-color: #282828;
+  color: #eff1f6;
+}
+
+.sidebarActive {
+  background-color: #282828;
+  color: #eff1f6;
+  font-weight: 600;
+}
+
+.sidebarIcon {
+  font-size: 0.95rem;
+}
+
+.sidebarDivider {
+  height: 1px;
+  background-color: #282828;
+  margin: 0.2rem 0.5rem;
+}
+
+.sidebarSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sidebarSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.75rem;
+  color: #8c8c8c;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sidebarSectionActions {
+  display: flex;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.sidebarText {
+  flex: 1;
+}
+
+.lockIcon, .globeIcon {
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* ── Main Content (Center) ───────────────────────────────── */
+.mainContent {
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top 4 Banners Grid */
+.bannersGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bannerCard {
+  border-radius: 8px;
+  padding: 0.85rem;
+  min-height: 105px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.bannerCard:hover {
+  transform: translateY(-2px);
+}
+
+.bannerGold {
+  background: linear-gradient(135deg, #3d3012 0%, #241c08 100%);
+  border: 1px solid #544116;
+  color: #ffe4a0;
+}
+
+.bannerBadge {
+  font-size: 1rem;
+}
+
+.bannerTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.bannerPricePill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffe4a0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.perMonth {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #cbb479;
+}
+
+.discountTag {
+  background-color: rgba(255, 161, 22, 0.2);
+  border: 1px solid rgba(255, 161, 22, 0.4);
+  color: #ffa116;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.65rem;
+  margin-left: 0.2rem;
+}
+
+.bannerPurple {
+  background: linear-gradient(135deg, #1d1838 0%, #100d24 100%);
+  border: 1px solid #2e265c;
+  color: #c7bbf8;
+}
+
+.bannerLogo {
+  color: #9078f0;
+  font-size: 1.1rem;
+}
+
+.bannerSub {
+  font-size: 0.72rem;
+  color: #9078f0;
+}
+
+.bannerGreen {
+  background: linear-gradient(135deg, #112c20 0%, #081711 100%);
+  border: 1px solid #1b4532;
+  color: #9be0b7;
+}
+
+.bannerCourseSub {
+  font-size: 0.72rem;
+  color: #62b384;
+}
+
+.bannerViolet {
+  background: linear-gradient(135deg, #271638 0%, #140921 100%);
+  border: 1px solid #432263;
+  color: #e0b4f8;
+}
+
+/* Tag Filter Bar */
+.tagFilterBar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tagFilterBar::-webkit-scrollbar {
+  height: 3px;
+}
+
+.tagPill {
+  background-color: #282828;
+  border: 1px solid #383838;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  color: #9da0a8;
+  font-size: 0.78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.tagPill:hover {
+  background-color: #323232;
+  color: #eff1f6;
+}
+
+.tagPillActive {
+  background-color: #383838;
+  color: #ffa116;
+  border-color: #ffa116;
+}
+
+.tagCount {
+  background-color: #383838;
+  color: #787b84;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.7rem;
+}
+
+.expandTagBtn {
+  background: transparent;
+  border: none;
+  color: #9da0a8;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+}
+
+.expandTagBtn:hover {
+  color: #eff1f6;
+}
+
+/* Category Tabs */
+.categoryTabsBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.categoryTab {
+  background-color: #282828;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  color: #9da0a8;
+  font-size: 0.82rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.categoryTab:hover {
+  background-color: #323232;
+  color: #eff1f6;
+}
+
+.categoryTabActive {
+  background-color: #eff1f6;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.categoryTabActive:hover {
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+.catIcon {
+  font-size: 0.85rem;
+}
+
+/* Controls Bar */
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #282828;
+  border: 1px solid #383838;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  width: 220px;
+}
+
+.searchIcon {
+  font-size: 0.8rem;
+  color: #8c8c8c;
+}
+
+.questionsSearchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eff1f6;
+  font-size: 0.82rem;
+  width: 100%;
+}
+
+.questionsSearchInput::placeholder {
+  color: #8c8c8c;
+}
+
+.controlsRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.controlBtn {
+  background-color: #282828;
+  border: 1px solid #383838;
+  border-radius: 6px;
+  color: #9da0a8;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.15s;
+}
+
+.controlBtn:hover {
+  background-color: #323232;
+  color: #eff1f6;
+}
+
+.solvedCount {
+  color: #9da0a8;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.solvedIcon {
+  color: #00b8a3;
+}
+
+/* Table Container & Rows */
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.pinnedRow {
+  background-color: #282828;
+  border: 1px solid #383838;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.pinnedLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pinnedIcon {
+  color: #007aff;
+}
+
+.pinnedTitle {
+  color: #eff1f6;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.pinnedTitle:hover {
+  color: #007aff;
+}
+
+.pinnedRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.accRate {
+  color: #9da0a8;
+  font-size: 0.82rem;
+}
+
+.tableHeaderRow {
+  display: grid;
+  grid-template-columns: 36px 1fr 100px 80px 40px;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  color: #8c8c8c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-bottom: 1px solid #383838;
+  margin-bottom: 0.25rem;
+}
+
+.colHeaderTitle, .colHeaderAcc, .colHeaderDiff {
+  cursor: pointer;
+  user-select: none;
+}
+
+.colHeaderTitle:hover, .colHeaderAcc:hover, .colHeaderDiff:hover {
+  color: #eff1f6;
+}
+
+.problemsTable {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 36px 1fr 100px 80px 40px;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  transition: background-color 0.12s ease;
+  font-size: 0.88rem;
+}
+
+.tableRow:nth-child(even) {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+
+.tableRow:hover {
+  background-color: #282828;
+}
+
+.colStatus {
+  display: flex;
+  align-items: center;
+}
+
+.solvedCheck {
+  color: #00b8a3;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.unsolvedDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+}
+
+.colTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.problemLink {
+  color: #eff1f6;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.problemLink:hover {
+  color: #007aff;
+}
+
+.colAcceptance {
+  color: #9da0a8;
+  font-size: 0.82rem;
+}
+
+.colDifficulty {
+  display: flex;
+  align-items: center;
+}
+
+.diffBadge {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.diffEasy {
+  color: #00b8a3;
+}
+
+.diffMedium {
+  color: #ffc01e;
+}
+
+.diffHard {
+  color: #ff375f;
+}
+
+.colSolution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solutionIcon {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.solutionIcon:hover {
+  opacity: 1;
+}
+
+/* ── Right Sidebar ───────────────────────────────────────── */
+.rightSidebar {
+  width: 290px;
+  padding: 1.25rem 1rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.widgetCard {
+  background-color: #282828;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* Calendar Widget */
+.calHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.calHeaderTitle {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.timerSub {
+  font-size: 0.7rem;
+  color: #8c8c8c;
+  font-weight: 400;
+}
+
+.julBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #383838;
+  border-radius: 6px;
+  padding: 0.15rem 0.45rem;
+  line-height: 1.1;
+}
+
+.julNum {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffa116;
+}
+
+.julMonth {
+  font-size: 0.65rem;
+  color: #8c8c8c;
+}
+
+.calGridHead {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  color: #8c8c8c;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  margin-bottom: 0.85rem;
+}
+
+.calDayCell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #9da0a8;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.calDayCell:hover {
+  background-color: #383838;
+  color: #eff1f6;
+}
+
+.calDayActive {
+  background-color: #00b8a3 !important;
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+.weeklyPremiumRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.6rem;
+  border-top: 1px solid #383838;
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.weeklyLabel {
+  color: #ffa116;
+  font-size: 0.72rem;
+}
+
+.weeklyBadges {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  color: #8c8c8c;
+}
+
+.weeklyBadges span {
+  padding: 0.05rem 0.25rem;
+  border-radius: 4px;
+  background-color: #383838;
+}
+
+.wActive {
+  background-color: #ffa116 !important;
+  color: #1a1a1a !important;
+  font-weight: 700;
+}
+
+.redeemRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.redeemBtn {
+  background-color: #383838;
+  border: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  color: #00b8a3;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.gemIcon {
+  font-size: 0.8rem;
+}
+
+.rulesLink {
+  color: #8c8c8c;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.rulesLink:hover {
+  color: #eff1f6;
+}
+
+/* Trending Companies Widget */
+.companyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.widgetTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #eff1f6;
+}
+
+.navArrows {
+  display: flex;
+  gap: 0.4rem;
+  color: #8c8c8c;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.companySearchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: #383838;
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.companyInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eff1f6;
+  font-size: 0.78rem;
+  width: 100%;
+}
+
+.companyInput::placeholder {
+  color: #8c8c8c;
+}
+
+.companyTagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.companyTagsList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.companyPill {
+  background-color: #383838;
+  border: none;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  color: #9da0a8;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.companyPill:hover {
+  background-color: #424242;
+  color: #eff1f6;
+}
+
+.companyPillActive {
+  background-color: #ffa116;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.companyCount {
+  background-color: #4a3615;
+  color: #ffa116;
+  font-size: 0.68rem;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-weight: 600;
+}
+
+.companyPillActive .companyCount {
+  background-color: #1a1a1a;
+  color: #ffa116;
+}
