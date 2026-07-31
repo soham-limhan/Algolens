@@ -1,0 +1,20 @@
+# Python 3.13-compatible versions (prebuilt wheels — no Rust/MSVC needed)
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+pydantic-settings==2.6.1
+email-validator==2.2.0
+sqlalchemy==2.0.36
+# psycopg2-binary is used in production (Docker). Locally we use SQLite.
+# Uncomment below if you have PostgreSQL installed locally:
+psycopg2-binary==2.9.10
+passlib[bcrypt]==1.7.4
+bcrypt<5
+pyjwt==2.10.1
+python-multipart==0.0.12
+numpy==2.1.3
+docker==7.1.0
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1
+slowapi==0.1.9

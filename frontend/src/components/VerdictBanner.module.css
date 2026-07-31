@@ -1,0 +1,58 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border-left: 4px solid currentColor;
+}
+
+.banner[data-variant="accepted"] {
+  background: var(--accepted-bg);
+  color: var(--accepted);
+}
+.banner[data-variant="wrong"] {
+  background: var(--wrong-bg);
+  color: var(--wrong);
+}
+.banner[data-variant="cere"] {
+  background: var(--ce-re-bg);
+  color: var(--ce-re);
+}
+.banner[data-variant="tle"] {
+  background: var(--tle-bg);
+  color: var(--tle);
+}
+.banner[data-variant="pending"] {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border-left-color: var(--border);
+}
+
+.icon {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.label {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.sub {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-top: 0.2rem;
+}
+
+.confidence {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.optimal {
+  color: var(--text-secondary);
+}
