@@ -34,3 +34,6 @@ frontend/dist-ssr/
 .idea/
 .DS_Store
 Thumbs.db
+
+backend/env.example
+.env

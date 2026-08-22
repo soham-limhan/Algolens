@@ -19,7 +19,7 @@ export default function Landing() {
           <div className={styles.pill}>Complexity-aware judging</div>
           <h1 className={styles.headline}>
             Your solution passed.<br />
-            <span className={styles.accent}>But is it fast enough?</span>
+            <span className={styles.headline}>But is it fast enough?</span>
           </h1>
           <p className={styles.sub}>
             AlgoLens judges your Java solution for correctness — then measures how your 

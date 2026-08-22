@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/client';
 import styles from './ProblemList.module.css';
 
-// Default LeetCode catalog problems with assigned topics and categories
+// Default catalog problems
 const LEETCODE_DEFAULT_PROBLEMS = [
   { id: '3014', title: '3014. Minimum Number of Pushes to Type Word I', acceptance: '75.7%', difficulty: 'Easy', status: 'unsolved', isPinned: true, topics: ['String', 'Greedy', 'Math'], category: 'algo' },
   { id: '1', title: '1. Two Sum', acceptance: '57.9%', difficulty: 'Easy', status: 'solved', hasSolution: true, topics: ['Array', 'Hash Table'], category: 'algo' },
@@ -43,37 +43,12 @@ const CATEGORIES = [
   { id: 'pandas', name: 'pandas', icon: '🐼' },
 ];
 
-const TRENDING_COMPANIES = [
-  { name: 'Google', count: '2331' },
-  { name: 'Amazon', count: '1906' },
-  { name: 'Apple', count: '304' },
-  { name: 'Bloomberg', count: '1214' },
-  { name: 'Microsoft', count: '1385' },
-  { name: 'Meta', count: '1395' },
-  { name: 'Infosys', count: '195' },
-  { name: 'Citadel', count: '67' },
-  { name: 'Uber', count: '359' },
-  { name: 'Oracle', count: '309' },
-  { name: 'Adobe', count: '150' },
-  { name: 'Salesforce', count: '191' },
-  { name: 'TikTok', count: '349' },
-  { name: 'Pinterest', count: '46' },
-  { name: 'Airbnb', count: '64' },
-  { name: 'LinkedIn', count: '176' },
-  { name: 'Goldman Sachs', count: '264' },
-  { name: 'TCS', count: '252' },
-  { name: 'Walmart Labs', count: '133' },
-  { name: 'Capital One', count: '63' },
-];
-
 export default function ProblemList() {
   const [dbProblems, setDbProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('');
-  const [selectedCompany, setSelectedCompany] = useState('');
-  const [companySearch, setCompanySearch] = useState('');
   const [sortField, setSortField] = useState('id'); // id | title | acceptance | difficulty
   const [sortDirection, setSortDirection] = useState('asc'); // asc | desc
 
@@ -173,10 +148,9 @@ export default function ProblemList() {
   const pinnedProblem = LEETCODE_DEFAULT_PROBLEMS.find(p => p.isPinned) || combinedProblems[0];
   const listProblemsOnly = filteredAndSortedProblems.filter(p => !p.isPinned);
 
-  const filteredCompanies = useMemo(() => {
-    if (!companySearch.trim()) return TRENDING_COMPANIES;
-    return TRENDING_COMPANIES.filter(c => c.name.toLowerCase().includes(companySearch.toLowerCase()));
-  }, [companySearch]);
+  const solvedCount = useMemo(() => {
+    return combinedProblems.filter(p => p.status === 'solved').length;
+  }, [combinedProblems]);
 
   const toggleSort = (field) => {
     if (sortField === field) {
@@ -195,75 +169,8 @@ export default function ProblemList() {
 
   return (
     <div className={styles.container}>
-      {/* Left Sidebar — Quest removed per user directive */}
-      <aside className={styles.leftSidebar}>
-        <div className={styles.sidebarGroup}>
-          <div className={`${styles.sidebarItem} ${styles.sidebarActive}`}>
-            <span className={styles.sidebarIcon}>📚</span>
-            <span>Library</span>
-          </div>
-          <div className={styles.sidebarItem}>
-            <span className={styles.sidebarIcon}>🗺</span>
-            <span>Explore</span>
-          </div>
-          <div className={styles.sidebarItem}>
-            <span className={styles.sidebarIcon}>📖</span>
-            <span>Study Plan</span>
-          </div>
-        </div>
-
-        <div className={styles.sidebarDivider} />
-
-        <div className={styles.sidebarSection}>
-          <div className={styles.sidebarSectionHeader}>
-            <span className={styles.sidebarSectionTitle}>My Lists</span>
-            <div className={styles.sidebarSectionActions}>
-              <span>+</span>
-              <span>▾</span>
-            </div>
-          </div>
-          <div className={styles.sidebarItem}>
-            <span className={styles.sidebarIcon}>★</span>
-            <span className={styles.sidebarText}>Favorite</span>
-            <span className={styles.lockIcon}>🔒</span>
-          </div>
-          <div className={styles.sidebarItem}>
-            <span className={styles.sidebarIcon}>📄</span>
-            <span className={styles.sidebarText}>Python Developer</span>
-            <span className={styles.globeIcon}>🌐</span>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Workspace (Center) */}
+      {/* Main Workspace */}
       <main className={styles.mainContent}>
-        {/* Top 4 Featured Banner Cards */}
-        <div className={styles.bannersGrid}>
-          <div className={`${styles.bannerCard} ${styles.bannerGold}`}>
-            <div className={styles.bannerBadge}>👑</div>
-            <h3 className={styles.bannerTitle}>Unlock Full Experience on AlgoLens</h3>
-            <div className={styles.bannerPricePill}>
-              ₹583.25 <span className={styles.perMonth}>/mo</span> <span className={styles.discountTag}>Save over 68%</span>
-            </div>
-          </div>
-
-          <div className={`${styles.bannerCard} ${styles.bannerPurple}`}>
-            <div className={styles.bannerLogo}>⬡</div>
-            <h3 className={styles.bannerTitle}>AlgoLens at Your Fingertips</h3>
-            <p className={styles.bannerSub}>Mobile App Available</p>
-          </div>
-
-          <div className={`${styles.bannerCard} ${styles.bannerGreen}`}>
-            <h3 className={styles.bannerTitle}>AlgoLens's Interview Crash Course:</h3>
-            <p className={styles.bannerCourseSub}>System Design for Interviews and Beyond</p>
-          </div>
-
-          <div className={`${styles.bannerCard} ${styles.bannerViolet}`}>
-            <h3 className={styles.bannerTitle}>AlgoLens's Interview Crash Course:</h3>
-            <p className={styles.bannerCourseSub}>Data Structures and Algorithms</p>
-          </div>
-        </div>
-
         {/* Tag Filter Pills Bar */}
         <div className={styles.tagFilterBar}>
           {TOPIC_TAGS.map(tag => (
@@ -321,7 +228,7 @@ export default function ProblemList() {
             </button>
 
             <span className={styles.solvedCount}>
-              <span className={styles.solvedIcon}>◯</span> 16/4005 Solved
+              <span className={styles.solvedIcon}>◯</span> {solvedCount}/{combinedProblems.length} Solved
             </span>
           </div>
         </div>
@@ -332,7 +239,7 @@ export default function ProblemList() {
           {pinnedProblem && !selectedTag && activeCategory === 'all' && (
             <div className={styles.pinnedRow}>
               <div className={styles.pinnedLeft}>
-                <span className={styles.pinnedIcon}>📅</span>
+                <span className={styles.pinnedIcon}>📌</span>
                 <Link to={`/problems/${pinnedProblem.rawId || pinnedProblem.id}`} className={styles.pinnedTitle}>
                   {pinnedProblem.title}
                 </Link>
@@ -342,7 +249,6 @@ export default function ProblemList() {
                 <span className={`${styles.diffBadge} ${styles['diff' + (pinnedProblem.difficulty || 'Easy')]}`}>
                   {pinnedProblem.difficulty}
                 </span>
-                <span className={styles.solutionIcon}>🎥</span>
               </div>
             </div>
           )}
@@ -353,7 +259,6 @@ export default function ProblemList() {
             <span className={styles.colHeaderTitle} onClick={() => toggleSort('title')}>Title ↕</span>
             <span className={styles.colHeaderAcc} onClick={() => toggleSort('acceptance')}>Acceptance ↕</span>
             <span className={styles.colHeaderDiff} onClick={() => toggleSort('difficulty')}>Difficulty ↕</span>
-            <span className={styles.colHeaderSol}>Solution</span>
           </div>
 
           {/* Problem List Rows */}
@@ -383,98 +288,11 @@ export default function ProblemList() {
                     {p.difficulty === 'Medium' ? 'Med.' : p.difficulty}
                   </span>
                 </div>
-
-                <div className={styles.colSolution}>
-                  <span className={styles.solutionIcon} title="Video Solution">🎥</span>
-                </div>
               </div>
             ))}
           </div>
         </div>
       </main>
-
-      {/* Right Sidebar */}
-      <aside className={styles.rightSidebar}>
-        {/* Calendar Widget */}
-        <div className={styles.widgetCard}>
-          <div className={styles.calHeader}>
-            <div className={styles.calHeaderTitle}>
-              <span>Day 30</span>
-              <span className={styles.timerSub}>07:41:58 left</span>
-            </div>
-            <div className={styles.julBadge}>
-              <span className={styles.julNum}>7</span>
-              <span className={styles.julMonth}>Jul</span>
-            </div>
-          </div>
-
-          {/* Days Grid */}
-          <div className={styles.calGridHead}>
-            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-          </div>
-          <div className={styles.calGrid}>
-            {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
-              <div
-                key={day}
-                className={`${styles.calDayCell} ${day === 30 ? styles.calDayActive : ''}`}
-              >
-                {day === 30 ? '✓' : day}
-              </div>
-            ))}
-          </div>
-
-          {/* Weekly Premium Row */}
-          <div className={styles.weeklyPremiumRow}>
-            <span className={styles.weeklyLabel}>Weekly Premium ⓘ</span>
-            <div className={styles.weeklyBadges}>
-              <span>W1</span><span>W2</span><span>W3</span><span>W4</span>
-              <span className={styles.wActive}>W5</span>
-            </div>
-          </div>
-
-          {/* Redeem Row */}
-          <div className={styles.redeemRow}>
-            <button className={styles.redeemBtn}>
-              <span className={styles.gemIcon}>💎</span> 0 Redeem
-            </button>
-            <span className={styles.rulesLink}>Rules</span>
-          </div>
-        </div>
-
-        {/* Trending Companies Widget */}
-        <div className={styles.widgetCard}>
-          <div className={styles.companyHeader}>
-            <span className={styles.widgetTitle}>Trending Companies</span>
-            <div className={styles.navArrows}>
-              <span>‹</span><span>›</span>
-            </div>
-          </div>
-
-          <div className={styles.companySearchBox}>
-            <span className={styles.searchIcon}>🔍</span>
-            <input
-              type="text"
-              placeholder="Search for a company..."
-              value={companySearch}
-              onChange={e => setCompanySearch(e.target.value)}
-              className={styles.companyInput}
-            />
-          </div>
-
-          <div className={styles.companyTagsList}>
-            {filteredCompanies.map(c => (
-              <button
-                key={c.name}
-                className={`${styles.companyPill} ${selectedCompany === c.name ? styles.companyPillActive : ''}`}
-                onClick={() => setSelectedCompany(selectedCompany === c.name ? '' : c.name)}
-              >
-                <span>{c.name}</span>
-                <span className={styles.companyCount}>{c.count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </aside>
     </div>
   );
 }
