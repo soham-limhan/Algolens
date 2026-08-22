@@ -57,11 +57,14 @@ def send_otp_email(to_email: str, otp: str) -> bool:
         return True
 
     try:
+        username = settings.smtp_username.strip() if settings.smtp_username else ""
+        password = settings.smtp_password.replace(" ", "").strip() if settings.smtp_password else ""
+
         if settings.smtp_port == 465 or not settings.smtp_use_tls:
             server_cls = smtplib.SMTP_SSL if settings.smtp_port == 465 else smtplib.SMTP
             with server_cls(settings.smtp_host, settings.smtp_port, timeout=10) as server:
-                if settings.smtp_username and settings.smtp_password:
-                    server.login(settings.smtp_username, settings.smtp_password)
+                if username and password:
+                    server.login(username, password)
                 server.send_message(msg)
         else:
             with smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=10) as server:
@@ -69,8 +72,8 @@ def send_otp_email(to_email: str, otp: str) -> bool:
                 if settings.smtp_use_tls:
                     server.starttls()
                     server.ehlo()
-                if settings.smtp_username and settings.smtp_password:
-                    server.login(settings.smtp_username, settings.smtp_password)
+                if username and password:
+                    server.login(username, password)
                 server.send_message(msg)
         logger.info("Successfully sent OTP email to %s via SMTP", to_email)
         return True
