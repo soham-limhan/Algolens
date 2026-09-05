@@ -27,11 +27,16 @@ from app.models.submission import BenchmarkRun, Submission
 from app.models.user import User
 from app.schemas.submission import (
     BenchmarkPoint,
+    RunCodeRequest,
+    RunCodeResponse,
     SubmissionCreate,
     SubmissionHistoryItem,
     SubmissionResponse,
     TestCaseResult,
+    TestCaseRunOutcome,
 )
+from app.sandbox.executor import CompiledSubmission
+from app.services.correctness import run_correctness_check
 from app.services.pipeline import run_pipeline
 
 router = APIRouter(tags=["submissions"])
@@ -78,15 +83,11 @@ def _run_pipeline_bg(submission_id: str) -> None:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _build_response(submission: Submission, db: Session) -> SubmissionResponse:
-    """Build the full SubmissionResponse, assembling test_results and benchmark_curve."""
-    # Test results — read from the correctness outcomes stored in the DB
-    # (We store them inline on the submission for simplicity at this scale)
+    """Build the full SubmissionResponse, assembling test_results, benchmark_curve, and problem details."""
     test_results: Optional[list] = None
     benchmark_curve: Optional[list] = None
 
-    if submission.status in ("complete", "failed") and submission.failure_detail is not None:
-        # If we have a failure, test_results may be None (compilation error)
-        pass
+    problem = db.get(Problem, submission.problem_id)
 
     # Benchmark curve from BenchmarkRun rows
     runs = (
@@ -108,6 +109,8 @@ def _build_response(submission: Submission, db: Session) -> SubmissionResponse:
     return SubmissionResponse(
         id=submission.id,
         status=submission.status,
+        problem_id=submission.problem_id,
+        source_code=submission.source_code,
         language=submission.language,
         empirical_complexity=submission.empirical_complexity,
         confidence_score=submission.confidence_score,
@@ -115,6 +118,9 @@ def _build_response(submission: Submission, db: Session) -> SubmissionResponse:
         failure_detail=submission.failure_detail,
         test_results=test_results,
         benchmark_curve=benchmark_curve,
+        optimal_solution=problem.optimal_solution if problem else None,
+        optimal_time_complexity=problem.optimal_time_complexity if problem else None,
+        optimal_space_complexity=problem.optimal_space_complexity if problem else None,
     )
 
 
@@ -150,6 +156,8 @@ def create_submission(
     return SubmissionResponse(
         id=submission.id,
         status="pending",
+        problem_id=submission.problem_id,
+        source_code=submission.source_code,
         language=submission.language,
         empirical_complexity=None,
         confidence_score=None,
@@ -157,7 +165,47 @@ def create_submission(
         failure_detail=None,
         test_results=None,
         benchmark_curve=None,
+        optimal_solution=problem.optimal_solution,
+        optimal_time_complexity=problem.optimal_time_complexity,
+        optimal_space_complexity=problem.optimal_space_complexity,
     )
+
+
+@router.post("/submissions/run", response_model=RunCodeResponse)
+def run_code(
+    body: RunCodeRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> RunCodeResponse:
+    """Run code against sample test cases and return outcomes immediately without full benchmark."""
+    problem = db.get(Problem, body.problem_id)
+    if problem is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem not found")
+
+    if not problem.test_cases:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No test cases configured for this problem")
+
+    compiled = CompiledSubmission(body.source_code, language=body.language)
+    try:
+        res = run_correctness_check(compiled, problem.test_cases)
+        return RunCodeResponse(
+            verdict=res.verdict,
+            failure_detail=res.failure_detail,
+            test_cases=[
+                TestCaseRunOutcome(
+                    test_case_id=tc.test_case_id,
+                    passed=tc.passed,
+                    input=tc.input,
+                    expected_output=tc.expected,
+                    actual_output=tc.actual,
+                    verdict=tc.verdict,
+                )
+                for tc in res.test_outcomes
+            ],
+        )
+    finally:
+        compiled.cleanup()
+
 
 
 import uuid
@@ -225,12 +273,101 @@ def get_user_history(
         items.append(
             SubmissionHistoryItem(
                 id=s.id,
+                problem_id=s.problem_id,
                 problem_title=problem.title if problem else "Unknown",
                 status=s.status,
                 language=s.language,
                 empirical_complexity=s.empirical_complexity,
                 confidence_score=s.confidence_score,
                 submitted_at=s.submitted_at,
+                source_code=s.source_code,
             )
         )
     return items
+
+
+import json
+from pydantic import BaseModel
+from app.services.groq_service import generate_groq_insights
+
+
+class AiInsightsRequest(BaseModel):
+    api_key: Optional[str] = None
+
+
+@router.post("/submissions/{submission_id}/ai-insights")
+async def get_ai_insights(
+    submission_id: str,
+    request: Request,
+    body: Optional[AiInsightsRequest] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Generate dynamic LLM algorithmic insights using Groq AI, analyzing both
+    user solution time complexity and optimal solution time complexity.
+    """
+    _validate_uuid(submission_id, "submission_id")
+    submission = db.get(Submission, submission_id)
+    if not submission:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Submission not found",
+        )
+
+    if submission.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied to another user's submission",
+        )
+
+    problem = db.get(Problem, submission.problem_id)
+    if not problem:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Associated problem not found",
+        )
+
+    # API key source priority: 1) Body api_key 2) Header x-groq-api-key 3) Config groq_api_key
+    client_header_key = request.headers.get("x-groq-api-key")
+    api_key_override = (body and body.api_key) or client_header_key or None
+
+    optimal_code_str = problem.optimal_solution
+    if optimal_code_str:
+        try:
+            if optimal_code_str.strip().startswith("{"):
+                parsed_opt = json.loads(optimal_code_str)
+                lang_key = (submission.language or "java").lower()
+                optimal_code_str = (
+                    parsed_opt.get(lang_key)
+                    or parsed_opt.get("python")
+                    or parsed_opt.get("java")
+                    or next(iter(parsed_opt.values()), optimal_code_str)
+                )
+        except Exception:
+            pass
+
+    try:
+        insights = await generate_groq_insights(
+            user_code=submission.source_code,
+            optimal_code=optimal_code_str,
+            problem_title=problem.title,
+            problem_description=problem.description,
+            empirical_complexity=submission.empirical_complexity or "O(N)",
+            optimal_complexity=problem.optimal_time_complexity or "O(N)",
+            optimal_space_complexity=problem.optimal_space_complexity or "O(1)",
+            language=submission.language or "java",
+            difficulty=problem.difficulty or "medium",
+            api_key_override=api_key_override,
+        )
+        return insights
+    except ValueError as err:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(err),
+        )
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error generating AI insights: {str(err)}",
+        )

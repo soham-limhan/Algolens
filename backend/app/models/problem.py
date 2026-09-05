@@ -18,6 +18,7 @@ class Problem(Base):
     difficulty: Mapped[str] = mapped_column(String(20), nullable=False)  # easy | medium | hard
     optimal_time_complexity: Mapped[str] = mapped_column(String(30), nullable=False)
     optimal_space_complexity: Mapped[str] = mapped_column(String(30), nullable=False)
+    optimal_solution: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Key into app/problems_data/registry.py — NOT the generator code itself
     generator_key: Mapped[str] = mapped_column(String(80), nullable=False)
 

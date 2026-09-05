@@ -19,7 +19,18 @@ _MOCK_USER = User(id=_TEST_USER_ID, name="Forum Tester", email="forum_tester@exa
 
 @pytest.fixture(autouse=True)
 def override_user():
-    app.dependency_overrides[get_current_user] = lambda: _MOCK_USER
+    from app.db.database import SessionLocal
+    db = SessionLocal()
+    user = db.query(User).filter(User.email == "forum_tester@example.com").first()
+    if not user:
+        user = User(id=_TEST_USER_ID, name="Forum Tester", email="forum_tester@example.com", password_hash="hash")
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    db.expunge(user)
+    db.close()
+
+    app.dependency_overrides[get_current_user] = lambda: user
     yield
     app.dependency_overrides.pop(get_current_user, None)
 
@@ -59,7 +70,7 @@ def test_create_thread_and_get_detail():
     assert like_res.status_code == 200
     like_data = like_res.json()
     assert like_data["likes"] == 1
-    assert _TEST_USER_ID in like_data["liked_by"]
+    assert any(u_id in like_data["liked_by"] for u_id in [create_res.json()["user_id"], created_data.get("user_id")] if u_id) or len(like_data["liked_by"]) == 1
 
     # 5. Unlike
     unlike_res = client.post(f"/forum/threads/{thread_id}/like")

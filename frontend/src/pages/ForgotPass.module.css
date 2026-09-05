@@ -60,6 +60,42 @@
   padding: 0.6rem 0.9rem;
 }
 
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding-right: 2.75rem;
+}
+
+.toggleBtn {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  transition: color 0.15s ease;
+  line-height: 0;
+}
+
+.toggleBtn:hover {
+  color: var(--text-primary);
+}
+
+.toggleBtn:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
 .link {
   text-align: center;
   font-size: 0.875rem;
@@ -68,3 +104,4 @@
 }
 .link a { color: var(--accent-light); font-weight: 600; }
 .link a:hover { color: var(--accent); }
+

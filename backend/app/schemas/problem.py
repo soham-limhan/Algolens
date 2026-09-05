@@ -26,6 +26,7 @@ class ProblemCreate(BaseModel):
     difficulty: str = "easy"  # easy | medium | hard
     optimal_time_complexity: Optional[str] = "O(n)"
     optimal_space_complexity: Optional[str] = "O(1)"
+    optimal_solution: Optional[str] = None
     generator_key: Optional[str] = "two_sum"
     test_cases: List[TestCaseSummary] = []
 
@@ -37,6 +38,7 @@ class ProblemDetail(BaseModel):
     difficulty: str
     optimal_time_complexity: str
     optimal_space_complexity: str
+    optimal_solution: Optional[str] = None
     test_cases: List[TestCaseSummary] = []
 
     model_config = {"from_attributes": True}
