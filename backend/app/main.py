@@ -108,6 +108,15 @@ def _ensure_schema_up_to_date():
                     logger.info("Added missing 'language' column to submissions table.")
                 except Exception as e:
                     logger.warning("Could not add language column: %s", e)
+        if "problems" in inspector.get_table_names():
+            prob_cols = [c["name"] for c in inspector.get_columns("problems")]
+            if "optimal_solution" not in prob_cols:
+                try:
+                    conn.execute(text("ALTER TABLE problems ADD COLUMN optimal_solution TEXT"))
+                    conn.commit()
+                    logger.info("Added missing 'optimal_solution' column to problems table.")
+                except Exception as e:
+                    logger.warning("Could not add optimal_solution column: %s", e)
 
 _ensure_schema_up_to_date()
 logger.info("Database tables verified/created.")

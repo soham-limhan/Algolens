@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.auth.dependencies import get_current_user
 from app.auth.security import (
     create_token_pair,
     decode_token,
@@ -18,6 +19,7 @@ from app.db.database import get_db
 from app.models.user import User
 from app.services.email import send_otp_email
 from app.schemas.auth import (
+    ChangePasswordRequest,
     ForgotPasswordRequest,
     ForgotPasswordResponse,
     LoginRequest,
@@ -26,11 +28,14 @@ from app.schemas.auth import (
     ResetPasswordRequest,
     ResetPasswordResponse,
     TokenResponse,
+    UpdateProfileRequest,
+    UserProfileResponse,
     VerifyOtpRequest,
     VerifyOtpResponse,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
 
 _otp_store: dict[str, str] = {}
 _verified_otps: set[str] = set()
@@ -56,7 +61,8 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
     db.add(user)
     db.commit()
     db.refresh(user)
-    return TokenResponse(**create_token_pair(user.id))
+    tokens = create_token_pair(user.id, name=user.name, email=user.email)
+    return TokenResponse(**tokens, user=UserProfileResponse.model_validate(user))
 
 
 @router.post("/login", response_model=TokenResponse)
@@ -70,7 +76,9 @@ def login(body: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(User).filter(func.lower(User.email) == email_lower).first()
     if not user or not verify_password(body.password, user.password_hash):
         raise _WRONG_CREDENTIALS
-    return TokenResponse(**create_token_pair(user.id))
+    tokens = create_token_pair(user.id, name=user.name, email=user.email)
+    return TokenResponse(**tokens, user=UserProfileResponse.model_validate(user))
+
 
 
 @router.post("/forgot-password", response_model=ForgotPasswordResponse)
@@ -141,3 +149,42 @@ def refresh(body: RefreshRequest, db: Session = Depends(get_db)) -> TokenRespons
     if user is None:
         raise exc
     return TokenResponse(**create_token_pair(user.id))
+
+
+@router.get("/me", response_model=UserProfileResponse)
+def get_me(current_user: User = Depends(get_current_user)) -> UserProfileResponse:
+    """Return the profile for the currently authenticated user."""
+    return UserProfileResponse.model_validate(current_user)
+
+
+@router.patch("/profile", response_model=UserProfileResponse)
+def update_profile(
+    body: UpdateProfileRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> UserProfileResponse:
+    """Update current user's name/username."""
+    current_user.name = body.name.strip()
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    return UserProfileResponse.model_validate(current_user)
+
+
+@router.post("/change-password")
+def change_password(
+    body: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Verify current password and update to new password."""
+    if not verify_password(body.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+    current_user.password_hash = hash_password(body.new_password)
+    db.add(current_user)
+    db.commit()
+    return {"message": "Password changed successfully"}
+

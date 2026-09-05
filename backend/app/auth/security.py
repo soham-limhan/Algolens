@@ -41,7 +41,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
 
-def _create_token(sub: str, token_type: str, expire_delta: timedelta) -> str:
+def _create_token(sub: str, token_type: str, expire_delta: timedelta, extra_claims: dict | None = None) -> str:
     now = datetime.now(tz=timezone.utc)
     payload = {
         "sub": sub,
@@ -49,12 +49,22 @@ def _create_token(sub: str, token_type: str, expire_delta: timedelta) -> str:
         "iat": now,
         "exp": now + expire_delta,
     }
+    if extra_claims:
+        payload.update(extra_claims)
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 
-def create_access_token(user_id: str) -> str:
+def create_access_token(user_id: str, name: str = "", email: str = "") -> str:
+    extra = {}
+    if name:
+        extra["name"] = name
+    if email:
+        extra["email"] = email
     return _create_token(
-        user_id, "access", timedelta(minutes=settings.access_token_expire_minutes)
+        user_id,
+        "access",
+        timedelta(minutes=settings.access_token_expire_minutes),
+        extra_claims=extra,
     )
 
 
@@ -64,12 +74,13 @@ def create_refresh_token(user_id: str) -> str:
     )
 
 
-def create_token_pair(user_id: str) -> dict:
+def create_token_pair(user_id: str, name: str = "", email: str = "") -> dict:
     return {
-        "access_token": create_access_token(user_id),
+        "access_token": create_access_token(user_id, name=name, email=email),
         "refresh_token": create_refresh_token(user_id),
         "token_type": "bearer",
     }
+
 
 
 def decode_token(token: str, expected_type: str) -> str:

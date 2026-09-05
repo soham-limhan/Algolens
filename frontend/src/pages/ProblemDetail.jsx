@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import api from '../api/client';
+import NotFound from './NotFound';
 import styles from './ProblemDetail.module.css';
 
 const CODE_TEMPLATES = {
@@ -58,46 +59,97 @@ main();
 
 export default function ProblemDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState('java');
   const [code, setCode] = useState(CODE_TEMPLATES.java);
+  const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [runError, setRunError] = useState('');
+  const [runResults, setRunResults] = useState(null);
   const [activeTestCaseTab, setActiveTestCaseTab] = useState(0);
+  const [testCasesHeight, setTestCasesHeight] = useState(210);
+  const [isTestCasesOpen, setIsTestCasesOpen] = useState(true);
+  const isDraggingRef = useRef(false);
 
-  const [submissionState, setSubmissionState] = useState('idle'); // 'idle' | 'running' | 'result'
-  const [submissionData, setSubmissionData] = useState(null);
-  const [simulationStep, setSimulationStep] = useState(1);
-  const pollIntervalRef = useRef(null);
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDraggingRef.current) return;
+      const windowHeight = window.innerHeight;
+      // 55px submit bar offset
+      const newHeight = windowHeight - e.clientY - 55;
+      if (newHeight >= 38 && newHeight <= windowHeight * 0.75) {
+        setTestCasesHeight(newHeight);
+        if (newHeight > 50) {
+          setIsTestCasesOpen(true);
+        }
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        document.body.style.cursor = 'default';
+        document.body.style.userSelect = 'auto';
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  const startResizing = (e) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+    document.body.style.cursor = 'row-resize';
+    document.body.style.userSelect = 'none';
+  };
 
   useEffect(() => {
     api.get(`/problems/${id}`)
       .then(r => setProblem(r.data))
       .catch(() => setError('Problem not found'))
       .finally(() => setLoading(false));
-
-    return () => {
-      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-    };
   }, [id]);
 
   const handleLanguageChange = (newLang) => {
     setLanguage(newLang);
     setCode(CODE_TEMPLATES[newLang] || '');
+    setRunResults(null);
+  };
+
+  const handleRun = async () => {
+    if (!code.trim()) { setError('Please write some code first.'); return; }
+    setError('');
+    setRunError('');
+    setRunning(true);
+    setIsTestCasesOpen(true);
+
+    try {
+      const { data } = await api.post('/submissions/run', {
+        problem_id: id,
+        source_code: code,
+        language: language,
+      });
+      setRunResults(data);
+    } catch (err) {
+      setRunError(err.response?.data?.detail || 'Run execution failed');
+    } finally {
+      setRunning(false);
+    }
   };
 
   const handleSubmit = async () => {
     if (!code.trim()) { setError('Please write some code first.'); return; }
     setError('');
+    setRunError('');
     setSubmitting(true);
-    setSubmissionState('running');
-    setSimulationStep(1);
-    setActiveTestCaseTab(0);
-    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-
-    const step1 = setTimeout(() => setSimulationStep(2), 600);
-    const step2 = setTimeout(() => setSimulationStep(3), 1200);
 
     try {
       const { data } = await api.post('/submissions', {
@@ -106,57 +158,16 @@ export default function ProblemDetail() {
         language: language,
       });
 
-      const subId = data.id;
-
-      pollIntervalRef.current = setInterval(async () => {
-        try {
-          const res = await api.get(`/submissions/${subId}`);
-          if (res.data.status === 'complete' || res.data.status === 'failed') {
-            clearInterval(pollIntervalRef.current);
-            clearTimeout(step1);
-            clearTimeout(step2);
-            setSubmissionData(res.data);
-            setSubmissionState('result');
-            setSubmitting(false);
-          }
-        } catch (err) {
-          clearInterval(pollIntervalRef.current);
-          clearTimeout(step1);
-          clearTimeout(step2);
-          setError(err.response?.data?.detail || 'Failed to fetch submission results');
-          setSubmissionState('idle');
-          setSubmitting(false);
-        }
-      }, 1000);
+      // Redirect immediately to the comparison & complexity page
+      navigate(`/results/${data.id}`, { state: { optimalComplexity: problem?.optimal_time_complexity } });
     } catch (err) {
-      clearTimeout(step1);
-      clearTimeout(step2);
       setError(err.response?.data?.detail || 'Submission failed');
-      setSubmissionState('idle');
       setSubmitting(false);
     }
   };
 
   if (loading) return <div className={styles.center}><div className="spinner" /></div>;
-  if (error && !problem) return <div className={styles.center} style={{ color: 'var(--wrong)' }}>{error}</div>;
-
-  const isPassed = submissionData?.status === 'complete';
-  const rawTestResults = submissionData?.test_results;
-  const sampleCases = problem?.test_cases || [];
-
-  let resultCases = [];
-  if (rawTestResults && rawTestResults.length > 0) {
-    resultCases = rawTestResults;
-  } else if (sampleCases.length > 0) {
-    resultCases = sampleCases.map((tc) => ({
-      test_case_id: tc.id,
-      passed: isPassed,
-      input: tc.input,
-      expected: tc.expected_output,
-      actual: isPassed ? tc.expected_output : (submissionData?.failure_detail || 'Error'),
-    }));
-  }
-  const activeResultCase = resultCases[activeTestCaseTab] || resultCases[0];
+  if (error && !problem) return <NotFound />;
 
   return (
     <div className={styles.layout}>
@@ -225,168 +236,262 @@ export default function ProblemDetail() {
           />
         </div>
 
-        {/* ── State 1: Simulation Mode ─────────────────────── */}
-        {submissionState === 'running' && (
-          <div className={styles.simulationPanel}>
-            <div className={styles.simulationHeader}>
-              <div className="spinner" style={{ width: 14, height: 14 }} />
-              <span>Running Solution Simulation...</span>
-            </div>
-            <div className={styles.simulationSteps}>
-              <div className={`${styles.simStep} ${simulationStep >= 1 ? styles.simStepActive : ''}`}>
-                <span className={styles.stepDot}>{simulationStep > 1 ? '✓' : '1'}</span>
-                <span>Compiling {language.toUpperCase()} source code</span>
-              </div>
-              <div className={`${styles.simStep} ${simulationStep >= 2 ? styles.simStepActive : ''}`}>
-                <span className={styles.stepDot}>{simulationStep > 2 ? '✓' : '2'}</span>
-                <span>Executing testcases in isolated sandbox environment</span>
-              </div>
-              <div className={`${styles.simStep} ${simulationStep >= 3 ? styles.simStepActive : ''}`}>
-                <span className={styles.stepDot}>{simulationStep > 3 ? '✓' : '3'}</span>
-                <span>Measuring empirical time & space complexity</span>
-              </div>
-            </div>
+        {/* ── Resizer Drag Handle ─────────────── */}
+        {problem?.test_cases?.length > 0 && (
+          <div
+            className={styles.resizerHandle}
+            onMouseDown={startResizing}
+            title="Drag to adjust testcase window height"
+          >
+            <div className={styles.resizerGrip} />
           </div>
         )}
 
-        {/* ── State 2: Live Results View ────────────────────── */}
-        {submissionState === 'result' && (
-          <div className={styles.resultsPanel}>
-            <div className={styles.resultsHeader}>
-              <div className={styles.verdictGroup}>
-                <span className={`${styles.verdictBadge} ${submissionData?.status === 'complete' ? styles.verdictPassed : styles.verdictFailed}`}>
-                  {submissionData?.status === 'complete' ? '✓ Accepted' : (submissionData?.failure_detail ? '✗ Failed' : '✗ Wrong Answer')}
-                </span>
-                {submissionData?.empirical_complexity && (
-                  <span className={styles.complexityTag}>
-                    Empirical: <strong>{submissionData.empirical_complexity}</strong>
-                  </span>
-                )}
-              </div>
-
-              <div className={styles.caseTabs}>
-                {resultCases.map((tc, idx) => (
-                  <button
-                    key={idx}
-                    className={`${styles.caseTab} ${activeTestCaseTab === idx ? styles.caseTabActive : ''} ${tc.passed ? styles.tabPassed : styles.tabFailed}`}
-                    onClick={() => setActiveTestCaseTab(idx)}
-                  >
-                    Case {idx + 1} {tc.passed ? '✓' : '✗'}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                className={styles.resetBtn}
-                onClick={() => setSubmissionState('idle')}
-              >
-                Sample Cases
-              </button>
-            </div>
-
-            <div className={styles.caseBody}>
-              {submissionData?.failure_detail && submissionData?.status !== 'complete' && (
-                <div className={styles.failureBox}>
-                  <span className={styles.failureTitle}>Execution Log / Error:</span>
-                  <pre className={styles.failurePre}>{submissionData.failure_detail}</pre>
-                </div>
-              )}
-
-              {activeResultCase && (
-                <div className={styles.caseGrid3}>
-                  <div className={styles.caseField}>
-                    <span className={styles.caseLabel}>Input</span>
-                    <pre className={styles.caseCode}>{activeResultCase.input}</pre>
-                  </div>
-                  <div className={styles.caseField}>
-                    <span className={styles.caseLabel}>Expected Output</span>
-                    <pre className={styles.caseCode}>{activeResultCase.expected}</pre>
-                  </div>
-                  <div className={styles.caseField}>
-                    <span className={styles.caseLabel}>Your Output</span>
-                    <pre className={`${styles.caseCode} ${activeResultCase.passed ? styles.outputPassed : styles.outputFailed}`}>
-                      {activeResultCase.actual || '(empty)'}
-                    </pre>
-                  </div>
-                </div>
-              )}
-
-              {submissionData?.structural_hint && (
-                <div className={styles.hintBox}>
-                  <span className={styles.hintTitle}>💡 Optimization Hint:</span>
-                  <p className={styles.hintText}>{submissionData.structural_hint}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── State 3: Sample Testcases (Idle state) ────────── */}
-        {submissionState === 'idle' && problem?.test_cases?.length > 0 && (
-          <div className={styles.testCasesPanel}>
+        {/* ── Sample Testcases & Run Results Panel ────────── */}
+        {problem?.test_cases?.length > 0 && (
+          <div
+            className={styles.testCasesPanel}
+            style={{ height: isTestCasesOpen ? `${testCasesHeight}px` : '38px' }}
+          >
             <div className={styles.testCasesHeader}>
+              <button
+                className={styles.collapseToggleBtn}
+                onClick={() => setIsTestCasesOpen(prev => !prev)}
+                title={isTestCasesOpen ? 'Collapse Testcases (▲)' : 'Expand Testcases (▼)'}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  style={{
+                    transform: isTestCasesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s ease',
+                  }}
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
               <div className={styles.testCasesTitle}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--accent)' }}>
                   <polyline points="9 11 12 14 22 4"></polyline>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                 </svg>
-                <span>Testcases</span>
+                <span>{runResults ? 'Test Results' : 'Sample Testcases'}</span>
               </div>
+
               <div className={styles.caseTabs}>
-                {problem.test_cases.map((tc, idx) => (
-                  <button
-                    key={tc.id || idx}
-                    className={`${styles.caseTab} ${activeTestCaseTab === idx ? styles.caseTabActive : ''}`}
-                    onClick={() => setActiveTestCaseTab(idx)}
-                  >
-                    Case {idx + 1}
-                  </button>
-                ))}
+                {problem.test_cases.map((tc, idx) => {
+                  const outcome = runResults?.test_cases?.[idx];
+                  const tabResultClass = outcome
+                    ? outcome.passed
+                      ? styles.caseResultPassed
+                      : styles.caseResultFailed
+                    : '';
+
+                  return (
+                    <button
+                      key={tc.id || idx}
+                      className={`${styles.caseTab} ${activeTestCaseTab === idx ? styles.caseTabActive : ''} ${tabResultClass}`}
+                      onClick={() => setActiveTestCaseTab(idx)}
+                    >
+                      {outcome ? (outcome.passed ? '✓ ' : '✕ ') : ''}Case {idx + 1}
+                    </button>
+                  );
+                })}
               </div>
+
+              {runResults && (
+                <div className={styles.verdictHeader}>
+                  {runResults.verdict === 'Accepted' ? (
+                    <span className={`${styles.verdictPill} ${styles.verdictAccepted}`}>✓ Accepted</span>
+                  ) : runResults.verdict === 'Wrong Answer' ? (
+                    <span className={`${styles.verdictPill} ${styles.verdictWrong}`}>✕ Wrong Answer</span>
+                  ) : (
+                    <span className={`${styles.verdictPill} ${styles.verdictError}`}>⚠️ {runResults.verdict}</span>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className={styles.caseBody}>
-              <div className={styles.caseGrid}>
-                <div className={styles.caseField}>
-                  <span className={styles.caseLabel}>Input =</span>
-                  <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.input}</pre>
-                </div>
-                <div className={styles.caseField}>
-                  <span className={styles.caseLabel}>Expected Output =</span>
-                  <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.expected_output}</pre>
+            {isTestCasesOpen && (
+              <div className={styles.caseBody}>
+                {runError && (
+                  <div className={styles.failureBox}>
+                    <span className={styles.failureTitle}>Execution Error</span>
+                    <pre className={styles.failurePre}>{runError}</pre>
+                  </div>
+                )}
+
+                {runResults?.failure_detail && (
+                  <div className={styles.failureBox}>
+                    <span className={styles.failureTitle}>{runResults.verdict}</span>
+                    <pre className={styles.failurePre}>{runResults.failure_detail}</pre>
+                  </div>
+                )}
+
+                <div className={runResults?.test_cases?.[activeTestCaseTab] ? styles.caseGrid3 : styles.caseGrid}>
+                  <div className={styles.caseField}>
+                    <span className={styles.caseLabel}>Input =</span>
+                    <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.input}</pre>
+                  </div>
+                  {runResults?.test_cases?.[activeTestCaseTab] && (
+                    <div className={styles.caseField}>
+                      <span className={styles.caseLabel}>Your Output =</span>
+                      <pre className={`${styles.caseCode} ${runResults.test_cases[activeTestCaseTab].passed ? styles.outputPassed : styles.outputFailed}`}>
+                        {runResults.test_cases[activeTestCaseTab]?.actual_output || '<no output>'}
+                      </pre>
+                    </div>
+                  )}
+                  <div className={styles.caseField}>
+                    <span className={styles.caseLabel}>Expected Output =</span>
+                    <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.expected_output}</pre>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
         <div className={styles.submitBar}>
-          <span style={{ fontSize: '0.85rem', color: code.length > 18000 ? 'var(--wrong)' : 'var(--text-muted)' }}>
-            {code.length.toLocaleString()} / 20,000 chars
-          </span>
-          {error && <span className={styles.submitError} style={{ marginLeft: '1rem' }}>{error}</span>}
-          <button
-            id="submit-btn"
-            className="btn btn-primary"
-            onClick={handleSubmit}
-            disabled={submitting || !code.trim() || code.length > 20000}
-            style={{ marginLeft: 'auto' }}
-          >
-            {submitting ? <><span className="spinner" style={{ width: 16, height: 16 }} /> Submitting…</> : 'Submit'}
-          </button>
+          <div className={styles.submitBarLeft}>
+            <span style={{ fontSize: '0.85rem', color: code.length > 18000 ? 'var(--wrong)' : 'var(--text-muted)' }}>
+              {code.length.toLocaleString()} / 20,000 chars
+            </span>
+            {error && <span className={styles.submitError}>{error}</span>}
+          </div>
+
+          <div className={styles.btnGroup}>
+            {/* Run Button */}
+            <button
+              id="run-btn"
+              className={styles.runBtn}
+              onClick={handleRun}
+              disabled={running || submitting || !code.trim() || code.length > 20000}
+              title="Run code against sample test cases (doesn't submit to benchmark)"
+            >
+              {running ? (
+                <><span className="spinner" style={{ width: 13, height: 13 }} /> Running…</>
+              ) : (
+                <>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  <span>Run</span>
+                </>
+              )}
+            </button>
+
+            {/* Submit Button */}
+            <button
+              id="submit-btn"
+              className={styles.submitBtn}
+              onClick={handleSubmit}
+              disabled={running || submitting || !code.trim() || code.length > 20000}
+              title="Submit code for full correctness verification, empirical benchmarking & complexity analysis"
+            >
+              {submitting ? (
+                <><span className="spinner" style={{ width: 14, height: 14 }} /> Submitting…</>
+              ) : (
+                <>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                    <polyline points="12 13 12 7 9 10"/>
+                    <polyline points="12 7 15 10"/>
+                  </svg>
+                  <span>Submit</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-/** Very minimal markdown → HTML for problem descriptions. */
+/** Comprehensive markdown → HTML renderer for problem descriptions, examples, constraints & hints. */
 function markdownToHtml(md) {
-  return md
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/\n{2,}/g, '</p><p>')
-    .replace(/^/, '<p>').replace(/$/, '</p>')
-    .replace(/<p>\s*<\/p>/g, '');
+  if (!md) return '';
+
+  // 1. Preserve code blocks
+  const codeBlocks = [];
+  let text = md.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    codeBlocks.push(`<pre><code class="lang-${lang}">${escapeHtml(code.trim())}</code></pre>`);
+    return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+  });
+
+  // 2. Preserve details / summary blocks (hints)
+  const detailsBlocks = [];
+  text = text.replace(/<details>\s*<summary>(.*?)<\/summary>([\s\S]*?)<\/details>/gi, (_, summary, body) => {
+    detailsBlocks.push(
+      `<details class="${styles.hintAccordion}">` +
+        `<summary class="${styles.hintSummary}"><span class="${styles.hintIcon}">💡</span><span>${summary.replace(/💡\s*/, '')}</span></summary>` +
+        `<div class="${styles.hintContent}"><p>${body.trim()}</p></div>` +
+      `</details>`
+    );
+    return `__DETAILS_BLOCK_${detailsBlocks.length - 1}__`;
+  });
+
+  // 3. Convert headers
+  text = text.replace(/^### (.*$)/gim, `<h3 class="${styles.heading3}">$1</h3>`);
+  text = text.replace(/^## (.*$)/gim, `<h2 class="${styles.heading2}">$1</h2>`);
+  text = text.replace(/^# (.*$)/gim, `<h1 class="${styles.heading1}">$1</h1>`);
+
+  // 4. Convert bold and inline code
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // 5. Convert lists (- item)
+  text = text.replace(/(?:^[ \t]*-[ \t]+.+$\n?)+/gm, (match) => {
+    const items = match.trim().split('\n').map(line => {
+      const content = line.replace(/^[ \t]*-[ \t]+/, '');
+      return `<li>${content}</li>`;
+    }).join('');
+    return `<ul class="${styles.bulletList}">${items}</ul>`;
+  });
+
+  // 6. Convert tables (| col | col |)
+  text = text.replace(/(?:^\|.+\|$\n?)+/gm, (match) => {
+    const rows = match.trim().split('\n').filter(r => !r.includes('---'));
+    if (rows.length === 0) return '';
+    const headerRow = rows[0].split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+    const bodyRows = rows.slice(1).map(r => {
+      const cells = r.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+    return `<table class="${styles.descTable}"><thead><tr>${headerRow}</tr></thead><tbody>${bodyRows}</tbody></table>`;
+  });
+
+  // 7. Paragraphs
+  const paragraphs = text.split(/\n{2,}/);
+  text = paragraphs.map(p => {
+    p = p.trim();
+    if (!p) return '';
+    if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<table') || p.startsWith('__DETAILS_BLOCK_') || p.startsWith('__CODE_BLOCK_')) {
+      return p;
+    }
+    return `<p>${p.replace(/\n/g, '<br/>')}</p>`;
+  }).join('');
+
+  // 8. Restore details blocks
+  text = text.replace(/__DETAILS_BLOCK_(\d+)__/g, (_, idx) => detailsBlocks[parseInt(idx, 10)]);
+
+  // 9. Restore code blocks
+  text = text.replace(/__CODE_BLOCK_(\d+)__/g, (_, idx) => codeBlocks[parseInt(idx, 10)]);
+
+  return text;
 }
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+

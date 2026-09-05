@@ -1,0 +1,955 @@
+.card {
+  background: rgba(18, 22, 34, 0.85);
+  border: 1px solid rgba(138, 43, 226, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #8a2be2, #00f2fe, #4facfe);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.aiBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(0, 242, 254, 0.25));
+  border: 1px solid rgba(138, 43, 226, 0.5);
+  color: #00f2fe;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.2);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.subtitle {
+  margin: 0.2rem 0 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.generateBtn {
+  background: linear-gradient(135deg, #8a2be2, #4facfe);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.55rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(138, 43, 226, 0.4);
+  transition: all 0.2s ease;
+}
+
+.generateBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 242, 254, 0.5);
+}
+
+.loadingBox {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2rem 1rem;
+}
+
+.pulseSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(0, 242, 254, 0.2);
+  border-top-color: #00f2fe;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingTitle {
+  margin: 0;
+  font-size: 1rem;
+  color: #f1f5f9;
+}
+
+.loadingSub {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.83rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.contentBody {
+  margin-top: 1.2rem;
+}
+
+/* ── Dual AI Complexity Hero Comparison ──────────────────── */
+.dualComplexityHero {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 1.25rem;
+  background: linear-gradient(135deg, rgba(20, 24, 38, 0.95), rgba(15, 18, 28, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+@media (max-width: 820px) {
+  .dualComplexityHero {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.heroUserCard, .heroOptCard {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.heroUserCard {
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.05);
+}
+
+.heroOptCard {
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  box-shadow: inset 0 0 15px rgba(34, 197, 94, 0.05);
+}
+
+.heroCardBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fca5a5;
+}
+
+.heroCardBadgeOpt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #86efac;
+}
+
+.heroBigComplexity {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #f87171;
+  font-family: 'Fira Code', Consolas, monospace;
+}
+
+.heroBigComplexityOpt {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #4ade80;
+  font-family: 'Fira Code', Consolas, monospace;
+}
+
+.heroDetailsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.4rem;
+}
+
+.heroDetailsGrid strong {
+  color: #f1f5f9;
+}
+
+.heroGapCenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.45rem;
+  padding: 0 0.5rem;
+}
+
+.gapStatusPillWarn {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+
+.gapStatusPillSuccess {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #86efac;
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
+}
+
+.gapExplanationText {
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  max-width: 220px;
+  line-height: 1.35;
+}
+
+.speedupPill {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.derivationBadgeUser {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fca5a5;
+  margin-bottom: 0.3rem;
+}
+
+.derivationBadgeOpt {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #86efac;
+  margin-bottom: 0.3rem;
+}
+
+.dominatingOpsBox, .lowerBoundBox {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.dominatingOpsBox {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.lowerBoundBox {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.tabGroup {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tabBtn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 0.45rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.83rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+}
+
+.tabActive {
+  background: rgba(138, 43, 226, 0.25);
+  border-color: rgba(138, 43, 226, 0.6);
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.tabCount {
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
+  font-size: 0.72rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.rightActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.copyBtn, .regenBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copyBtn:hover, .regenBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.tabPanel {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Paradigm Card ─────────────────────────────────────── */
+.paradigmCard {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.12), rgba(0, 242, 254, 0.08));
+  border: 1px solid rgba(138, 43, 226, 0.25);
+  border-radius: 10px;
+  padding: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+.paradigmHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.paradigmIcon {
+  font-size: 1.1rem;
+}
+
+.paradigmTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.paradigmFlow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paradigmBoxUser, .paradigmBoxOpt {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  min-width: 180px;
+}
+
+.paradigmBoxUser {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.paradigmBoxOpt {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.paradigmRole {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.paradigmBoxUser .paradigmRole {
+  color: #fca5a5;
+}
+
+.paradigmBoxOpt .paradigmRole {
+  color: #86efac;
+}
+
+.paradigmName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.paradigmArrow {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.paradigmDesc {
+  margin: 0.8rem 0 0 0;
+  font-size: 0.87rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+/* ── Summary Callout ──────────────────────────────────── */
+.summaryCallout {
+  display: flex;
+  gap: 0.8rem;
+  background: rgba(0, 242, 254, 0.06);
+  border-left: 3px solid #00f2fe;
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 1.2rem;
+}
+
+.calloutIcon {
+  font-size: 1.2rem;
+}
+
+.calloutTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #00f2fe;
+  margin-bottom: 0.25rem;
+}
+
+.summaryText {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.sectionHeader {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-bottom: 0.8rem;
+}
+
+/* ── Categorized Insights Grid ─────────────────────────── */
+.insightsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 0.9rem;
+}
+
+.insightCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.insightCard:hover {
+  border-color: rgba(138, 43, 226, 0.4);
+  transform: translateY(-1px);
+}
+
+.insightCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryTag {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.impactBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.impactCritical {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.impactHigh {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+.impactModerate {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.impactInfo {
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.insightCardTitle {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.insightCardText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.recBox {
+  display: flex;
+  gap: 0.4rem;
+  background: rgba(0, 242, 254, 0.05);
+  border-left: 2px solid #00f2fe;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0 4px 4px 0;
+  margin-top: 0.2rem;
+}
+
+.recIcon {
+  font-size: 0.85rem;
+}
+
+.recText {
+  font-size: 0.8rem;
+  color: #93c5fd;
+  line-height: 1.35;
+}
+
+/* ── Complexity & Derivations ──────────────────────────── */
+.complexityHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.compPillUser, .compPillOpt, .compPillSpace {
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.compPillUser {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.compPillOpt {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.compPillSpace {
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.compPillLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.compPillVal {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.compPillArrow {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.derivationCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+
+.derivationRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.derivationColTitle {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.derivationText {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.tradeoffBox {
+  margin-top: 0.9rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  line-height: 1.45;
+}
+
+/* ── Scaling Simulation ────────────────────────────────── */
+.scaleContainer {
+  margin-top: 1.2rem;
+}
+
+.scaleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
+}
+
+.scaleCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+}
+
+.scaleCardSize {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.scaleCardOps {
+  font-size: 0.86rem;
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.verdictCallout {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  color: #fde047;
+}
+
+.verdictIcon {
+  font-size: 1rem;
+}
+
+/* ── Bottlenecks List ──────────────────────────────────── */
+.bottleneckList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bottleneckCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+}
+
+.bottleneckTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.constructCode {
+  font-family: 'Fira Code', monospace;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: #38bdf8;
+}
+
+.severityBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.severityCritical {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.severityHigh {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+.severityModerate {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.4);
+}
+
+.bottleneckType {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 0.25rem;
+}
+
+.bottleneckDesc {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+/* ── Refactoring Roadmap ───────────────────────────────── */
+.roadmapList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.roadmapCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.1rem;
+}
+
+.roadmapStepHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.stepCircle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8a2be2, #38bdf8);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stepTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.gainBadge {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.stepAction {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.87rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.codeSnippetBox {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.snippetLabel {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.snippetPre {
+  margin: 0;
+  padding: 0.75rem;
+  font-family: 'Fira Code', Consolas, monospace;
+  font-size: 0.82rem;
+  color: #a7f3d0;
+  overflow-x: auto;
+}
+
+/* ── Pro Tips Grid ─────────────────────────────────────── */
+.proTipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.8rem;
+}
+
+.proTipCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 0.9rem;
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.proTipIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.proTipText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.emptyState {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+.errorBox {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 0.8rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}

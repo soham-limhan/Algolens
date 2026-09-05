@@ -9,12 +9,7 @@
 }
 
 .heroGlow {
-  position: absolute;
-  top: -100px; left: 50%;
-  transform: translateX(-50%);
-  width: 600px; height: 400px;
-  background: radial-gradient(ellipse at center, rgba(219, 249, 22, 0.18) 0%, transparent 70%);
-  pointer-events: none;
+  
 }
 
 .heroContent { position: relative; max-width: 700px; margin: 0 auto; }
@@ -102,7 +97,7 @@
 /* ── Differentiation ───────────────────────────────────────── */
 .diff {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 520px);
   gap: 3rem;
   align-items: center;
 }
@@ -111,31 +106,93 @@
 .diffBody { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
 
 .diffVisual {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #222222;
+  border: 1px solid #383838;
   border-radius: var(--radius-lg);
-  padding: 1.5rem 2rem;
-  min-width: 180px;
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.fakeChart {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-end;
-  height: 100px;
+.diffVisual:hover {
+  border-color: rgba(255, 161, 22, 0.4);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), 0 0 24px rgba(255, 161, 22, 0.08);
 }
 
-.fakeBar {
-  flex: 1;
-  border-radius: 4px 4px 0 0;
+.diffVisualHeader {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 0.4rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.diffVisualTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diffVisualBadge {
   font-size: 0.7rem;
-  font-weight: 700;
-  color: #fff;
   font-family: var(--font-mono);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 161, 22, 0.15);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.graphContainer {
+  position: relative;
+  width: 100%;
+}
+
+.graphSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diffLegend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.diffMeta {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }
 
 /* ── Problem grid ──────────────────────────────────────────── */
@@ -173,7 +230,7 @@
 
 .finalCta h2 { font-size: 1.75rem; font-weight: 700; }
 
-@media (max-width: 600px) {
-  .diff { grid-template-columns: 1fr; }
-  .diffVisual { display: none; }
+@media (max-width: 860px) {
+  .diff { grid-template-columns: 1fr; gap: 2rem; }
+  .diffVisual { max-width: 100%; }
 }

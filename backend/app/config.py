@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
+    # ── Groq AI Settings ──────────────────────────────────────────────────────
+    groq_api_key: str = ""
+    groq_model: str = "openai/gpt-oss-120b"
+
     # ── Sandbox (Docker container limits) ────────────────────────────────────
     sandbox_image_name: str = "algolens-sandbox:latest"
     sandbox_cpu_quota: int = 50000       # microseconds per cpu_period
