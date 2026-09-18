@@ -43,12 +43,19 @@ class ForumReply(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid_str)
     thread_id: Mapped[str] = mapped_column(String(36), ForeignKey("forum_threads.id"), nullable=False, index=True)
     user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False)
+    parent_id: Mapped[Optional[str]] = mapped_column(String(36), ForeignKey("forum_replies.id"), nullable=True, index=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now(), nullable=False)
 
     # Relationships
     author: Mapped["User"] = relationship("User")  # noqa: F821
     thread: Mapped["ForumThread"] = relationship("ForumThread", back_populates="replies")
+    parent: Mapped[Optional["ForumReply"]] = relationship(
+        "ForumReply", remote_side="ForumReply.id", back_populates="children"
+    )
+    children: Mapped[List["ForumReply"]] = relationship(
+        "ForumReply", back_populates="parent", cascade="all, delete-orphan", order_by="ForumReply.created_at"
+    )
 
 
 class ForumLike(Base):

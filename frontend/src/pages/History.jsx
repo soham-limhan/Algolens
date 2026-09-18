@@ -302,6 +302,10 @@ export default function History() {
                 <div>
                   <Link
                     to={item.problem_id ? `/problems/${item.problem_id}` : `/results/${item.id}`}
+                    state={item.problem_id ? {
+                      sourceCode: item.source_code,
+                      language: item.language?.toLowerCase(),
+                    } : undefined}
                     className={styles.problemLink}
                     title={item.problem_title}
                   >
@@ -408,6 +412,10 @@ export default function History() {
               {selectedSolution.problem_id && (
                 <Link
                   to={`/problems/${selectedSolution.problem_id}`}
+                  state={{
+                    sourceCode: selectedSolution.source_code,
+                    language: selectedSolution.language?.toLowerCase(),
+                  }}
                   className="btn btn-primary"
                   style={{ fontSize: '0.85rem' }}
                 >

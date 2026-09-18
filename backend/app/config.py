@@ -66,6 +66,16 @@ class Settings(BaseSettings):
     smtp_from_email: str = "noreply@algolens.com"
     smtp_use_tls: bool = True
 
+    # ── Redis Cache ───────────────────────────────────────────────────────────
+    redis_url: str = "redis://localhost:6379/0"
+    redis_enabled: bool = True
+    cache_ttl_problems: int = 3600       # 1 hour
+    cache_ttl_problem_detail: int = 3600 # 1 hour
+    cache_ttl_forum_threads: int = 300   # 5 minutes
+    cache_ttl_forum_detail: int = 300    # 5 minutes
+    cache_ttl_ai_insights: int = 86400   # 24 hours
+    cache_ttl_user_history: int = 60     # 1 minute
+
     # ── Helpers & Validators ──────────────────────────────────────────────────
     @field_validator("database_url")
     @classmethod

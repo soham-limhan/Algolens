@@ -45,6 +45,7 @@ class ForumThreadCreate(BaseModel):
 
 class ForumReplyCreate(BaseModel):
     content: str = Field(..., min_length=1, max_length=5000)
+    parent_id: Optional[str] = None
 
     @field_validator("content")
     @classmethod
@@ -61,6 +62,15 @@ class ForumReplyResponse(BaseModel):
     user_id: str
     content: str
     created_at: datetime
+    parent_id: Optional[str] = None
+    parent_author: Optional[str] = None
+
+    model_config = {"from_attributes": True}
+
+
+class UserMentionResponse(BaseModel):
+    id: str
+    name: str
 
     model_config = {"from_attributes": True}
 
