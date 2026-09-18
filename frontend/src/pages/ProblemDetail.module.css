@@ -191,6 +191,37 @@
   color: var(--accent);
 }
 
+.editorActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.resetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetBtn:hover {
+  background: var(--surface-3, #2d3345);
+  color: var(--text-primary);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.resetBtn:active {
+  transform: scale(0.97);
+}
+
 /* ── Separate Language Selector Box ─────────────────────── */
 .languageBox {
   display: inline-flex;

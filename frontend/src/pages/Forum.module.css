@@ -464,3 +464,192 @@
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
+/* ── Mention Badges & Tags ────────────────────────────────────────────────── */
+.mentionTag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  padding: 0.05rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9em;
+  margin: 0 0.15rem;
+}
+
+/* ── Mention Autocomplete Dropdown ────────────────────────────────────────── */
+.textareaContainer {
+  position: relative;
+  width: 100%;
+}
+
+.mentionDropdown {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  width: 280px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.mentionDropdownHeader {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.mentionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  transition: background 0.15s ease;
+}
+
+.mentionItem:hover,
+.mentionItemActive {
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--accent);
+}
+
+.mentionAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── Nested Replies & Threading ─────────────────────────────────────────── */
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.commentAuthorGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.replyToBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: var(--bg);
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.replyToBadge strong {
+  color: var(--accent-light);
+}
+
+.commentFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.replyBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.replyBtn:hover {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--accent);
+}
+
+.nestedReplies {
+  margin-left: 1.5rem;
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(249, 115, 22, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nestedCommentCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  position: relative;
+}
+
+/* ── Replying Banner ─────────────────────────────────────────────────────── */
+.replyingBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.replyingBanner strong {
+  color: var(--accent);
+}
+
+.cancelReplyBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cancelReplyBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--wrong);
+}

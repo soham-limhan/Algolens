@@ -1,69 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import api from '../api/client';
 import NotFound from './NotFound';
+import { getStarterSnippet } from '../utils/starterSnippets';
 import styles from './ProblemDetail.module.css';
-
-const CODE_TEMPLATES = {
-  java: `import java.util.*;
-
-public class Solution {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        // Read input and write your solution here
-    }
-}
-`,
-  python: `import sys
-
-def main():
-    input_data = sys.stdin.read().split()
-    if not input_data:
-        return
-    # Read input and write your solution here
-
-if __name__ == "__main__":
-    main()
-`,
-  cpp: `#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    // Read input and write your solution here
-    return 0;
-}
-`,
-  c: `#include <stdio.h>
-#include <stdlib.h>
-
-int main() {
-    // Read input and write your solution here
-    return 0;
-}
-`,
-  javascript: `const fs = require('fs');
-
-function main() {
-    const input = fs.readFileSync(0, 'utf-8');
-    // Read input and write your solution here
-}
-
-main();
-`,
-};
 
 export default function ProblemDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [language, setLanguage] = useState('java');
-  const [code, setCode] = useState(CODE_TEMPLATES.java);
+
+  const initialLanguage = (location.state?.language || 'java').toLowerCase();
+  const initialCode = location.state?.sourceCode ?? location.state?.code ?? getStarterSnippet(null, initialLanguage);
+
+  const [language, setLanguage] = useState(initialLanguage);
+  const [code, setCode] = useState(initialCode);
   const [running, setRunning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -73,6 +27,15 @@ export default function ProblemDetail() {
   const [testCasesHeight, setTestCasesHeight] = useState(210);
   const [isTestCasesOpen, setIsTestCasesOpen] = useState(true);
   const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    if (location.state?.sourceCode !== undefined || location.state?.code !== undefined) {
+      const passedCode = location.state?.sourceCode ?? location.state?.code;
+      const passedLang = (location.state?.language || 'java').toLowerCase();
+      setLanguage(passedLang);
+      setCode(passedCode);
+    }
+  }, [id, location.state]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -113,15 +76,24 @@ export default function ProblemDetail() {
 
   useEffect(() => {
     api.get(`/problems/${id}`)
-      .then(r => setProblem(r.data))
+      .then(r => {
+        setProblem(r.data);
+        if (location.state?.sourceCode === undefined && location.state?.code === undefined) {
+          setCode(getStarterSnippet(r.data, language));
+        }
+      })
       .catch(() => setError('Problem not found'))
       .finally(() => setLoading(false));
   }, [id]);
 
   const handleLanguageChange = (newLang) => {
     setLanguage(newLang);
-    setCode(CODE_TEMPLATES[newLang] || '');
+    setCode(getStarterSnippet(problem, newLang));
     setRunResults(null);
+  };
+
+  const handleResetCode = () => {
+    setCode(getStarterSnippet(problem, language));
   };
 
   const handleRun = async () => {
@@ -199,20 +171,35 @@ export default function ProblemDetail() {
             <span>Solution Editor</span>
           </div>
 
-          <div className={styles.languageBox}>
-            <span className={styles.languageBoxLabel}>Language</span>
-            <div className={styles.selectWrapper}>
-              <select
-                value={language}
-                onChange={e => handleLanguageChange(e.target.value)}
-                className={styles.languageSelect}
-              >
-                <option value="java">Java 21</option>
-                <option value="python">Python 3</option>
-                <option value="cpp">C++20 (GCC)</option>
-                <option value="c">C11 (GCC)</option>
-                <option value="javascript">JavaScript (Node.js)</option>
-              </select>
+          <div className={styles.editorActions}>
+            <button
+              type="button"
+              className={styles.resetBtn}
+              onClick={handleResetCode}
+              title="Reset code to problem starter snippet"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              <span>Reset Starter</span>
+            </button>
+
+            <div className={styles.languageBox}>
+              <span className={styles.languageBoxLabel}>Language</span>
+              <div className={styles.selectWrapper}>
+                <select
+                  value={language}
+                  onChange={e => handleLanguageChange(e.target.value)}
+                  className={styles.languageSelect}
+                >
+                  <option value="java">Java 21</option>
+                  <option value="python">Python 3</option>
+                  <option value="cpp">C++20 (GCC)</option>
+                  <option value="c">C11 (GCC)</option>
+                  <option value="javascript">JavaScript (Node.js)</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>

@@ -36,6 +36,7 @@ from app.schemas.submission import (
     TestCaseRunOutcome,
 )
 from app.sandbox.executor import CompiledSubmission
+from app.services.cache import cache_service
 from app.services.correctness import run_correctness_check
 from app.services.pipeline import run_pipeline
 
@@ -151,6 +152,9 @@ def create_submission(
     db.commit()
     db.refresh(submission)
 
+    # Invalidate user history cache
+    cache_service.delete_pattern(f"user:{current_user.id}:history:*")
+
     background_tasks.add_task(_run_pipeline_bg, submission.id)
 
     return SubmissionResponse(
@@ -248,7 +252,7 @@ def get_user_history(
     current_user: User = Depends(get_current_user),
 ) -> List[SubmissionHistoryItem]:
     """
-    Paginated submission history for a user.
+    Paginated submission history for a user with Redis caching.
     A user may only fetch their own history (403 otherwise).
     """
     _validate_uuid(user_id, "user_id")
@@ -257,6 +261,11 @@ def get_user_history(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied to another user's history",
         )
+
+    cache_key = f"user:{user_id}:history:{limit}:{offset}"
+    cached = cache_service.get(cache_key)
+    if cached is not None:
+        return [SubmissionHistoryItem.model_validate(item) for item in cached]
 
     submissions = (
         db.query(Submission)
@@ -283,6 +292,12 @@ def get_user_history(
                 source_code=s.source_code,
             )
         )
+
+    cache_service.set(
+        cache_key,
+        [it.model_dump() for it in items],
+        ttl=settings.cache_ttl_user_history,
+    )
     return items
 
 
@@ -306,6 +321,7 @@ async def get_ai_insights(
     """
     Generate dynamic LLM algorithmic insights using Groq AI, analyzing both
     user solution time complexity and optimal solution time complexity.
+    Caches results in Redis to avoid redundant LLM invocations.
     """
     _validate_uuid(submission_id, "submission_id")
     submission = db.get(Submission, submission_id)
@@ -320,6 +336,12 @@ async def get_ai_insights(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied to another user's submission",
         )
+
+    # Return cached insights if already computed
+    cache_key = f"insights:{submission_id}"
+    cached_insights = cache_service.get(cache_key)
+    if cached_insights is not None:
+        return cached_insights
 
     problem = db.get(Problem, submission.problem_id)
     if not problem:
@@ -360,6 +382,7 @@ async def get_ai_insights(
             difficulty=problem.difficulty or "medium",
             api_key_override=api_key_override,
         )
+        cache_service.set(cache_key, insights, ttl=settings.cache_ttl_ai_insights)
         return insights
     except ValueError as err:
         raise HTTPException(
@@ -371,3 +394,4 @@ async def get_ai_insights(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error generating AI insights: {str(err)}",
         )
+

@@ -117,6 +117,15 @@ def _ensure_schema_up_to_date():
                     logger.info("Added missing 'optimal_solution' column to problems table.")
                 except Exception as e:
                     logger.warning("Could not add optimal_solution column: %s", e)
+        if "forum_replies" in inspector.get_table_names():
+            reply_cols = [c["name"] for c in inspector.get_columns("forum_replies")]
+            if "parent_id" not in reply_cols:
+                try:
+                    conn.execute(text("ALTER TABLE forum_replies ADD COLUMN parent_id VARCHAR(36) REFERENCES forum_replies(id)"))
+                    conn.commit()
+                    logger.info("Added missing 'parent_id' column to forum_replies table.")
+                except Exception as e:
+                    logger.warning("Could not add parent_id column: %s", e)
 
 _ensure_schema_up_to_date()
 logger.info("Database tables verified/created.")
@@ -134,6 +143,13 @@ app.include_router(submissions_router)
 app.include_router(forum_router)
 
 
+from app.services.cache import cache_service
+
 @app.get("/health", tags=["health"])
 def health():
-    return {"status": "ok"}
+    redis_status = "connected" if cache_service.is_connected() else "disconnected"
+    return {
+        "status": "ok",
+        "redis": redis_status,
+    }
+

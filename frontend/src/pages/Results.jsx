@@ -102,7 +102,14 @@ export default function Results() {
           </Link>
           {problem && (
             <div className={styles.problemRef}>
-              <Link to={`/problems/${problem.id}`} className={styles.problemLink}>
+              <Link
+                to={`/problems/${problem.id}`}
+                state={{
+                  sourceCode: submission?.source_code,
+                  language: submission?.language?.toLowerCase(),
+                }}
+                className={styles.problemLink}
+              >
                 {problem.title}
               </Link>
               <span className={`badge badge-${problem.difficulty}`}>{problem.difficulty}</span>
@@ -211,7 +218,14 @@ export default function Results() {
       {isTerminal && (
         <div className={styles.actions}>
           {problem && (
-            <Link to={`/problems/${problem.id}`} className="btn btn-secondary">
+            <Link
+              to={`/problems/${problem.id}`}
+              state={{
+                sourceCode: submission?.source_code,
+                language: submission?.language?.toLowerCase(),
+              }}
+              className="btn btn-secondary"
+            >
               Try again
             </Link>
           )}

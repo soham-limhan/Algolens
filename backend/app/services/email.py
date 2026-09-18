@@ -24,9 +24,9 @@ def send_otp_email(to_email: str, otp: str) -> bool:
     text_content = (
         f"Hello,\n\n"
         f"Your One-Time Password (OTP) for resetting your AlgoLens password is: {otp}\n\n"
-        f"This code is valid for your password reset request. "
-        f"If you did not request this, please ignore this email.\n\n"
-        f"Best regards,\nAlgoLens Team"
+        f"This code is valid only for 15 minutes for your password reset request. "
+        f"If you did not request this, please ignore this email and contact support.\n\n"
+        f"Best regards,\nAlgoLens Support Team"
     )
     html_content = f"""
     <html>
@@ -37,7 +37,7 @@ def send_otp_email(to_email: str, otp: str) -> bool:
           <div style="background-color: #0f172a; border-radius: 6px; padding: 15px; text-align: center; margin: 20px 0; border: 1px dashed #38bdf8;">
             <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #38bdf8;">{otp}</span>
           </div>
-          <p style="color: #94a3b8; font-size: 14px;">If you did not request a password reset, please ignore this email.</p>
+          <p style="color: #94a3b8; font-size: 14px;">This code is valid only for 15 minutes. If you did not request a password reset, please ignore this email and contact support.</p>
         </div>
       </body>
     </html>

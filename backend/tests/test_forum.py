@@ -115,3 +115,67 @@ def test_invalid_uuid_thread_detail_rejected():
     res = client.get("/forum/threads/not-a-valid-uuid")
     assert res.status_code == 422
     assert res.json()["detail"][0]["field"] == "thread_id"
+
+
+def test_nested_replies_and_parent_validation():
+    # 1. Create thread
+    thread_res = client.post(
+        "/forum/threads",
+        json={
+            "title": "Nested Discussion Thread",
+            "category": "General",
+            "content": "Let's discuss algorithmic paradigms.",
+        },
+    )
+    assert thread_res.status_code == 201
+    thread_id = thread_res.json()["id"]
+
+    # 2. Add top-level reply
+    r1_res = client.post(
+        f"/forum/threads/{thread_id}/replies",
+        json={"content": "Greedy algorithms are often intuitive."},
+    )
+    assert r1_res.status_code == 201
+    r1_data = r1_res.json()
+    r1_id = r1_data["id"]
+    assert r1_data["parent_id"] is None
+    assert r1_data["parent_author"] is None
+
+    # 3. Add child reply replying to r1
+    r2_res = client.post(
+        f"/forum/threads/{thread_id}/replies",
+        json={
+            "content": "@Forum Tester But greedy doesn't always yield optimal results for DP problems.",
+            "parent_id": r1_id,
+        },
+    )
+    assert r2_res.status_code == 201
+    r2_data = r2_res.json()
+    assert r2_data["parent_id"] == r1_id
+    assert r2_data["parent_author"] == "Forum Tester"
+
+    # 4. Fetch detail and check replies hierarchy fields
+    detail_res = client.get(f"/forum/threads/{thread_id}")
+    assert detail_res.status_code == 200
+    replies = detail_res.json()["replies"]
+    assert len(replies) == 2
+    assert replies[0]["id"] == r1_id
+    assert replies[1]["id"] == r2_data["id"]
+    assert replies[1]["parent_id"] == r1_id
+    assert replies[1]["parent_author"] == "Forum Tester"
+
+    # 5. Bad parent_id on non-existent reply
+    fake_parent_id = str(uuid.uuid4())
+    bad_res = client.post(
+        f"/forum/threads/{thread_id}/replies",
+        json={"content": "Reply to ghost", "parent_id": fake_parent_id},
+    )
+    assert bad_res.status_code == 400
+
+
+def test_user_mentions_search():
+    res = client.get("/forum/users/mentions?q=Forum")
+    assert res.status_code == 200
+    users = res.json()
+    assert isinstance(users, list)
+    assert any("Forum Tester" in u["name"] for u in users)

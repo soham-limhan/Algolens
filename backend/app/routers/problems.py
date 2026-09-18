@@ -5,25 +5,39 @@ import uuid
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.db.database import get_db
 from app.models.problem import Problem, TestCase
 from app.schemas.problem import ProblemCreate, ProblemDetail, ProblemSummary
+from app.services.cache import cache_service
 
 router = APIRouter(prefix="/problems", tags=["problems"])
 
 
 @router.get("", response_model=List[ProblemSummary])
 def list_problems(db: Session = Depends(get_db)) -> List[ProblemSummary]:
-    """List all problems. Returns newly created problems alongside seeded problems."""
+    """List all problems with Redis caching."""
+    cache_key = "problems:list"
+    cached = cache_service.get(cache_key)
+    if cached is not None:
+        return [ProblemSummary.model_validate(p) for p in cached]
+
     problems = db.query(Problem).order_by(Problem.title).all()
-    return [ProblemSummary.model_validate(p) for p in problems]
+    summaries = [ProblemSummary.model_validate(p) for p in problems]
+    cache_service.set(
+        cache_key,
+        [s.model_dump() for s in summaries],
+        ttl=settings.cache_ttl_problems,
+    )
+    return summaries
 
 
 @router.post("", response_model=ProblemDetail, status_code=status.HTTP_201_CREATED)
 def create_problem(body: ProblemCreate, db: Session = Depends(get_db)) -> ProblemDetail:
-    """Create a new problem in the database."""
+    """Create a new problem in the database and invalidate problems cache."""
     diff = body.difficulty.lower()
     if diff not in ("easy", "medium", "hard"):
         diff = "easy"
@@ -52,19 +66,26 @@ def create_problem(body: ProblemCreate, db: Session = Depends(get_db)) -> Proble
         db.commit()
         db.refresh(problem)
 
+    # Invalidate problems cache
+    cache_service.delete_pattern("problems:*")
+
     return ProblemDetail.model_validate(problem)
 
 
-from sqlalchemy import func
-
 @router.get("/{problem_id}", response_model=ProblemDetail)
 def get_problem(problem_id: str, db: Session = Depends(get_db)) -> ProblemDetail:
+    """Get single problem detail with Redis caching."""
+    clean_id = problem_id.strip().lower()
+    cache_key = f"problems:detail:{clean_id}"
+    cached = cache_service.get(cache_key)
+    if cached is not None:
+        return ProblemDetail.model_validate(cached)
+
     # 1. Direct ID lookup
     problem = db.get(Problem, problem_id)
 
     # 2. Lookup by title or numerical ID string
     if problem is None:
-        clean_id = problem_id.strip().lower()
         problem = db.query(Problem).filter(
             (func.lower(Problem.title) == clean_id) |
             (func.lower(Problem.title).like(f"{clean_id}.%")) |
@@ -81,4 +102,11 @@ def get_problem(problem_id: str, db: Session = Depends(get_db)) -> ProblemDetail
             )
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem not found")
 
-    return ProblemDetail.model_validate(problem)
+    detail = ProblemDetail.model_validate(problem)
+    cache_service.set(cache_key, detail.model_dump(), ttl=settings.cache_ttl_problem_detail)
+    # Also cache under the problem's canonical UUID
+    if str(problem.id).lower() != clean_id:
+        cache_service.set(f"problems:detail:{str(problem.id).lower()}", detail.model_dump(), ttl=settings.cache_ttl_problem_detail)
+
+    return detail
+

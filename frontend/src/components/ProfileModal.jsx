@@ -176,7 +176,7 @@ export default function ProfileModal({ isOpen, onClose }) {
                 <input
                   id="profile-name"
                   type="text"
-                  value={name}
+                  value={user?.name}
                   onChange={e => setName(e.target.value)}
                   placeholder="Enter your name"
                   required
