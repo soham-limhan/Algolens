@@ -30,6 +30,7 @@ class TestCaseOutcome:
     expected: str
     actual: str
     verdict: str  # "Accepted" | "Wrong Answer" | "Runtime Error" | "Time Limit Exceeded"
+    runtime_ms: Optional[float] = None
 
 
 @dataclass
@@ -67,11 +68,78 @@ def _numeric_tolerance(expected: str, actual: str, tol: float = 1e-5) -> bool:
         return False
 
 
+def _sql_table(expected: str, actual: str) -> bool:
+    """Compare two SQL table outputs represented as JSON or formatted text."""
+    import json
+
+    actual_data = None
+    try:
+        if actual.strip().startswith("{"):
+            actual_data = json.loads(actual)
+    except Exception:
+        actual_data = None
+
+    expected_data = None
+    try:
+        if expected.strip().startswith("{"):
+            expected_data = json.loads(expected)
+    except Exception:
+        expected_data = None
+
+    if actual_data and isinstance(actual_data, dict) and "columns" in actual_data and "rows" in actual_data:
+        actual_cols = [str(c).strip().lower() for c in actual_data.get("columns", [])]
+        actual_rows = actual_data.get("rows", [])
+
+        if expected_data and isinstance(expected_data, dict) and "columns" in expected_data and "rows" in expected_data:
+            expected_cols = [str(c).strip().lower() for c in expected_data.get("columns", [])]
+            expected_rows = expected_data.get("rows", [])
+
+            # Compare column headers (case-insensitive)
+            if actual_cols != expected_cols:
+                return False
+
+            def _norm_val(c):
+                if c is None or str(c).strip().lower() == "null":
+                    return None
+                if isinstance(c, (int, float)):
+                    return round(float(c), 4)
+                # Try float conversion if numeric string
+                try:
+                    return round(float(str(c).strip()), 4)
+                except ValueError:
+                    return str(c).strip()
+
+            def _norm_row(row):
+                return tuple(_norm_val(c) for c in row)
+
+            if len(actual_rows) != len(expected_rows):
+                return False
+
+            norm_act = [_norm_row(r) for r in actual_rows]
+            norm_exp = [_norm_row(r) for r in expected_rows]
+
+            # Try exact row sequence first
+            if norm_act == norm_exp:
+                return True
+
+            # Try order-insensitive multiset comparison
+            try:
+                return sorted(norm_act, key=lambda x: str(x)) == sorted(norm_exp, key=lambda x: str(x))
+            except Exception:
+                return False
+
+    return _exact(expected, actual)
+
+
 _COMPARATORS = {
     "exact": _exact,
     "sorted": _sorted_tokens,
     "numeric_tolerance": _numeric_tolerance,
+    "sql_table": _sql_table,
+    "sql": _sql_table,
+    "table": _sql_table,
 }
+COMPARATORS = _COMPARATORS
 
 
 def _compare(comparator_type: str, expected: str, actual: str) -> bool:
@@ -80,6 +148,9 @@ def _compare(comparator_type: str, expected: str, actual: str) -> bool:
         logger.warning("Unknown comparator type '%s', falling back to exact", comparator_type)
         fn = _exact
     return fn(expected, actual)
+
+
+compare_output = _compare
 
 
 # ── Main entry point ──────────────────────────────────────────────────────────
@@ -143,6 +214,7 @@ def run_correctness_check(
             expected=tc.expected_output,
             actual=actual,
             verdict=verdict,
+            runtime_ms=result.runtime_ms,
         )
         outcomes.append(outcome)
 

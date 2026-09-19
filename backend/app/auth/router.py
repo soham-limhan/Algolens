@@ -17,7 +17,7 @@ from app.auth.security import (
 )
 from app.db.database import get_db
 from app.models.user import User
-from app.services.email import send_otp_email
+from app.services.email import send_account_creation_email, send_otp_email, send_registration_otp_email
 from app.schemas.auth import (
     ChangePasswordRequest,
     ForgotPasswordRequest,
@@ -27,6 +27,8 @@ from app.schemas.auth import (
     RegisterRequest,
     ResetPasswordRequest,
     ResetPasswordResponse,
+    SendRegisterOtpRequest,
+    SendRegisterOtpResponse,
     TokenResponse,
     UpdateProfileRequest,
     UserProfileResponse,
@@ -40,18 +42,57 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 _otp_store: dict[str, str] = {}
 _verified_otps: set[str] = set()
 
+_register_otp_store: dict[str, str] = {}
+_verified_register_otps: set[str] = set()
+
 _WRONG_CREDENTIALS = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Incorrect email or password",
 )
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
-def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenResponse:
-    """Register a new user and return a token pair."""
+@router.post("/send-register-otp", response_model=SendRegisterOtpResponse)
+def send_register_otp(body: SendRegisterOtpRequest, db: Session = Depends(get_db)) -> SendRegisterOtpResponse:
+    """Generate and send an OTP to verify email before registration."""
     email_lower = body.email.lower()
     if db.query(User).filter(func.lower(User.email) == email_lower).first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    otp = f"{random.randint(100000, 999999)}"
+    _register_otp_store[email_lower] = otp
+    _verified_register_otps.discard(email_lower)
+    send_registration_otp_email(email_lower, otp, user_name=body.name)
+    return SendRegisterOtpResponse(message="OTP sent successfully")
+
+
+@router.post("/verify-register-otp", response_model=VerifyOtpResponse)
+def verify_register_otp(body: VerifyOtpRequest) -> VerifyOtpResponse:
+    """Verify a registration OTP that was previously generated."""
+    email_lower = body.email.lower()
+    stored_otp = _register_otp_store.get(email_lower)
+    if not stored_otp or stored_otp != body.otp:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
+
+    _verified_register_otps.add(email_lower)
+    return VerifyOtpResponse(message="OTP verified successfully")
+
+
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
+def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenResponse:
+    """Register a new user after verifying OTP and return a token pair."""
+    email_lower = body.email.lower()
+    if db.query(User).filter(func.lower(User.email) == email_lower).first():
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    # Enforce OTP verification
+    is_verified = email_lower in _verified_register_otps
+    if not is_verified:
+        stored_otp = _register_otp_store.get(email_lower)
+        if not stored_otp or stored_otp != body.otp:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or unverified OTP. Please verify your email with the OTP sent to you.",
+            )
 
     user = User(
         name=body.name,
@@ -61,6 +102,12 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)) -> TokenRespo
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    _register_otp_store.pop(email_lower, None)
+    _verified_register_otps.discard(email_lower)
+
+    send_account_creation_email(user.email, user_name=user.name)
+
     tokens = create_token_pair(user.id, name=user.name, email=user.email)
     return TokenResponse(**tokens, user=UserProfileResponse.model_validate(user))
 

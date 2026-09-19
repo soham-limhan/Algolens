@@ -80,8 +80,9 @@ class Settings(BaseSettings):
     @field_validator("database_url")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
-        if not v or not (v.startswith("sqlite") or v.startswith("postgres")):
-            raise ValueError("DATABASE_URL must be a valid SQLite or PostgreSQL connection string")
+        valid_schemes = ("sqlite", "postgres", "postgresql", "mysql", "mariadb")
+        if not v or not any(v.startswith(prefix) for prefix in valid_schemes):
+            raise ValueError("DATABASE_URL must be a valid SQLite, PostgreSQL, or MySQL connection string")
         return v
 
     @field_validator("jwt_secret")

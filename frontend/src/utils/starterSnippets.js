@@ -55,6 +55,18 @@ function main() {
 
 main();
 `,
+  mysql: `# Write your MySQL query statement below
+SELECT 
+    *
+FROM 
+    TableName;
+`,
+  sql: `-- Write your SQL query statement below
+SELECT 
+    *
+FROM 
+    TableName;
+`,
 };
 
 export const PROBLEM_STARTER_SNIPPETS = {
@@ -302,6 +314,66 @@ export const PROBLEM_STARTER_SNIPPETS = {
     "cpp": "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n\nint trap(vector<int>& height) {\n    // TODO: Implement your solution here (two-pointer or prefix/suffix maximums)\n    return 0;\n}\n\nint main() {\n    ios_base::sync_with_stdio(false);\n    cin.tie(NULL);\n    int n;\n    if (!(cin >> n)) return 0;\n    vector<int> height(n);\n    for (int i = 0; i < n; i++) cin >> height[i];\n\n    int result = trap(height);\n    cout << result << \"\\n\";\n    return 0;\n}",
     "c": "#include <stdio.h>\n#include <stdlib.h>\n\nint trap(int* height, int n) {\n    // TODO: Implement your solution here\n    return 0;\n}\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    int* height = (int*)malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) scanf(\"%d\", &height[i]);\n\n    int result = trap(height, n);\n    printf(\"%d\\n\", result);\n    free(height);\n    return 0;\n}",
     "javascript": "const fs = require('fs');\n\nfunction trap(height) {\n    // TODO: Implement your solution here (two-pointer or prefix/suffix maximums)\n    return 0;\n}\n\nfunction main() {\n    const input = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);\n    if (!input || input.length === 0 || isNaN(input[0])) return;\n    const n = input[0];\n    const height = input.slice(1, n + 1);\n\n    const result = trap(height);\n    console.log(result);\n}\n\nmain();"
+  },
+  "Combine Two Tables": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    p.firstName, p.lastName, a.city, a.state\nFROM \n    Person p\nLEFT JOIN \n    Address a ON p.personId = a.personId;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    p.firstName, p.lastName, a.city, a.state\nFROM \n    Person p\nLEFT JOIN \n    Address a ON p.personId = a.personId;\n"
+  },
+  "Employees Earning More Than Their Managers": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    e.name AS Employee\nFROM \n    Employee e\nJOIN \n    Employee m ON e.managerId = m.id\nWHERE \n    e.salary > m.salary;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    e.name AS Employee\nFROM \n    Employee e\nJOIN \n    Employee m ON e.managerId = m.id\nWHERE \n    e.salary > m.salary;\n"
+  },
+  "Duplicate Emails": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    email AS Email\nFROM \n    Person\nGROUP BY \n    email\nHAVING \n    COUNT(email) > 1;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    email AS Email\nFROM \n    Person\nGROUP BY \n    email\nHAVING \n    COUNT(email) > 1;\n"
+  },
+  "Customers Who Never Order": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    c.name AS Customers\nFROM \n    Customers c\nLEFT JOIN \n    Orders o ON c.id = o.customerId\nWHERE \n    o.id IS NULL;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    c.name AS Customers\nFROM \n    Customers c\nLEFT JOIN \n    Orders o ON c.id = o.customerId\nWHERE \n    o.id IS NULL;\n"
+  },
+  "Second Highest Salary": {
+    "mysql": "# Write your MySQL query statement below\nSELECT (\n    SELECT DISTINCT salary\n    FROM Employee\n    ORDER BY salary DESC\n    LIMIT 1 OFFSET 1\n) AS SecondHighestSalary;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT (\n    SELECT DISTINCT salary\n    FROM Employee\n    ORDER BY salary DESC\n    LIMIT 1 OFFSET 1\n) AS SecondHighestSalary;\n"
+  },
+  "Department Highest Salary": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    d.name AS Department,\n    e.name AS Employee,\n    e.salary AS Salary\nFROM \n    Employee e\nJOIN \n    Department d ON e.departmentId = d.id\nWHERE \n    (e.departmentId, e.salary) IN (\n        SELECT departmentId, MAX(salary)\n        FROM Employee\n        GROUP BY departmentId\n    );\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    d.name AS Department,\n    e.name AS Employee,\n    e.salary AS Salary\nFROM \n    Employee e\nJOIN \n    Department d ON e.departmentId = d.id\nWHERE \n    (e.departmentId, e.salary) IN (\n        SELECT departmentId, MAX(salary)\n        FROM Employee\n        GROUP BY departmentId\n    );\n"
+  },
+  "Rank Scores": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    score,\n    DENSE_RANK() OVER (ORDER BY score DESC) AS `rank`\nFROM \n    Scores;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    score,\n    DENSE_RANK() OVER (ORDER BY score DESC) AS rank\nFROM \n    Scores;\n"
+  },
+  "Consecutive Numbers": {
+    "mysql": "# Write your MySQL query statement below\nSELECT DISTINCT\n    l1.num AS ConsecutiveNums\nFROM\n    Logs l1,\n    Logs l2,\n    Logs l3\nWHERE\n    l1.id = l2.id - 1\n    AND l2.id = l3.id - 1\n    AND l1.num = l2.num\n    AND l2.num = l3.num;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT DISTINCT\n    l1.num AS ConsecutiveNums\nFROM\n    Logs l1\nJOIN Logs l2 ON l1.id = l2.id - 1 AND l1.num = l2.num\nJOIN Logs l3 ON l2.id = l3.id - 1 AND l2.num = l3.num;\n"
+  },
+  "Department Top Three Salaries": {
+    "mysql": "# Write your MySQL query statement below\nWITH Ranked AS (\n    SELECT \n        d.name AS Department,\n        e.name AS Employee,\n        e.salary AS Salary,\n        DENSE_RANK() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) AS rnk\n    FROM Employee e\n    JOIN Department d ON e.departmentId = d.id\n)\nSELECT Department, Employee, Salary\nFROM Ranked\nWHERE rnk <= 3;\n",
+    "sql": "-- Write your SQL query statement below\nWITH Ranked AS (\n    SELECT \n        d.name AS Department,\n        e.name AS Employee,\n        e.salary AS Salary,\n        DENSE_RANK() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) AS rnk\n    FROM Employee e\n    JOIN Department d ON e.departmentId = d.id\n)\nSELECT Department, Employee, Salary\nFROM Ranked\nWHERE rnk <= 3;\n"
+  },
+  "Delete Duplicate Emails": {
+    "mysql": "# Write your MySQL query statement below\nDELETE p1 FROM Person p1\nJOIN Person p2 ON p1.email = p2.email AND p1.id > p2.id;\n",
+    "sql": "-- Write your SQL query statement below\nDELETE FROM Person\nWHERE id NOT IN (\n    SELECT MIN(id) FROM (\n        SELECT * FROM Person\n    ) AS temp\n    GROUP BY email\n);\n"
+  },
+  "Rising Temperature": {
+    "mysql": "# Write your MySQL query statement below\nSELECT w1.id\nFROM Weather w1\nJOIN Weather w2 ON w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY)\nWHERE w1.temperature > w2.temperature;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT w1.id\nFROM Weather w1\nJOIN Weather w2 ON julianday(w1.recordDate) = julianday(w2.recordDate) + 1\nWHERE w1.temperature > w2.temperature;\n"
+  },
+  "Trips and Users": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    t.request_at AS Day,\n    ROUND(\n        SUM(IF(t.status != 'completed', 1, 0)) / COUNT(*),\n        2\n    ) AS `Cancellation Rate`\nFROM Trips t\nJOIN Users c ON t.client_id = c.users_id AND c.banned = 'No'\nJOIN Users d ON t.driver_id = d.users_id AND d.banned = 'No'\nWHERE t.request_at BETWEEN '2013-10-01' AND '2013-10-03'\nGROUP BY t.request_at;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    t.request_at AS Day,\n    ROUND(\n        CAST(SUM(CASE WHEN t.status != 'completed' THEN 1 ELSE 0 END) AS REAL) / COUNT(*),\n        2\n    ) AS \"Cancellation Rate\"\nFROM Trips t\nJOIN Users c ON t.client_id = c.users_id AND c.banned = 'No'\nJOIN Users d ON t.driver_id = d.users_id AND d.banned = 'No'\nWHERE t.request_at BETWEEN '2013-10-01' AND '2013-10-03'\nGROUP BY t.request_at;\n"
+  },
+  "Market Analysis I": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    u.user_id AS buyer_id,\n    u.join_date,\n    COUNT(o.order_id) AS orders_in_2019\nFROM Users u\nLEFT JOIN Orders o ON u.user_id = o.buyer_id AND o.order_date LIKE '2019%'\nGROUP BY u.user_id, u.join_date;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    u.user_id AS buyer_id,\n    u.join_date,\n    COUNT(o.order_id) AS orders_in_2019\nFROM Users u\nLEFT JOIN Orders o ON u.user_id = o.buyer_id AND strftime('%Y', o.order_date) = '2019'\nGROUP BY u.user_id, u.join_date;\n"
+  },
+  "Investments in 2016": {
+    "mysql": "# Write your MySQL query statement below\nSELECT ROUND(SUM(tiv_2016), 2) AS tiv_2016\nFROM Insurance\nWHERE tiv_2015 IN (\n    SELECT tiv_2015\n    FROM Insurance\n    GROUP BY tiv_2015\n    HAVING COUNT(*) > 1\n)\nAND (lat, lon) IN (\n    SELECT lat, lon\n    FROM Insurance\n    GROUP BY lat, lon\n    HAVING COUNT(*) = 1\n);\n",
+    "sql": "-- Write your SQL query statement below\nSELECT ROUND(SUM(tiv_2016), 2) AS tiv_2016\nFROM Insurance\nWHERE tiv_2015 IN (\n    SELECT tiv_2015\n    FROM Insurance\n    GROUP BY tiv_2015\n    HAVING COUNT(*) > 1\n)\nAND (lat, lon) IN (\n    SELECT lat, lon\n    FROM Insurance\n    GROUP BY lat, lon\n    HAVING COUNT(*) = 1\n);\n"
+  },
+  "Tree Node Classification": {
+    "mysql": "# Write your MySQL query statement below\nSELECT \n    id,\n    CASE \n        WHEN p_id IS NULL THEN 'Root'\n        WHEN id IN (SELECT DISTINCT p_id FROM Tree WHERE p_id IS NOT NULL) THEN 'Inner'\n        ELSE 'Leaf'\n    END AS type\nFROM Tree;\n",
+    "sql": "-- Write your SQL query statement below\nSELECT \n    id,\n    CASE \n        WHEN p_id IS NULL THEN 'Root'\n        WHEN id IN (SELECT DISTINCT p_id FROM Tree WHERE p_id IS NOT NULL) THEN 'Inner'\n        ELSE 'Leaf'\n    END AS type\nFROM Tree;\n"
   }
 };
 

@@ -203,6 +203,7 @@ def run_code(
                     expected_output=tc.expected,
                     actual_output=tc.actual,
                     verdict=tc.verdict,
+                    runtime_ms=tc.runtime_ms,
                 )
                 for tc in res.test_outcomes
             ],

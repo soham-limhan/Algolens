@@ -5,10 +5,25 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 
+class SendRegisterOtpRequest(BaseModel):
+    email: EmailStr = Field(..., max_length=255)
+    name: Optional[str] = Field(None, max_length=120)
+
+    @field_validator("email")
+    @classmethod
+    def email_normalize(cls, v: str) -> str:
+        return v.strip().lower()
+
+
+class SendRegisterOtpResponse(BaseModel):
+    message: str
+
+
 class RegisterRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=120)
     email: EmailStr = Field(..., max_length=255)
     password: str = Field(..., min_length=8, max_length=128)
+    otp: Optional[str] = Field(None, min_length=6, max_length=6)
 
     @field_validator("password")
     @classmethod
@@ -34,6 +49,7 @@ class RegisterRequest(BaseModel):
         if len(v) > 255:
             raise ValueError("Email must not exceed 255 characters")
         return v
+            
 
 
 class LoginRequest(BaseModel):

@@ -18,6 +18,7 @@ from app.problems_data import (
     container_with_most_water,
     maximum_subarray,
     merge_intervals,
+    sql_generators,
     two_sum,
     valid_anagram,
 )
@@ -33,6 +34,12 @@ REGISTRY: dict[str, Callable[[int, int], str]] = {
     "climbing_stairs": climbing_stairs.generate,
     "binary_search": binary_search.generate,
     "merge_intervals": merge_intervals.generate,
+    "sql_employee": sql_generators.generate_sql_employee,
+    "sql_person_address": sql_generators.generate_sql_person_address,
+    "sql_customers_orders": sql_generators.generate_sql_customers_orders,
+    "sql_scores": sql_generators.generate_sql_scores,
+    "sql_weather": sql_generators.generate_sql_weather,
+    "sql_generic": sql_generators.generate_sql_generic,
 }
 
 

@@ -4,6 +4,7 @@ import Editor from '@monaco-editor/react';
 import api from '../api/client';
 import NotFound from './NotFound';
 import { getStarterSnippet } from '../utils/starterSnippets';
+import SqlTableOutput from '../components/SqlTableOutput';
 import styles from './ProblemDetail.module.css';
 
 export default function ProblemDetail() {
@@ -78,8 +79,14 @@ export default function ProblemDetail() {
     api.get(`/problems/${id}`)
       .then(r => {
         setProblem(r.data);
+        const isSql = r.data.generator_key?.startsWith('sql_');
+        let currentLang = language;
+        if (isSql && language !== 'mysql' && language !== 'sql') {
+          currentLang = 'mysql';
+          setLanguage('mysql');
+        }
         if (location.state?.sourceCode === undefined && location.state?.code === undefined) {
-          setCode(getStarterSnippet(r.data, language));
+          setCode(getStarterSnippet(r.data, currentLang));
         }
       })
       .catch(() => setError('Problem not found'))
@@ -141,6 +148,8 @@ export default function ProblemDetail() {
   if (loading) return <div className={styles.center}><div className="spinner" /></div>;
   if (error && !problem) return <NotFound />;
 
+  const isDatabaseProblem = problem?.generator_key?.startsWith('sql_') || language === 'mysql' || language === 'sql';
+
   return (
     <div className={styles.layout}>
       {/* ── Left: problem description ─────────────────────── */}
@@ -193,11 +202,22 @@ export default function ProblemDetail() {
                   onChange={e => handleLanguageChange(e.target.value)}
                   className={styles.languageSelect}
                 >
-                  <option value="java">Java 21</option>
-                  <option value="python">Python 3</option>
-                  <option value="cpp">C++20 (GCC)</option>
-                  <option value="c">C11 (GCC)</option>
-                  <option value="javascript">JavaScript (Node.js)</option>
+                  {isDatabaseProblem ? (
+                    <>
+                      <option value="mysql">MySQL 8.0</option>
+                      <option value="sql">Standard SQL</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="java">Java 21</option>
+                      <option value="python">Python 3</option>
+                      <option value="cpp">C++20 (GCC)</option>
+                      <option value="c">C11 (GCC)</option>
+                      <option value="javascript">JavaScript (Node.js)</option>
+                      <option value="mysql">MySQL 8.0</option>
+                      <option value="sql">Standard SQL</option>
+                    </>
+                  )}
                 </select>
               </div>
             </div>
@@ -206,7 +226,13 @@ export default function ProblemDetail() {
         <div className={styles.monacoWrapper}>
           <Editor
             height="100%"
-            language={language === 'cpp' || language === 'c' ? 'cpp' : language}
+            language={
+              language === 'mysql' || language === 'sql'
+                ? 'sql'
+                : language === 'cpp' || language === 'c'
+                ? 'cpp'
+                : language
+            }
             value={code}
             onChange={v => setCode(v || '')}
             theme="vs-dark"
@@ -267,7 +293,7 @@ export default function ProblemDetail() {
                   <polyline points="9 11 12 14 22 4"></polyline>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                 </svg>
-                <span>{runResults ? 'Test Results' : 'Sample Testcases'}</span>
+                <span>{runResults ? 'Test Results' : isDatabaseProblem ? 'Database Testcases & Tables' : 'Sample Testcases'}</span>
               </div>
 
               <div className={styles.caseTabs}>
@@ -306,38 +332,50 @@ export default function ProblemDetail() {
 
             {isTestCasesOpen && (
               <div className={styles.caseBody}>
-                {runError && (
+                {runError && !isDatabaseProblem && (
                   <div className={styles.failureBox}>
                     <span className={styles.failureTitle}>Execution Error</span>
                     <pre className={styles.failurePre}>{runError}</pre>
                   </div>
                 )}
 
-                {runResults?.failure_detail && (
+                {runResults?.failure_detail && !isDatabaseProblem && (
                   <div className={styles.failureBox}>
                     <span className={styles.failureTitle}>{runResults.verdict}</span>
                     <pre className={styles.failurePre}>{runResults.failure_detail}</pre>
                   </div>
                 )}
 
-                <div className={runResults?.test_cases?.[activeTestCaseTab] ? styles.caseGrid3 : styles.caseGrid}>
-                  <div className={styles.caseField}>
-                    <span className={styles.caseLabel}>Input =</span>
-                    <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.input}</pre>
-                  </div>
-                  {runResults?.test_cases?.[activeTestCaseTab] && (
+                {isDatabaseProblem ? (
+                  <SqlTableOutput
+                    testCaseInput={problem.test_cases[activeTestCaseTab]?.input}
+                    userOutput={runResults?.test_cases?.[activeTestCaseTab]?.actual_output}
+                    expectedOutput={problem.test_cases[activeTestCaseTab]?.expected_output}
+                    passed={runResults?.test_cases?.[activeTestCaseTab]?.passed}
+                    runtimeMs={runResults?.test_cases?.[activeTestCaseTab]?.runtime_ms}
+                    rawError={runError || runResults?.failure_detail}
+                    isEvaluating={running}
+                  />
+                ) : (
+                  <div className={runResults?.test_cases?.[activeTestCaseTab] ? styles.caseGrid3 : styles.caseGrid}>
                     <div className={styles.caseField}>
-                      <span className={styles.caseLabel}>Your Output =</span>
-                      <pre className={`${styles.caseCode} ${runResults.test_cases[activeTestCaseTab].passed ? styles.outputPassed : styles.outputFailed}`}>
-                        {runResults.test_cases[activeTestCaseTab]?.actual_output || '<no output>'}
-                      </pre>
+                      <span className={styles.caseLabel}>Input =</span>
+                      <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.input}</pre>
                     </div>
-                  )}
-                  <div className={styles.caseField}>
-                    <span className={styles.caseLabel}>Expected Output =</span>
-                    <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.expected_output}</pre>
+                    {runResults?.test_cases?.[activeTestCaseTab] && (
+                      <div className={styles.caseField}>
+                        <span className={styles.caseLabel}>Your Output =</span>
+                        <pre className={`${styles.caseCode} ${runResults.test_cases[activeTestCaseTab].passed ? styles.outputPassed : styles.outputFailed}`}>
+                          {runResults.test_cases[activeTestCaseTab]?.actual_output || '<no output>'}
+                        </pre>
+                      </div>
+                    )}
+                    <div className={styles.caseField}>
+                      <span className={styles.caseLabel}>Expected Output =</span>
+                      <pre className={styles.caseCode}>{problem.test_cases[activeTestCaseTab]?.expected_output}</pre>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>

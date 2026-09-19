@@ -15,8 +15,21 @@ from app.models.user import User
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.schemas.submission import SubmissionCreate
 from app.seed import validate_problem_data
+from unittest.mock import patch
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def mock_email_services():
+    with patch("app.auth.router.send_account_creation_email") as m1, \
+         patch("app.auth.router.send_registration_otp_email") as m2, \
+         patch("app.auth.router.send_otp_email") as m3:
+        yield {
+            "account_creation": m1,
+            "registration_otp": m2,
+            "otp": m3,
+        }
 
 
 # ── Auth Schema & Endpoint Validation Tests ───────────────────────────────────
@@ -59,8 +72,56 @@ def test_login_schema_normalizes_email():
     assert req.email == "test@example.com"
 
 
+def test_send_register_otp_and_register_flow():
+    email = f"reg-{uuid.uuid4()}@example.com"
+    send_response = client.post("/auth/send-register-otp", json={"email": email, "name": "New Reg User"})
+    assert send_response.status_code == 200
+    assert send_response.json()["message"] == "OTP sent successfully"
+
+    otp = auth_router._register_otp_store[email.lower()]
+    assert len(otp) == 6
+
+    # Test registration fails with invalid OTP
+    bad_reg_response = client.post(
+        "/auth/register",
+        json={"name": "New Reg User", "email": email, "password": "password123", "otp": "000000"},
+    )
+    assert bad_reg_response.status_code == 400
+    assert "Invalid or unverified OTP" in bad_reg_response.json()["detail"]
+
+    # Test registration succeeds with correct OTP
+    good_reg_response = client.post(
+        "/auth/register",
+        json={"name": "New Reg User", "email": email, "password": "password123", "otp": otp},
+    )
+    assert good_reg_response.status_code == 201
+    assert "access_token" in good_reg_response.json()
+
+
+def test_send_register_otp_already_registered_email():
+    email = f"dup-{uuid.uuid4()}@example.com"
+    auth_router._verified_register_otps.add(email.lower())
+    client.post(
+        "/auth/register",
+        json={"name": "Dup User", "email": email, "password": "password123"},
+    )
+    dup_response = client.post("/auth/send-register-otp", json={"email": email})
+    assert dup_response.status_code == 409
+    assert dup_response.json()["detail"] == "Email already registered"
+
+
+def test_register_without_otp_rejected():
+    email = f"no-otp-{uuid.uuid4()}@example.com"
+    response = client.post(
+        "/auth/register",
+        json={"name": "No OTP User", "email": email, "password": "password123"},
+    )
+    assert response.status_code == 400
+
+
 def test_forgot_password_generates_otp_for_existing_email():
     email = f"otp-{uuid.uuid4()}@example.com"
+    auth_router._verified_register_otps.add(email.lower())
     register_response = client.post(
         "/auth/register",
         json={"name": "OTP User", "email": email, "password": "password123"},
@@ -85,6 +146,7 @@ def test_forgot_password_returns_error_for_missing_email():
 
 def test_verify_otp_and_reset_password_flow():
     email = f"reset-{uuid.uuid4()}@example.com"
+    auth_router._verified_register_otps.add(email.lower())
     register_response = client.post(
         "/auth/register",
         json={"name": "Reset User", "email": email, "password": "password123"},
@@ -274,4 +336,4 @@ def test_config_invalid_benchmark_sizes():
 
 def test_config_invalid_database_url():
     with pytest.raises(ValueError, match="DATABASE_URL must be a valid"):
-        Settings(database_url="mysql://localhost/algolens")
+        Settings(database_url="mongodb://localhost/algolens")
