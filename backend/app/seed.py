@@ -14,6 +14,7 @@ import sys
 
 from app.db.database import Base, SessionLocal, engine
 from app.models import InefficiencySignature, Problem, TestCase  # noqa: F401 — registers all models
+from app.database_problems import DATABASE_PROBLEMS
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -4589,7 +4590,7 @@ from app.services.complexity import COMPLEXITY_ORDER
 from app.services.hints import DETECTORS
 
 ALLOWED_DIFFICULTIES = {"easy", "medium", "hard"}
-ALLOWED_COMPARATORS = {"exact", "numeric_tolerance", "sorted", "custom"}
+ALLOWED_COMPARATORS = {"exact", "numeric_tolerance", "sorted", "custom", "sql_table", "sql", "table"}
 
 
 def validate_problem_data(prob: dict) -> None:
@@ -4719,8 +4720,9 @@ def seed() -> None:
 
     db = SessionLocal()
     try:
+        all_problems_list = PROBLEMS + DATABASE_PROBLEMS
         # Clean up any duplicate problem titles in the database
-        all_titles = {p["title"] for p in PROBLEMS}
+        all_titles = {p["title"] for p in all_problems_list}
         for title in all_titles:
             duplicates = db.query(Problem).filter(Problem.title == title).all()
             if len(duplicates) > 1:
@@ -4733,7 +4735,7 @@ def seed() -> None:
 
         seeded = 0
         updated = 0
-        for prob_data in PROBLEMS:
+        for prob_data in all_problems_list:
             validate_problem_data(prob_data)
             existing = db.query(Problem).filter(Problem.title == prob_data["title"]).first()
             if existing:

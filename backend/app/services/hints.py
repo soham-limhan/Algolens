@@ -83,10 +83,17 @@ def _detect_unmemoized_recursion(source_code: str) -> bool:
     return False
 
 
+def _detect_missing_left_join(source_code: str) -> bool:
+    """Detect queries that use INNER JOIN or comma cross join when LEFT JOIN is needed."""
+    code_upper = source_code.upper()
+    return "JOIN" in code_upper and "LEFT JOIN" not in code_upper and "LEFT OUTER JOIN" not in code_upper
+
+
 # Dict dispatch — adding a new pattern type doesn't require editing existing logic
 DETECTORS: dict[str, Callable[[str], bool]] = {
     "nested_loop_lookup": _detect_nested_loop_lookup,
     "unmemoized_recursion": _detect_unmemoized_recursion,
+    "missing_left_join": _detect_missing_left_join,
 }
 _DETECTORS = DETECTORS
 

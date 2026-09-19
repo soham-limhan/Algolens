@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, field_validator
 from app.config import settings
 
 
-SUPPORTED_LANGUAGES = {"java", "python", "cpp", "c", "javascript"}
+SUPPORTED_LANGUAGES = {"java", "python", "cpp", "c", "javascript", "mysql", "sql"}
 
 
 class SubmissionCreate(BaseModel):
@@ -123,6 +123,7 @@ class TestCaseRunOutcome(BaseModel):
     expected_output: str
     actual_output: str
     verdict: str
+    runtime_ms: Optional[float] = None
 
 
 class RunCodeResponse(BaseModel):

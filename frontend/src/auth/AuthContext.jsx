@@ -54,19 +54,30 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const register = async (name, email, password) => {
-    const { data } = await api.post('/auth/register', { name, email, password });
+  const register = async (name, email, password, otp) => {
+    const payload = { name, email, password };
+    if (otp) payload.otp = otp;
+    const { data } = await api.post('/auth/register', payload);
     setTokens(data.access_token, data.refresh_token);
     if (data.user) {
       setUser(data.user);
     } else {
-      const payload = JSON.parse(atob(data.access_token.split('.')[1]));
-      setUser({ id: payload.sub, name: name || payload.name, email: email || payload.email });
+      const decoded = JSON.parse(atob(data.access_token.split('.')[1]));
+      setUser({ id: decoded.sub, name: name || decoded.name, email: email || decoded.email });
       fetchUserProfile();
     }
     return data;
   };
 
+  const sendRegisterOtp = async (email, name) => {
+    const { data } = await api.post('/auth/send-register-otp', { email, name });
+    return data;
+  };
+
+  const verifyRegisterOtp = async (email, otp) => {
+    const { data } = await api.post('/auth/verify-register-otp', { email, otp });
+    return data;
+  };
 
   const updateProfile = async (name) => {
     const { data } = await api.patch('/auth/profile', { name });
@@ -103,7 +114,20 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, changePassword, forgetPassword, verifyOtp, resetPassword, logout }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      register,
+      sendRegisterOtp,
+      verifyRegisterOtp,
+      updateProfile,
+      changePassword,
+      forgetPassword,
+      verifyOtp,
+      resetPassword,
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -111,6 +135,21 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => useContext(AuthContext);
 
+export const useSendRegisterOtp = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useSendRegisterOtp must be used within an AuthProvider');
+  }
+  return context.sendRegisterOtp;
+};
+
+export const useVerifyRegisterOtp = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useVerifyRegisterOtp must be used within an AuthProvider');
+  }
+  return context.verifyRegisterOtp;
+};
 
 export const useForgetpassword = () => {
   const context = useContext(AuthContext);

@@ -257,6 +257,16 @@ class CompiledSubmission:
 
             self._executable_cmd = [node, src_path]
             self._docker_cmd = ["sh", "-c", "node /sandbox/classes/solution.js < /sandbox/classes/stdin.txt"]
+
+        elif self.language in ("sql", "mysql"):
+            # SQL queries do not require binary compilation; syntax is checked at execution time
+            clean_code = self._source_code.strip()
+            if not clean_code:
+                self.compilation_error = True
+                self.compiler_output = "SQL query cannot be empty"
+            else:
+                self.compilation_error = False
+                self.compiler_output = ""
         else:
             self.compilation_error = True
             self.compiler_output = f"Unsupported language: {self.language}"
@@ -270,6 +280,159 @@ class CompiledSubmission:
                     os.chmod(os.path.join(root, f), 0o755 if f.endswith(".exe") or f == "solution" else 0o644)
         except Exception as e:
             logger.warning("Failed to set permissions on tmpdir %s: %s", self._tmpdir, e)
+
+    def _format_ascii_table(self, columns: list[str], rows: list[list]) -> str:
+        """Format columns and rows into a formatted ASCII table grid."""
+        if not columns and not rows:
+            return "<Empty Result Set>"
+        str_rows = [[str(cell) if cell is not None else "null" for cell in row] for row in rows]
+        widths = [len(str(col)) for col in columns]
+        for row in str_rows:
+            for idx, cell in enumerate(row):
+                if idx < len(widths):
+                    widths[idx] = max(widths[idx], len(cell))
+                else:
+                    widths.append(len(cell))
+        sep = "+" + "+".join("-" * (w + 2) for w in widths) + "+"
+        header = "| " + " | ".join(str(col).ljust(widths[i]) for i, col in enumerate(columns)) + " |"
+        body_lines = []
+        for row in str_rows:
+            padded_row = row + [""] * (len(widths) - len(row))
+            body_lines.append("| " + " | ".join(padded_row[i].ljust(widths[i]) for i in range(len(widths))) + " |")
+        return "\n".join([sep, header, sep] + body_lines + [sep])
+
+    def _run_sql(self, stdin_data: str, limits: SandboxLimits) -> SandboxResult:
+        """Execute an SQL/MySQL query against an isolated database with setup DDL/DML."""
+        import json
+        import sqlite3
+        import time
+        from datetime import date, datetime
+
+        start = time.perf_counter()
+        conn = None
+        try:
+            conn = sqlite3.connect(":memory:", timeout=limits.wall_timeout_s)
+            cursor = conn.cursor()
+
+            # Emulate common MySQL built-in functions in SQLite
+            def _datediff(d1, d2):
+                if d1 is None or d2 is None:
+                    return None
+                try:
+                    dt1 = datetime.strptime(str(d1).split()[0], "%Y-%m-%d").date()
+                    dt2 = datetime.strptime(str(d2).split()[0], "%Y-%m-%d").date()
+                    return (dt1 - dt2).days
+                except Exception:
+                    return None
+
+            def _if(condition, true_val, false_val):
+                return true_val if condition else false_val
+
+            def _concat(*args):
+                if any(a is None for a in args):
+                    return None
+                return "".join(str(a) for a in args)
+
+            def _mod(a, b):
+                return a % b if b else None
+
+            conn.create_function("DATEDIFF", 2, _datediff)
+            conn.create_function("datediff", 2, _datediff)
+            conn.create_function("IF", 3, _if)
+            conn.create_function("if", 3, _if)
+            conn.create_function("CONCAT", -1, _concat)
+            conn.create_function("concat", -1, _concat)
+            conn.create_function("MOD", 2, _mod)
+            conn.create_function("mod", 2, _mod)
+            conn.create_function("NOW", 0, lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            conn.create_function("now", 0, lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            conn.create_function("CURDATE", 0, lambda: date.today().strftime("%Y-%m-%d"))
+            conn.create_function("curdate", 0, lambda: date.today().strftime("%Y-%m-%d"))
+
+            # 1. Execute setup DDL/DML from test case input
+            if stdin_data and stdin_data.strip():
+                cursor.executescript(stdin_data)
+
+            # 2. Prepare and execute user SQL query
+            clean_query = self._source_code.strip()
+            if clean_query.startswith("```"):
+                lines = clean_query.splitlines()
+                clean_query = "\n".join(lines[1:-1] if lines[-1].startswith("```") else lines[1:]).strip()
+
+            cursor.execute(clean_query)
+            runtime_ms = (time.perf_counter() - start) * 1000
+
+            if cursor.description:
+                columns = [col[0] for col in cursor.description]
+                raw_rows = cursor.fetchall()
+                rows = [[cell if cell is not None else None for cell in row] for row in raw_rows]
+                ascii_tbl = self._format_ascii_table(columns, rows)
+                json_payload = json.dumps({
+                    "type": "sql_table",
+                    "columns": columns,
+                    "rows": rows,
+                    "row_count": len(rows),
+                    "ascii_table": ascii_tbl,
+                    "runtime_ms": round(runtime_ms, 2),
+                })
+                return SandboxResult(
+                    stdout=json_payload,
+                    stderr="",
+                    exit_code=0,
+                    runtime_ms=runtime_ms,
+                    timed_out=False,
+                )
+            else:
+                conn.commit()
+                runtime_ms = (time.perf_counter() - start) * 1000
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
+                tables = [t[0] for t in cursor.fetchall()]
+                result_columns = []
+                result_rows = []
+                if tables:
+                    main_table = tables[0]
+                    cursor.execute(f"SELECT * FROM {main_table}")
+                    if cursor.description:
+                        result_columns = [col[0] for col in cursor.description]
+                        result_rows = [list(r) for r in cursor.fetchall()]
+                ascii_tbl = self._format_ascii_table(result_columns, result_rows)
+                json_payload = json.dumps({
+                    "type": "sql_table",
+                    "columns": result_columns,
+                    "rows": result_rows,
+                    "row_count": len(result_rows),
+                    "ascii_table": ascii_tbl,
+                    "runtime_ms": round(runtime_ms, 2),
+                })
+                return SandboxResult(
+                    stdout=json_payload,
+                    stderr="",
+                    exit_code=0,
+                    runtime_ms=runtime_ms,
+                    timed_out=False,
+                )
+
+        except sqlite3.OperationalError as exc:
+            runtime_ms = (time.perf_counter() - start) * 1000
+            return SandboxResult(
+                stdout="",
+                stderr=f"SQL Error: {exc}",
+                exit_code=1,
+                runtime_ms=runtime_ms,
+                timed_out=False,
+            )
+        except Exception as exc:
+            runtime_ms = (time.perf_counter() - start) * 1000
+            return SandboxResult(
+                stdout="",
+                stderr=f"Execution Error: {exc}",
+                exit_code=1,
+                runtime_ms=runtime_ms,
+                timed_out=False,
+            )
+        finally:
+            if conn:
+                conn.close()
 
     def run(self, stdin_data: str, limits: Optional[SandboxLimits] = None) -> SandboxResult:
         """
@@ -290,6 +453,9 @@ class CompiledSubmission:
 
         if limits is None:
             limits = SandboxLimits()
+
+        if self.language in ("sql", "mysql"):
+            return self._run_sql(stdin_data, limits)
 
         if self._use_docker:
             return self._run_docker(stdin_data, limits)
