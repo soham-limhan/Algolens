@@ -13,6 +13,12 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 
 import jwt
+import bcrypt
+if not hasattr(bcrypt, "__about__"):
+    class _About:
+        __version__ = getattr(bcrypt, "__version__", "4.3.0")
+    bcrypt.__about__ = _About()
+
 from passlib.context import CryptContext
 
 from app.config import settings
