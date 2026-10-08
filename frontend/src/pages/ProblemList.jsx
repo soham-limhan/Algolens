@@ -303,23 +303,36 @@ export default function ProblemList() {
     <div className={styles.container}>
       {/* Main Workspace */}
       <main className={styles.mainContent}>
-        {/* Tag Filter Pills Bar */}
-        <div className={styles.tagFilterBar}>
-          {topicTags.map(tag => (
-            <button
-              key={tag.name}
-              className={`${styles.tagPill} ${selectedTag === tag.name ? styles.tagPillActive : ''}`}
-              onClick={() => setSelectedTag(selectedTag === tag.name ? '' : tag.name)}
-            >
-              <span>{tag.name}</span>
-              <span className={styles.tagCount}>{tag.count}</span>
-            </button>
-          ))}
-          {selectedTag && (
-            <button className={styles.expandTagBtn} onClick={() => setSelectedTag('')}>
-              Clear
-            </button>
-          )}
+        {/* Header Hero */}
+        <div className={styles.headerHero}>
+          <div className={styles.heroLeft}>
+            {user && (
+              <div className={styles.heroWelcomeBadge}>
+                <span className={styles.welcomeDot} />
+                <span>Welcome, <strong className={styles.welcomeName}>{user.name || user.email?.split('@')[0] || 'Coder'}</strong></span>
+              </div>
+            )}
+            <h1 className={styles.heroTitle}>Problem Bank & Complexity Lab</h1>
+            <p className={styles.heroSubtitle}>
+              Benchmark algorithms, analyze asymptotic behavior, and solve SQL query challenges.
+            </p>
+          </div>
+          <div className={styles.heroStats}>
+            <div className={styles.statCard}>
+              <span className={styles.statIcon}>⚡</span>
+              <div className={styles.statInfo}>
+                <span className={styles.statVal}>{formattedProblems.length}</span>
+                <span className={styles.statLabel}>Challenges</span>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <span className={styles.statIcon} style={{ color: 'var(--easy)' }}>✓</span>
+              <div className={styles.statInfo}>
+                <span className={styles.statVal}>{solvedCount}</span>
+                <span className={styles.statLabel}>Mastered</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Category Tabs */}
@@ -334,6 +347,25 @@ export default function ProblemList() {
               <span>{cat.name}</span>
             </button>
           ))}
+        </div>
+
+        {/* Tag Filter Pills Bar */}
+        <div className={styles.tagFilterBar}>
+          {topicTags.map(tag => (
+            <button
+              key={tag.name}
+              className={`${styles.tagPill} ${selectedTag === tag.name ? styles.tagPillActive : ''}`}
+              onClick={() => setSelectedTag(selectedTag === tag.name ? '' : tag.name)}
+            >
+              <span>{tag.name}</span>
+              <span className={styles.tagCount}>{tag.count}</span>
+            </button>
+          ))}
+          {selectedTag && (
+            <button className={styles.expandTagBtn} onClick={() => setSelectedTag('')}>
+              ✕ Clear Tag
+            </button>
+          )}
         </div>
 
         {/* Controls Bar */}

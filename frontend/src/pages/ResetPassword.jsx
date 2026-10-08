@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useResetPassword } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
+import algolensLogo from '../assets/algolenslogo.png';
 import styles from './ForgotPass.module.css';
 
 function EyeIcon() {
@@ -79,7 +80,10 @@ export default function ResetPassword() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>⬡ AlgoLens</div>
+        <Link to="/" className={styles.logoWrap}>
+          <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
+          <span className={styles.logoText}>AlgoLens</span>
+        </Link>
         <h1 className={styles.title}>Create New Password</h1>
         <p className={styles.sub}>Set a new password for {email || 'your account'}.</p>
         <form onSubmit={handleSubmit} className={styles.form}>

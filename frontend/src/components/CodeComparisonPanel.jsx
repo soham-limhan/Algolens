@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
+import { defineMonacoThemes, THEME_NAME_LIGHT } from '../utils/monacoTheme';
 import styles from './CodeComparisonPanel.module.css';
 
 export default function CodeComparisonPanel({
@@ -184,7 +185,8 @@ export default function CodeComparisonPanel({
               height="360px"
               language={monacoUserLang}
               value={userCode || '// No code submitted'}
-              theme="vs-dark"
+              beforeMount={defineMonacoThemes}
+              theme={THEME_NAME_LIGHT}
               options={{
                 readOnly: true,
                 fontSize: 13,
@@ -244,7 +246,8 @@ export default function CodeComparisonPanel({
               height="360px"
               language={monacoOptLang}
               value={displayedOptimalCode}
-              theme="vs-dark"
+              beforeMount={defineMonacoThemes}
+              theme={THEME_NAME_LIGHT}
               options={{
                 readOnly: true,
                 fontSize: 13,

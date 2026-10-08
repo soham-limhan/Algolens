@@ -127,15 +127,16 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ffa116 0%, #ff6b00 100%);
-  color: #ffffff;
+  background: linear-gradient(135deg, #748F73 0%, #B5CCB2 100%);
+  color: #FFFDF7;
   font-size: 1.35rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(255, 161, 22, 0.3);
+  box-shadow: 0 4px 14px rgba(116, 143, 115, 0.3);
+  border: 2px solid var(--accent-blush);
 }
 
 .avatarInfo {

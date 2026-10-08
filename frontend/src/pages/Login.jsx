@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
+import algolensLogo from '../assets/algolenslogo.png';
 import styles from './Auth.module.css';
 
 function EyeIcon() {
@@ -60,7 +61,10 @@ export default function Login() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>⬡ AlgoLens</div>
+        <Link to="/" className={styles.logoWrap}>
+          <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
+          <span className={styles.logoText}>AlgoLens</span>
+        </Link>
         <h1 className={styles.title}>Welcome back</h1>
         <p className={styles.sub}>Log in to continue practicing</p>
         <form onSubmit={handleSubmit} className={styles.form}>

@@ -1,15 +1,17 @@
-/* SqlTableOutput.module.css — Sleek, responsive, dark-mode SQL DataGrid output window */
+/* ============================================================
+   SqlTableOutput.module.css — Botanical Pastel & Alabaster Palette
+   ============================================================ */
 
 .container {
   display: flex;
   flex-direction: column;
-  background: #0f172a;
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  margin-top: 12px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  box-shadow: 0 4px 20px rgba(45, 59, 47, 0.05);
+  margin-top: 10px;
+  font-family: var(--font-ui);
   animation: fadeIn 0.25s ease-out;
 }
 
@@ -23,9 +25,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  background: #1e293b;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  padding: 8px 14px;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -38,10 +40,10 @@
 
 .tabs {
   display: flex;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--surface);
   padding: 3px;
-  border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
 .tabBtn {
@@ -50,23 +52,24 @@
   gap: 6px;
   background: transparent;
   border: none;
-  color: #94a3b8;
-  font-size: 0.82rem;
-  font-weight: 500;
-  padding: 6px 12px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
 .tabBtn:hover {
-  color: #f8fafc;
+  color: var(--text-primary);
+  background: var(--surface-3);
 }
 
 .activeTab {
-  background: #3b82f6;
-  color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+  background: var(--accent) !important;
+  color: #FFFDF7 !important;
+  box-shadow: 0 2px 6px rgba(101, 132, 100, 0.35);
 }
 
 .icon {
@@ -85,35 +88,37 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(59, 130, 246, 0.12);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.25);
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--accent-sage);
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 0.78rem;
-  font-weight: 600;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  box-shadow: 0 1px 3px rgba(45, 59, 47, 0.04);
 }
 
 .statIcon {
   width: 13px;
   height: 13px;
+  color: var(--accent);
 }
 
 .buttonGroup {
   display: flex;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--surface);
   padding: 2px;
-  border-radius: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
 .toggleBtn {
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   padding: 4px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -121,19 +126,21 @@
 }
 
 .toggleBtn:hover {
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .activeToggle {
-  background: #334155;
-  color: #38bdf8 !important;
-  font-weight: 600;
+  background: var(--surface-3);
+  color: var(--accent) !important;
+  font-weight: 700;
+  border: 1px solid var(--accent-sage);
 }
 
 /* ── Content Area ──────────────────────────────────────────── */
 .contentArea {
-  padding: 16px;
-  min-height: 240px;
+  padding: 14px;
+  min-height: 200px;
+  background: var(--bg);
 }
 
 /* Loading State */
@@ -143,15 +150,15 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   gap: 12px;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(59, 130, 246, 0.2);
-  border-top-color: #3b82f6;
+  border: 3px solid var(--accent-sage);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -162,27 +169,27 @@
 
 /* Error Banner */
 .errorBanner {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
+  background: var(--hard-bg);
+  border: 1px solid var(--hard-border);
+  border-radius: var(--radius-sm);
   padding: 12px 16px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .errorTitle {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #f87171;
-  font-weight: 600;
+  color: var(--hard);
+  font-weight: 700;
   font-size: 0.88rem;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .errorPre {
   margin: 0;
-  color: #fca5a5;
-  font-family: 'JetBrains Mono', monospace;
+  color: var(--hard);
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   white-space: pre-wrap;
   word-break: break-word;
@@ -191,40 +198,41 @@
 /* Input Tables Grid */
 .inputTablesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
 }
 
 /* Table Card */
 .tableCard {
-  background: #1e293b;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(45, 59, 47, 0.03);
 }
 
 .passedCard {
-  border-color: rgba(34, 197, 94, 0.4);
+  border-color: var(--easy-border);
 }
 
 .failedCard {
-  border-color: rgba(239, 68, 68, 0.35);
+  border-color: var(--hard-border);
 }
 
 .expectedCard {
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: var(--accent-sage);
 }
 
 .tableCardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  background: rgba(15, 23, 42, 0.5);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 8px 12px;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
 }
 
 .headerTitleGroup {
@@ -234,12 +242,13 @@
 }
 
 .tableName {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #f8fafc;
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 6px;
+  font-family: var(--font-mono);
 }
 
 .tableIcon {
@@ -247,39 +256,40 @@
 }
 
 .rowCountBadge {
-  background: rgba(148, 163, 184, 0.15);
-  color: #94a3b8;
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 12px;
-}
-
-.statusPill {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
   font-size: 0.72rem;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 12px;
 }
 
+.statusPill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
 .statusPassed {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: var(--easy-bg);
+  color: var(--easy);
+  border: 1px solid var(--easy-border);
 }
 
 .statusFailed {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: var(--hard-bg);
+  color: var(--hard);
+  border: 1px solid var(--hard-border);
 }
 
 /* ── Data Grid Table ───────────────────────────────────────── */
 .tableWrapper {
   overflow-x: auto;
-  max-height: 380px;
+  max-height: 340px;
   scrollbar-width: thin;
-  scrollbar-color: #475569 #1e293b;
+  scrollbar-color: var(--accent-sage) var(--surface-3);
 }
 
 .tableWrapper::-webkit-scrollbar {
@@ -288,7 +298,7 @@
 }
 
 .tableWrapper::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: var(--accent-sage);
   border-radius: 3px;
 }
 
@@ -297,15 +307,15 @@
   border-collapse: collapse;
   text-align: left;
   font-size: 0.82rem;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-family: var(--font-mono);
 }
 
 .dataTable th {
-  background: #0f172a;
-  color: #38bdf8;
-  padding: 10px 14px;
-  font-weight: 600;
-  border-bottom: 2px solid rgba(148, 163, 184, 0.15);
+  background: var(--surface-3);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent-sage);
   position: sticky;
   top: 0;
   z-index: 1;
@@ -313,28 +323,28 @@
 }
 
 .dataTable td {
-  padding: 8px 14px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
-  color: #e2e8f0;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
   white-space: nowrap;
 }
 
 .dataTable tr:hover td {
-  background: rgba(59, 130, 246, 0.06);
+  background: var(--accent-blush);
 }
 
 .nullValue {
-  color: #94a3b8;
+  color: var(--text-dim);
   font-style: italic;
   font-size: 0.78rem;
-  background: rgba(148, 163, 184, 0.1);
+  background: var(--surface-3);
   padding: 1px 6px;
   border-radius: 4px;
 }
 
 .emptyRow {
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 24px !important;
 }
@@ -342,12 +352,12 @@
 .emptyOutputMessage {
   padding: 24px;
   text-align: center;
-  color: #64748b;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
 .emptyState {
-  color: #64748b;
+  color: var(--text-secondary);
   text-align: center;
   padding: 30px;
   font-style: italic;
@@ -356,7 +366,7 @@
 /* ── Comparison Layouts ────────────────────────────────────── */
 .gridComparison {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 
 .sideBySideLayout {
@@ -377,7 +387,7 @@
 .rawOutputContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 @media (max-width: 900px) {
@@ -387,28 +397,29 @@
 }
 
 .rawColumn {
-  background: #1e293b;
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 
 .rawHeader {
   padding: 8px 12px;
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--surface-3);
   font-size: 0.78rem;
-  font-weight: 600;
-  color: #94a3b8;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
 }
 
 .rawPre {
   margin: 0;
   padding: 12px;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 0.78rem;
-  color: #cbd5e1;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
   white-space: pre;
   overflow-x: auto;
-  line-height: 1.45;
+  line-height: 1.5;
+  background: #FFFDF7;
 }
