@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useSendRegisterOtp } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
+import algolensLogo from '../assets/algolenslogo.png';
 import styles from './Auth.module.css';
 
 function EyeIcon() {
@@ -130,7 +131,10 @@ export default function Register() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>⬡ AlgoLens</div>
+        <Link to="/" className={styles.logoWrap}>
+          <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
+          <span className={styles.logoText}>AlgoLens</span>
+        </Link>
         {step === 1 ? (
           <>
             <h1 className={styles.title}>Create account</h1>

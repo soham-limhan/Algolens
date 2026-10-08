@@ -4,6 +4,7 @@ import Editor from '@monaco-editor/react';
 import api from '../api/client';
 import NotFound from './NotFound';
 import { getStarterSnippet } from '../utils/starterSnippets';
+import { defineMonacoThemes, THEME_NAME_LIGHT } from '../utils/monacoTheme';
 import SqlTableOutput from '../components/SqlTableOutput';
 import styles from './ProblemDetail.module.css';
 
@@ -240,7 +241,8 @@ export default function ProblemDetail() {
             }
             value={code}
             onChange={v => setCode(v || '')}
-            theme="vs-dark"
+            beforeMount={defineMonacoThemes}
+            theme={THEME_NAME_LIGHT}
             options={{
               fontSize: 13,
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace",

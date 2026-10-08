@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
 import ProfileModal from './ProfileModal';
+import algolensLogo from '../assets/algolenslogo.png';
 import styles from './Navbar.module.css';
 
 function UserIcon() {
@@ -74,10 +75,11 @@ export default function Navbar() {
       <header className={styles.navbar}>
         <div className={styles.navLeft}>
           <Link to="/" className={styles.brand}>
-            <svg className={styles.brandLogo} viewBox="0 0 24 24" width="22" height="22" fill="none">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#ffa116" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <div className={styles.brandLogoWrap}>
+              <img src={algolensLogo} alt="AlgoLens Logo" className={styles.brandLogoImg} />
+            </div>
             <span className={styles.brandName}>AlgoLens</span>
+            <span className={styles.brandBadge}>CORE</span>
           </Link>
 
           <nav className={styles.mainNav}>
@@ -118,6 +120,10 @@ export default function Navbar() {
                 title="Profile & Settings"
                 aria-expanded={dropdownOpen}
               >
+                <div className={styles.welcomePill}>
+                  <span className={styles.welcomePrefix}>Welcome,</span>
+                  <span className={styles.welcomeName}>{displayName}</span>
+                </div>
                 <div className={styles.avatarCircle}>
                   {avatarChar}
                 </div>

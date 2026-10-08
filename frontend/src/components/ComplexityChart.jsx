@@ -262,14 +262,14 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={runtimeData} margin={{ top: 20, right: 20, bottom: 25, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="inputSize" tick={{ fill: '#eff1f6', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(116, 143, 115, 0.15)" />
+              <XAxis dataKey="inputSize" tick={{ fill: '#223124', fontSize: 12 }} />
               <YAxis
-                label={{ value: 'Runtime (ms)', angle: -90, position: 'insideLeft', fill: '#8b90a8', fontSize: 12 }}
-                tick={{ fill: '#8b90a8', fontSize: 11 }}
+                label={{ value: 'Runtime (ms)', angle: -90, position: 'insideLeft', fill: '#586B5A', fontSize: 12 }}
+                tick={{ fill: '#586B5A', fontSize: 11 }}
               />
               <Tooltip content={<RuntimeTooltip />} />
-              <Bar dataKey="runtime" fill="#ffa116" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="runtime" fill="#748F73" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -302,8 +302,8 @@ function HierarchyTooltip({ active, payload }) {
   return (
     <div className={styles.tooltipBox}>
       <div style={{ fontWeight: 'bold' }}>{d.label}</div>
-      {d.isUser && <div style={{ color: '#f97316' }}>✓ Your Empirical Solution</div>}
-      {d.isOpt && <div style={{ color: '#22c55e' }}>✓ Optimal Target Solution</div>}
+      {d.isUser && <div style={{ color: '#748F73' }}>✓ Your Empirical Solution</div>}
+      {d.isOpt && <div style={{ color: '#3E7545' }}>✓ Optimal Target Solution</div>}
     </div>
   );
 }
@@ -315,7 +315,7 @@ function RuntimeTooltip({ active, payload }) {
   return (
     <div className={styles.tooltipBox}>
       <div>{d.inputSize}</div>
-      <div style={{ color: '#ffa116', fontWeight: 'bold' }}>{d.runtime} ms</div>
+      <div style={{ color: '#748F73', fontWeight: 'bold' }}>{d.runtime} ms</div>
     </div>
   );
 }

@@ -18,8 +18,8 @@
   height: 600px;
   background: radial-gradient(
     circle,
-    rgba(255, 161, 22, 0.08) 0%,
-    rgba(0, 122, 255, 0.04) 40%,
+    rgba(246, 226, 233, 0.6) 0%,
+    rgba(181, 204, 178, 0.4) 40%,
     transparent 70%
   );
   pointer-events: none;
@@ -36,8 +36,7 @@
   max-width: 640px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 40px rgba(45, 59, 47, 0.08);
 }
 
 .badge {
@@ -46,12 +45,12 @@
   gap: 0.5rem;
   padding: 0.35rem 0.9rem;
   border-radius: 20px;
-  background: rgba(255, 161, 22, 0.12);
-  border: 1px solid rgba(255, 161, 22, 0.25);
-  color: var(--accent);
+  background: var(--accent-blush);
+  border: 1px solid var(--hard-border);
+  color: var(--hard);
   font-family: var(--font-mono);
   font-size: 0.825rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
@@ -59,8 +58,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
+  background-color: var(--hard);
 }
 
 .errorCode {
@@ -77,9 +75,10 @@
 
 .title {
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
+  font-family: var(--font-heading);
 }
 
 .sub {
@@ -120,11 +119,11 @@
 }
 
 .keyword {
-  color: #ff375f;
+  color: var(--hard);
 }
 
 .type {
-  color: #00b8a3;
+  color: var(--easy);
 }
 
 .path {
@@ -150,13 +149,13 @@
 
 .backBtn {
   background: transparent;
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border);
   color: var(--text-primary);
 }
 
 .backBtn:hover {
-  background: var(--surface-2);
-  border-color: var(--text-secondary);
+  background: var(--surface-3);
+  border-color: var(--accent-sage);
 }
 
 @media (max-width: 480px) {
