@@ -141,6 +141,19 @@ def create_submission(
     if problem is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem not found")
 
+    is_sql_problem = bool(problem.generator_key and problem.generator_key.startswith("sql_"))
+    lang_clean = body.language.strip().lower()
+    if is_sql_problem and lang_clean not in {"mysql", "sql"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SQL problems only support MySQL or SQL.",
+        )
+    if not is_sql_problem and lang_clean in {"mysql", "sql"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Algorithmic problems only support general programming languages (Python, Java, C++, C, JavaScript).",
+        )
+
     submission = Submission(
         user_id=current_user.id,
         problem_id=body.problem_id,
@@ -185,6 +198,19 @@ def run_code(
     problem = db.get(Problem, body.problem_id)
     if problem is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Problem not found")
+
+    is_sql_problem = bool(problem.generator_key and problem.generator_key.startswith("sql_"))
+    lang_clean = body.language.strip().lower()
+    if is_sql_problem and lang_clean not in {"mysql", "sql"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SQL problems only support MySQL or SQL.",
+        )
+    if not is_sql_problem and lang_clean in {"mysql", "sql"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Algorithmic problems only support general programming languages (Python, Java, C++, C, JavaScript).",
+        )
 
     if not problem.test_cases:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No test cases configured for this problem")
