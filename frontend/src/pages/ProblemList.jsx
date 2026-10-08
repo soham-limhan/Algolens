@@ -4,50 +4,71 @@ import { useAuth } from '../auth/AuthContext';
 import api from '../api/client';
 import styles from './ProblemList.module.css';
 
-// Canonical metadata mapping for LeetCode catalog numbers, acceptance rates, and topic tags
+// Canonical metadata mapping for LeetCode catalog numbers, acceptance rates, categories, and topic tags
 const PROBLEM_METADATA = {
-  'two sum': { num: 1, acceptance: '57.9%', topics: ['Array', 'Hash Table'] },
-  'add two numbers': { num: 2, acceptance: '49.0%', topics: ['Linked List', 'Math'] },
-  'longest substring without repeating characters': { num: 3, acceptance: '39.6%', topics: ['Hash Table', 'String', 'Sliding Window'] },
-  'median of two sorted arrays': { num: 4, acceptance: '47.2%', topics: ['Array', 'Binary Search'] },
-  'longest palindromic substring': { num: 5, acceptance: '38.3%', topics: ['String', 'Dynamic Programming'] },
-  'zigzag conversion': { num: 6, acceptance: '54.7%', topics: ['String'] },
-  'reverse integer': { num: 7, acceptance: '32.3%', topics: ['Math'] },
-  'string to integer (atoi)': { num: 8, acceptance: '21.5%', topics: ['String'] },
-  'palindrome number': { num: 9, acceptance: '60.8%', topics: ['Math'] },
-  'regular expression matching': { num: 10, acceptance: '31.4%', topics: ['String', 'Dynamic Programming'] },
-  'container with most water': { num: 11, acceptance: '60.5%', topics: ['Array', 'Greedy', 'Two Pointers'] },
-  'integer to roman': { num: 12, acceptance: '71.4%', topics: ['Math', 'String'] },
-  'roman to integer': { num: 13, acceptance: '67.0%', topics: ['Math', 'String'] },
-  '3sum': { num: 15, acceptance: '34.8%', topics: ['Array', 'Two Pointers', 'Sorting'] },
-  '3sum closest': { num: 16, acceptance: '45.8%', topics: ['Array', 'Two Pointers', 'Sorting'] },
-  'valid parentheses': { num: 20, acceptance: '41.2%', topics: ['String', 'Stack'] },
-  'merge two sorted lists': { num: 21, acceptance: '65.4%', topics: ['Linked List', 'Recursion'] },
-  'search in rotated sorted array': { num: 33, acceptance: '41.8%', topics: ['Array', 'Binary Search'] },
-  'trapping rain water': { num: 42, acceptance: '63.4%', topics: ['Array', 'Two Pointers', 'Dynamic Programming', 'Stack'] },
-  'group anagrams': { num: 49, acceptance: '69.5%', topics: ['Array', 'Hash Table', 'String', 'Sorting'] },
-  'maximum subarray': { num: 53, acceptance: '51.3%', topics: ['Array', 'Dynamic Programming', 'Divide and Conquer'] },
-  'merge intervals': { num: 56, acceptance: '47.9%', topics: ['Array', 'Sorting'] },
-  'climbing stairs': { num: 70, acceptance: '53.2%', topics: ['Math', 'Dynamic Programming', 'Memoization'] },
-  'best time to buy and sell stock': { num: 121, acceptance: '54.8%', topics: ['Array', 'Dynamic Programming'] },
-  'valid palindrome': { num: 125, acceptance: '48.9%', topics: ['Two Pointers', 'String'] },
-  'house robber': { num: 198, acceptance: '51.8%', topics: ['Array', 'Dynamic Programming'] },
-  'number of islands': { num: 200, acceptance: '60.2%', topics: ['Array', 'DFS / BFS', 'Graph'] },
-  'reverse linked list': { num: 206, acceptance: '78.1%', topics: ['Linked List', 'Recursion'] },
-  'contains duplicate': { num: 217, acceptance: '62.1%', topics: ['Array', 'Hash Table', 'Sorting'] },
-  'product of array except self': { num: 238, acceptance: '66.8%', topics: ['Array', 'Prefix Sum'] },
-  'valid anagram': { num: 242, acceptance: '65.0%', topics: ['Hash Table', 'String', 'Sorting'] },
-  'coin change': { num: 322, acceptance: '45.7%', topics: ['Array', 'Dynamic Programming', 'BFS'] },
-  'binary search': { num: 704, acceptance: '58.4%', topics: ['Array', 'Binary Search'] },
-  'daily temperatures': { num: 739, acceptance: '67.3%', topics: ['Array', 'Stack', 'Monotonic Stack'] },
-  'minimum number of pushes to type word i': { num: 3014, acceptance: '75.7%', topics: ['String', 'Greedy', 'Math'] },
+  // ── 35 Algorithmic Problems ──────────────────────────────────────────────
+  'two sum': { num: 1, acceptance: '57.9%', topics: ['Array', 'Hash Table'], category: 'algo' },
+  'add two numbers': { num: 2, acceptance: '49.0%', topics: ['Linked List', 'Math', 'Recursion'], category: 'algo' },
+  'longest substring without repeating characters': { num: 3, acceptance: '39.6%', topics: ['Hash Table', 'String', 'Sliding Window'], category: 'algo' },
+  'median of two sorted arrays': { num: 4, acceptance: '47.2%', topics: ['Array', 'Binary Search', 'Divide and Conquer'], category: 'algo' },
+  'longest palindromic substring': { num: 5, acceptance: '38.3%', topics: ['String', 'Dynamic Programming'], category: 'algo' },
+  'zigzag conversion': { num: 6, acceptance: '54.7%', topics: ['String'], category: 'algo' },
+  'reverse integer': { num: 7, acceptance: '32.3%', topics: ['Math'], category: 'algo' },
+  'string to integer (atoi)': { num: 8, acceptance: '21.5%', topics: ['String'], category: 'algo' },
+  'palindrome number': { num: 9, acceptance: '60.8%', topics: ['Math'], category: 'algo' },
+  'regular expression matching': { num: 10, acceptance: '31.4%', topics: ['String', 'Dynamic Programming', 'Recursion'], category: 'algo' },
+  'container with most water': { num: 11, acceptance: '60.5%', topics: ['Array', 'Greedy', 'Two Pointers'], category: 'algo' },
+  'integer to roman': { num: 12, acceptance: '71.4%', topics: ['Math', 'String'], category: 'algo' },
+  'roman to integer': { num: 13, acceptance: '67.0%', topics: ['Math', 'String'], category: 'algo' },
+  '3sum': { num: 15, acceptance: '34.8%', topics: ['Array', 'Two Pointers', 'Sorting'], category: 'algo' },
+  '3sum closest': { num: 16, acceptance: '45.8%', topics: ['Array', 'Two Pointers', 'Sorting'], category: 'algo' },
+  'valid parentheses': { num: 20, acceptance: '41.2%', topics: ['String', 'Stack'], category: 'algo' },
+  'merge two sorted lists': { num: 21, acceptance: '65.4%', topics: ['Linked List', 'Recursion'], category: 'algo' },
+  'search in rotated sorted array': { num: 33, acceptance: '41.8%', topics: ['Array', 'Binary Search'], category: 'algo' },
+  'trapping rain water': { num: 42, acceptance: '63.4%', topics: ['Array', 'Two Pointers', 'Dynamic Programming', 'Stack'], category: 'algo' },
+  'group anagrams': { num: 49, acceptance: '69.5%', topics: ['Array', 'Hash Table', 'String', 'Sorting'], category: 'algo' },
+  'maximum subarray': { num: 53, acceptance: '51.3%', topics: ['Array', 'Dynamic Programming', 'Divide and Conquer'], category: 'algo' },
+  'merge intervals': { num: 56, acceptance: '47.9%', topics: ['Array', 'Sorting'], category: 'algo' },
+  'climbing stairs': { num: 70, acceptance: '53.2%', topics: ['Math', 'Dynamic Programming', 'Memoization'], category: 'algo' },
+  'best time to buy and sell stock': { num: 121, acceptance: '54.8%', topics: ['Array', 'Dynamic Programming'], category: 'algo' },
+  'valid palindrome': { num: 125, acceptance: '48.9%', topics: ['Two Pointers', 'String'], category: 'algo' },
+  'house robber': { num: 198, acceptance: '51.8%', topics: ['Array', 'Dynamic Programming'], category: 'algo' },
+  'number of islands': { num: 200, acceptance: '60.2%', topics: ['Array', 'DFS / BFS', 'Graph'], category: 'algo' },
+  'reverse linked list': { num: 206, acceptance: '78.1%', topics: ['Linked List', 'Recursion'], category: 'algo' },
+  'contains duplicate': { num: 217, acceptance: '62.1%', topics: ['Array', 'Hash Table', 'Sorting'], category: 'algo' },
+  'product of array except self': { num: 238, acceptance: '66.8%', topics: ['Array', 'Prefix Sum'], category: 'algo' },
+  'valid anagram': { num: 242, acceptance: '65.0%', topics: ['Hash Table', 'String', 'Sorting'], category: 'algo' },
+  'coin change': { num: 322, acceptance: '45.7%', topics: ['Array', 'Dynamic Programming', 'BFS'], category: 'algo' },
+  'binary search': { num: 704, acceptance: '58.4%', topics: ['Array', 'Binary Search'], category: 'algo' },
+  'daily temperatures': { num: 739, acceptance: '67.3%', topics: ['Array', 'Stack', 'Monotonic Stack'], category: 'algo' },
+  'minimum number of pushes to type word i': { num: 3014, acceptance: '75.7%', topics: ['String', 'Greedy', 'Math'], category: 'algo' },
+
+  // ── 15 SQL / Database Problems ───────────────────────────────────────────
+  'combine two tables': { num: 175, acceptance: '74.2%', topics: ['Database', 'SQL', 'Join'], category: 'sql' },
+  'second highest salary': { num: 176, acceptance: '39.4%', topics: ['Database', 'SQL', 'Subquery', 'Limit'], category: 'sql' },
+  'rank scores': { num: 178, acceptance: '61.3%', topics: ['Database', 'SQL', 'Window Function', 'Dense Rank'], category: 'sql' },
+  'consecutive numbers': { num: 180, acceptance: '46.7%', topics: ['Database', 'SQL', 'Self Join', 'Window Function'], category: 'sql' },
+  'employees earning more than their managers': { num: 181, acceptance: '69.8%', topics: ['Database', 'SQL', 'Self Join'], category: 'sql' },
+  'duplicate emails': { num: 182, acceptance: '71.5%', topics: ['Database', 'SQL', 'Group By', 'Aggregation'], category: 'sql' },
+  'customers who never order': { num: 183, acceptance: '68.1%', topics: ['Database', 'SQL', 'Subquery', 'Left Join'], category: 'sql' },
+  'department highest salary': { num: 184, acceptance: '51.2%', topics: ['Database', 'SQL', 'Group By', 'Subquery'], category: 'sql' },
+  'department top three salaries': { num: 185, acceptance: '52.1%', topics: ['Database', 'SQL', 'Window Function', 'Dense Rank'], category: 'sql' },
+  'delete duplicate emails': { num: 196, acceptance: '58.6%', topics: ['Database', 'SQL', 'DML', 'Delete'], category: 'sql' },
+  'rising temperature': { num: 197, acceptance: '47.8%', topics: ['Database', 'SQL', 'Date Functions', 'Self Join'], category: 'sql' },
+  'trips and users': { num: 262, acceptance: '38.9%', topics: ['Database', 'SQL', 'Join', 'Conditional Aggregation'], category: 'sql' },
+  'investments in 2016': { num: 585, acceptance: '46.1%', topics: ['Database', 'SQL', 'Subquery', 'Group By'], category: 'sql' },
+  'tree node classification': { num: 608, acceptance: '72.0%', topics: ['Database', 'SQL', 'Case When', 'Subquery'], category: 'sql' },
+  'tree node': { num: 608, acceptance: '72.0%', topics: ['Database', 'SQL', 'Case When', 'Subquery'], category: 'sql' },
+  'market analysis i': { num: 1158, acceptance: '59.4%', topics: ['Database', 'SQL', 'Left Join', 'Group By'], category: 'sql' },
 };
-
-
 
 const CATEGORIES = [
   { id: 'all', name: 'All Topics', icon: '⬚' },
   { id: 'algo', name: 'Algorithms', icon: '⚙' },
+  { id: 'sql', name: 'Database / SQL', icon: '🗄' },
+  { id: 'dp', name: 'Dynamic Programming', icon: '⚡' },
+  { id: 'ds', name: 'Data Structures', icon: '🧱' },
+  { id: 'math', name: 'Math & Logic', icon: '📐' },
 ];
 
 export default function ProblemList() {
@@ -111,6 +132,14 @@ export default function ProblemList() {
       if (uniqueMap.has(lookupKey)) return;
 
       const meta = PROBLEM_METADATA[lookupKey];
+      const isSql = Boolean(
+        p.generator_key?.startsWith('sql_') ||
+        meta?.category === 'sql' ||
+        lookupKey.includes('sql') ||
+        meta?.topics?.includes('SQL') ||
+        meta?.topics?.includes('Database')
+      );
+
       const num = meta?.num || (index + 1);
       const status = solvedTitles.has(lookupKey)
         ? 'solved'
@@ -122,18 +151,22 @@ export default function ProblemList() {
         ? p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1).toLowerCase()
         : 'Easy';
 
+      const category = isSql ? 'sql' : (meta?.category || 'algo');
+      const defaultTopics = isSql ? ['Database', 'SQL'] : ['Array', 'Algorithms'];
+
       uniqueMap.set(lookupKey, {
         id: p.id,
         rawId: p.id,
         num,
         cleanTitle,
         title: `${num}. ${cleanTitle}`,
-        acceptance: meta?.acceptance || '65.0%',
+        acceptance: meta?.acceptance || (isSql ? '62.0%' : '65.0%'),
         difficulty: diffCapitalized,
         status,
         hasSolution: true,
-        topics: meta?.topics || ['Array', 'Algorithms'],
-        category: 'algo',
+        topics: meta?.topics || defaultTopics,
+        category,
+        isSql,
       });
     });
 
@@ -191,7 +224,24 @@ export default function ProblemList() {
 
       // Filter by category
       if (activeCategory !== 'all') {
-        if (p.category !== activeCategory) {
+        if (activeCategory === 'sql') {
+          if (!p.isSql && p.category !== 'sql') return false;
+        } else if (activeCategory === 'algo') {
+          if (p.isSql || p.category === 'sql') return false;
+        } else if (activeCategory === 'dp') {
+          if (p.isSql || !p.topics?.some(t => t.toLowerCase().includes('dynamic programming') || t.toLowerCase().includes('memoization'))) {
+            return false;
+          }
+        } else if (activeCategory === 'ds') {
+          const dsTags = ['Array', 'Linked List', 'Stack', 'Hash Table', 'Graph', 'Binary Search', 'Sliding Window', 'Monotonic Stack', 'Two Pointers', 'Prefix Sum'];
+          if (p.isSql || !p.topics?.some(t => dsTags.includes(t))) {
+            return false;
+          }
+        } else if (activeCategory === 'math') {
+          if (p.isSql || !p.topics?.some(t => t.toLowerCase().includes('math'))) {
+            return false;
+          }
+        } else if (p.category !== activeCategory) {
           return false;
         }
       }
@@ -387,6 +437,11 @@ export default function ProblemList() {
                     <Link to={`/problems/${p.rawId || p.id}`} className={styles.problemLink}>
                       {p.title}
                     </Link>
+                    {p.isSql && (
+                      <span className={styles.sqlBadge} title="SQL Database Problem">
+                        SQL
+                      </span>
+                    )}
                   </div>
 
                   <div className={styles.colAcceptance}>

@@ -8,6 +8,7 @@ class ProblemSummary(BaseModel):
     id: str
     title: str
     difficulty: str
+    generator_key: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -39,6 +40,7 @@ class ProblemDetail(BaseModel):
     optimal_time_complexity: str
     optimal_space_complexity: str
     optimal_solution: Optional[str] = None
+    generator_key: Optional[str] = None
     test_cases: List[TestCaseSummary] = []
 
     model_config = {"from_attributes": True}

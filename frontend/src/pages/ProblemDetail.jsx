@@ -79,11 +79,18 @@ export default function ProblemDetail() {
     api.get(`/problems/${id}`)
       .then(r => {
         setProblem(r.data);
-        const isSql = r.data.generator_key?.startsWith('sql_');
+        const isSql = Boolean(r.data.generator_key?.startsWith('sql_') || r.data.category === 'sql');
         let currentLang = language;
-        if (isSql && language !== 'mysql' && language !== 'sql') {
-          currentLang = 'mysql';
-          setLanguage('mysql');
+        if (isSql) {
+          if (language !== 'mysql' && language !== 'sql') {
+            currentLang = 'mysql';
+            setLanguage('mysql');
+          }
+        } else {
+          if (language === 'mysql' || language === 'sql') {
+            currentLang = 'python';
+            setLanguage('python');
+          }
         }
         if (location.state?.sourceCode === undefined && location.state?.code === undefined) {
           setCode(getStarterSnippet(r.data, currentLang));
@@ -148,7 +155,7 @@ export default function ProblemDetail() {
   if (loading) return <div className={styles.center}><div className="spinner" /></div>;
   if (error && !problem) return <NotFound />;
 
-  const isDatabaseProblem = problem?.generator_key?.startsWith('sql_') || language === 'mysql' || language === 'sql';
+  const isDatabaseProblem = Boolean(problem?.generator_key?.startsWith('sql_') || problem?.category === 'sql');
 
   return (
     <div className={styles.layout}>
@@ -209,13 +216,11 @@ export default function ProblemDetail() {
                     </>
                   ) : (
                     <>
-                      <option value="java">Java 21</option>
                       <option value="python">Python 3</option>
+                      <option value="java">Java 21</option>
                       <option value="cpp">C++20 (GCC)</option>
                       <option value="c">C11 (GCC)</option>
                       <option value="javascript">JavaScript (Node.js)</option>
-                      <option value="mysql">MySQL 8.0</option>
-                      <option value="sql">Standard SQL</option>
                     </>
                   )}
                 </select>
