@@ -1,13 +1,13 @@
 .streakCard {
   width: 100%;
   box-sizing: border-box;
-  background-color: #24242c;
-  border: 1px solid #333340;
+  background-color: var(--surface, #0E222D);
+  border: 1px solid var(--border, #1B3E52);
   border-radius: 14px;
   padding: 14px 14px 12px 14px;
-  color: #f1f5f9;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary, #F0FDF8);
+  font-family: var(--font-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  box-shadow: 0 4px 18px rgba(6, 16, 23, 0.45);
   position: relative;
   user-select: none;
   overflow: hidden;
@@ -29,21 +29,21 @@
 .dayTitle {
   font-size: 18px;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-primary, #F0FDF8);
   margin: 0;
   line-height: 1.2;
 }
 
 .timerSubtitle {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--text-dim, #588B80);
   font-weight: 500;
   margin-top: 2px;
 }
 
 .monthBadge {
-  background-color: #1a1a22;
-  border: 1px solid #3b3b4a;
+  background-color: var(--bg-subtle, #091822);
+  border: 1px solid var(--border, #1B3E52);
   border-radius: 8px;
   padding: 2px 7px;
   display: flex;
@@ -56,14 +56,14 @@
 .monthNum {
   font-size: 13px;
   font-weight: 800;
-  color: #ff9800;
+  color: var(--accent, #00FFB2);
   line-height: 1.1;
 }
 
 .monthText {
   font-size: 10px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-secondary, #94D7C5);
 }
 
 /* Calendar Grid */
@@ -78,29 +78,35 @@
   margin-bottom: 8px;
 }
 
-.weekDayName {
+.weekDayLabel {
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: var(--text-dim, #588B80);
 }
 
 .daysGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px 2px;
+  gap: 6px 0px;
   justify-items: center;
+}
+
+.dayCellWrapper {
+  display: flex;
+  justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .dayCell {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--text-secondary, #94D7C5);
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -108,8 +114,8 @@
 }
 
 .dayCell:hover:not(.emptyCell) {
-  background-color: #333344;
-  color: #ffffff;
+  background-color: var(--surface-2, #142F3E);
+  color: var(--text-primary, #F0FDF8);
 }
 
 .emptyCell {
@@ -117,63 +123,69 @@
 }
 
 .checkedCell {
-  background-color: #0d9488;
-  color: #ffffff;
-  box-shadow: 0 0 8px rgba(13, 148, 136, 0.5);
+  background: var(--accent-gradient, linear-gradient(135deg, #00FFB2 0%, #00F2FE 100%));
+  color: #061017;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 255, 178, 0.45);
 }
 
 .checkedCell:hover {
-  background-color: #14b8a6;
+  background: linear-gradient(135deg, #00FFB2 0%, #38BDF8 100%);
 }
 
 .todayCell {
-  border: 1.5px solid #38bdf8;
-  color: #38bdf8;
+  border: 1.5px solid var(--accent, #00FFB2);
+  color: var(--accent, #00FFB2);
 }
 
 .checkmarkIcon {
   width: 14px;
   height: 14px;
-  stroke: #ffffff;
-  stroke-width: 3;
+  stroke: #061017;
+  stroke-width: 3.2;
   fill: none;
 }
 
 /* Divider */
 .divider {
   height: 1px;
-  background-color: #333340;
-  margin: 10px 0;
+  background-color: var(--border, #1B3E52);
+  margin-bottom: 10px;
 }
 
-/* Weekly Premium Section */
-.weeklySection {
+/* Weekly Progress Section */
+.weeksSection {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 12px;
-  gap: 4px;
 }
 
-.weeklyLabel {
+.weeksLabelContainer {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 6px;
+}
+
+.badgeIcon {
+  width: 14px;
+  height: 14px;
+  color: var(--accent, #00FFB2);
+}
+
+.weeksLabel {
   font-size: 11px;
   font-weight: 700;
-  color: #ff9800;
-  white-space: nowrap;
+  color: var(--text-primary, #F0FDF8);
 }
 
-.infoBtn {
-  background: none;
-  border: none;
-  color: #ff9800;
-  cursor: pointer;
-  padding: 0;
-  font-size: 11px;
-  display: inline-flex;
-  align-items: center;
+.badgeCount {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent, #00FFB2);
+  background-color: var(--surface-2, #142F3E);
+  padding: 1px 5px;
+  border-radius: 10px;
 }
 
 .weeksList {
@@ -187,22 +199,22 @@
   font-weight: 700;
   padding: 2px 5px;
   border-radius: 4px;
-  background-color: #1a1a22;
-  color: #64748b;
+  background-color: var(--surface-3, #1B3E52);
+  color: var(--text-dim, #588B80);
   border: 1px solid transparent;
   transition: all 0.15s ease;
 }
 
 .weekBadgeActive {
-  background-color: #ff9800;
-  color: #18181b;
-  box-shadow: 0 0 6px rgba(255, 152, 0, 0.4);
+  background: var(--accent, #00FFB2);
+  color: #061017;
+  box-shadow: 0 0 8px rgba(0, 255, 178, 0.4);
 }
 
 .weekBadgeCompleted {
-  background-color: #1e293b;
-  color: #38bdf8;
-  border: 1px solid #0284c7;
+  background-color: var(--surface-2, #142F3E);
+  color: var(--accent-cyan, #00F2FE);
+  border: 1px solid var(--accent-cyan, #00F2FE);
 }
 
 /* Footer Action Bar */
@@ -216,11 +228,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background-color: #1a232a;
-  border: 1px solid #2d3b48;
+  background-color: var(--surface-2, #142F3E);
+  border: 1px solid var(--border-light, #1B3E52);
   border-radius: 16px;
   padding: 4px 10px;
-  color: #0d9488;
+  color: var(--accent, #00FFB2);
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
@@ -228,14 +240,15 @@
 }
 
 .redeemBtn:hover {
-  background-color: #1e293b;
-  border-color: #0d9488;
+  background-color: var(--surface-3, #1B3E52);
+  border-color: var(--accent, #00FFB2);
+  box-shadow: 0 0 10px rgba(0, 255, 178, 0.25);
 }
 
 .rulesLink {
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--text-dim, #588B80);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -243,7 +256,7 @@
 }
 
 .rulesLink:hover {
-  color: #f1f5f9;
+  color: var(--text-primary, #F0FDF8);
   text-decoration: underline;
 }
 
@@ -254,7 +267,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(15, 23, 42, 0.96);
+  background-color: rgba(6, 16, 23, 0.96);
   border-radius: 14px;
   padding: 14px;
   display: flex;
@@ -273,22 +286,22 @@
 .modalTitle {
   font-size: 14px;
   font-weight: 800;
-  color: #ff9800;
+  color: var(--accent, #00FFB2);
   margin-bottom: 8px;
 }
 
 .rulesList {
   font-size: 11px;
-  color: #cbd5e1;
+  color: var(--text-secondary, #94D7C5);
   line-height: 1.5;
   padding-left: 14px;
   margin: 0 0 12px 0;
 }
 
 .closeBtn {
-  background-color: #272732;
-  border: 1px solid #3f3f4e;
-  color: #ffffff;
+  background-color: var(--surface-2, #142F3E);
+  border: 1px solid var(--border-light, #1B3E52);
+  color: var(--text-primary, #F0FDF8);
   font-size: 11px;
   font-weight: 700;
   border-radius: 6px;
@@ -298,6 +311,6 @@
 }
 
 .closeBtn:hover {
-  background-color: #38bdf8;
-  color: #0f172a;
+  background-color: var(--accent, #00FFB2);
+  color: #061017;
 }

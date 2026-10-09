@@ -30,7 +30,7 @@ from app.models.submission import BenchmarkRun, Submission
 from app.problems_data.registry import get_generator
 from app.sandbox.executor import CompiledSubmission, SandboxLimits
 from app.services.benchmark import run_benchmark
-from app.services.complexity import ClassificationResult, classify, is_gap
+from app.services.complexity import ClassificationResult, classify, classify_with_ai, is_gap
 from app.services.correctness import CorrectnessResult, run_correctness_check
 from app.services.hints import get_structural_hint
 
@@ -118,10 +118,22 @@ def run_pipeline(submission_id: str, db: Session) -> None:
     db.commit()
     logger.info("[submission %s] benchmark complete — %d points", submission_id, len(benchmark_points))
 
-    # ── Stage 4: Complexity classification ──────────────────────────────────
-    classification: ClassificationResult = classify(benchmark_points)
+    # ── Stage 4: Complexity classification (AI-evaluated across N inputs) ──
+    classification: ClassificationResult = classify_with_ai(
+        source_code=submission.source_code,
+        language=submission.language,
+        points=benchmark_points,
+        problem_title=problem.title,
+        optimal_complexity=problem.optimal_time_complexity,
+        problem_description=problem.description,
+    )
     submission.empirical_complexity = classification.complexity_class
     submission.confidence_score = classification.confidence
+    submission.complexity_reasoning = classification.reasoning
+    logger.info(
+        "[submission %s] complexity evaluated by %s — %s (confidence=%.2f)",
+        submission_id, classification.evaluated_by, classification.complexity_class, classification.confidence,
+    )
 
     # ── Stage 5: Structural hints (only when gap exists) ────────────────────
     if is_gap(classification.complexity_class, problem.optimal_time_complexity):
@@ -131,11 +143,11 @@ def run_pipeline(submission_id: str, db: Session) -> None:
         )
         signatures: List[InefficiencySignature] = problem.inefficiency_signatures
         hint = get_structural_hint(submission.source_code, signatures)
-        submission.structural_hint = hint
+        submission.structural_hint = hint or classification.reasoning
         if hint:
             logger.info("[submission %s] structural hint matched", submission_id)
         else:
-            logger.info("[submission %s] no structural hint matched", submission_id)
+            logger.info("[submission %s] structural hint populated from AI complexity reasoning", submission_id)
     else:
         logger.info(
             "[submission %s] no complexity gap — empirical=%s optimal=%s",

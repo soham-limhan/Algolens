@@ -22,9 +22,10 @@ class Submission(Base):
     # Status lifecycle: pending → running_correctness → failed | benchmarking → complete
     status: Mapped[str] = mapped_column(String(30), nullable=False, default="pending")
 
-    # Populated after benchmarking + classification
+    # Populated after benchmarking + AI complexity classification
     empirical_complexity: Mapped[str | None] = mapped_column(String(30), nullable=True)
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    complexity_reasoning: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Populated only when a complexity gap exists
     structural_hint: Mapped[str | None] = mapped_column(Text, nullable=True)

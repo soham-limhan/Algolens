@@ -89,7 +89,8 @@ CREATE TABLE submissions (
     language VARCHAR(20) NOT NULL DEFAULT 'java',
     status VARCHAR(30) NOT NULL DEFAULT 'pending', -- 'pending' | 'running_correctness' | 'failed' | 'benchmarking' | 'complete'
     empirical_complexity VARCHAR(30), -- e.g. 'O(n^2)', 'O(n)'
-    confidence_score DOUBLE PRECISION, -- Regression R^2 goodness of fit (0.0 to 1.0)
+    confidence_score DOUBLE PRECISION, -- AI confidence or Regression R^2 goodness of fit (0.0 to 1.0)
+    complexity_reasoning TEXT, -- AI evaluated rationale across code structure and N inputs
     structural_hint TEXT, -- Hint populated when complexity gap is detected
     failure_detail TEXT, -- Compiler error output or failing test case details
     submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

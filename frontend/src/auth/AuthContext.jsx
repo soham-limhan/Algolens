@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+﻿import { createContext, useContext, useState, useEffect } from 'react';
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '../api/client';
 import api from '../api/client';
 
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // On mount — check if we have a valid token; if so, load user profile
+  // On mount - check if we have a valid token; if so, load user profile
   useEffect(() => {
     const token = getAccessToken();
     if (token) {

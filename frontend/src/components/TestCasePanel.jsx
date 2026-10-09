@@ -1,8 +1,8 @@
-import SqlTableOutput from './SqlTableOutput';
+﻿import SqlTableOutput from './SqlTableOutput';
 import styles from './TestCasePanel.module.css';
 
 /**
- * TestCasePanel — shows per-test-case input/expected/actual results.
+ * TestCasePanel - shows per-test-case input/expected/actual results.
  * Appears directly beneath the VerdictBanner, in the results screen order.
  */
 export default function TestCasePanel({ testResults }) {

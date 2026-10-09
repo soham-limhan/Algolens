@@ -63,7 +63,7 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
       rank: cls.rank,
       isUser,
       isOpt,
-      fill: isUser && isOpt ? '#3b82f6' : isUser ? '#f97316' : isOpt ? '#22c55e' : '#3c3c3c',
+      fill: isUser && isOpt ? '#22C55E' : isUser ? '#F97316' : isOpt ? '#22C55E' : '#21262D',
     };
   });
 
@@ -80,7 +80,7 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
         <div>
           <h3 className={styles.title}>Visual Complexity Analysis</h3>
           <p className={styles.subtitle}>
-            Empirical runtime performance profiling & asymptotic scaling metrics
+            Empirical runtime performance profiling and asymptotic scaling metrics
           </p>
         </div>
 
@@ -112,11 +112,11 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
         <div>
           <div className={styles.subHeader}>
             <div className={styles.legend}>
-              <span className={styles.dot} style={{ background: '#f97316' }} />
+              <span className={styles.dot} style={{ background: '#F97316' }} />
               <span>Your solution ({empiricalClass || 'Measured'})</span>
               {optimalClass && (
                 <>
-                  <span className={styles.dot} style={{ background: '#22c55e' }} />
+                  <span className={styles.dot} style={{ background: '#22C55E' }} />
                   <span>Optimal Target ({optimalClass})</span>
                 </>
               )}
@@ -152,7 +152,7 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
 
           <ResponsiveContainer width="100%" height={320}>
             <ScatterChart margin={{ top: 15, right: 20, bottom: 25, left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#30363D" />
               <XAxis
                 dataKey="x"
                 type="number"
@@ -161,10 +161,10 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
                   value: scaleMode === 'log' ? 'log₁₀(input size n)' : 'Input Size (n)',
                   position: 'insideBottom',
                   offset: -12,
-                  fill: '#8b90a8',
+                  fill: '#8B949E',
                   fontSize: 12,
                 }}
-                tick={{ fill: '#8b90a8', fontSize: 11 }}
+                tick={{ fill: '#8B949E', fontSize: 11 }}
                 domain={['auto', 'auto']}
               />
               <YAxis
@@ -175,10 +175,10 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
                   value: scaleMode === 'log' ? 'log₁₀(runtime ms)' : 'Runtime (ms)',
                   angle: -90,
                   position: 'insideLeft',
-                  fill: '#8b90a8',
+                  fill: '#8B949E',
                   fontSize: 12,
                 }}
-                tick={{ fill: '#8b90a8', fontSize: 11 }}
+                tick={{ fill: '#8B949E', fontSize: 11 }}
                 domain={['auto', 'auto']}
               />
               <Tooltip content={<CustomTooltip scaleMode={scaleMode} />} />
@@ -186,9 +186,9 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
                 <Scatter
                   name={`Optimal (${optimalClass})`}
                   data={refPoints}
-                  fill="#22c55e"
-                  opacity={0.65}
-                  line={{ stroke: '#22c55e', strokeWidth: 2, strokeDasharray: '4 2' }}
+                  fill="#22C55E"
+                  opacity={0.8}
+                  line={{ stroke: '#22C55E', strokeWidth: 2, strokeDasharray: '4 2' }}
                   shape="circle"
                   r={3}
                 />
@@ -196,8 +196,8 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
               <Scatter
                 name={`Your solution (${empiricalClass})`}
                 data={userPoints}
-                fill="#f97316"
-                line={{ stroke: '#f97316', strokeWidth: 2.5 }}
+                fill="#F97316"
+                line={{ stroke: '#F97316', strokeWidth: 2.5 }}
                 shape="circle"
                 r={5}
               />
@@ -211,9 +211,9 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
         <div>
           <div className={styles.subHeader}>
             <div className={styles.legend}>
-              <span className={styles.dot} style={{ background: '#f97316' }} />
+              <span className={styles.dot} style={{ background: '#F97316' }} />
               <span>Your Solution ({empiricalClass || 'N/A'})</span>
-              <span className={styles.dot} style={{ background: '#22c55e', marginLeft: '0.5rem' }} />
+              <span className={styles.dot} style={{ background: '#22C55E', marginLeft: '0.5rem' }} />
               <span>Optimal Solution ({optimalClass || 'N/A'})</span>
             </div>
           </div>
@@ -224,11 +224,11 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={hierarchyData} margin={{ top: 20, right: 20, bottom: 25, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="name" tick={{ fill: '#eff1f6', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#30363D" />
+              <XAxis dataKey="name" tick={{ fill: '#F0F6FC', fontSize: 12 }} />
               <YAxis
-                label={{ value: 'Complexity Severity Rank', angle: -90, position: 'insideLeft', fill: '#8b90a8', fontSize: 11 }}
-                tick={{ fill: '#8b90a8', fontSize: 11 }}
+                label={{ value: 'Complexity Severity Rank', angle: -90, position: 'insideLeft', fill: '#8B949E', fontSize: 11 }}
+                tick={{ fill: '#8B949E', fontSize: 11 }}
                 domain={[0, 8]}
               />
               <Tooltip content={<HierarchyTooltip />} />
@@ -242,11 +242,11 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
 
           <div className={styles.hierarchyFooter}>
             <div className={styles.hierarchyCard} style={{ borderColor: 'rgba(249, 115, 22, 0.4)' }}>
-              <span className={styles.hLabel} style={{ color: '#f97316' }}>Your Solution</span>
+              <span className={styles.hLabel} style={{ color: '#F97316' }}>Your Solution</span>
               <span className={styles.hVal}>{empiricalClass || 'N/A'}</span>
             </div>
             <div className={styles.hierarchyCard} style={{ borderColor: 'rgba(34, 197, 94, 0.4)' }}>
-              <span className={styles.hLabel} style={{ color: '#22c55e' }}>Optimal Solution</span>
+              <span className={styles.hLabel} style={{ color: '#22C55E' }}>Optimal Solution</span>
               <span className={styles.hVal}>{optimalClass || 'N/A'}</span>
             </div>
           </div>
@@ -262,14 +262,14 @@ export default function ComplexityChart({ benchmarkCurve, empiricalClass, optima
 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={runtimeData} margin={{ top: 20, right: 20, bottom: 25, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(116, 143, 115, 0.15)" />
-              <XAxis dataKey="inputSize" tick={{ fill: '#223124', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#30363D" />
+              <XAxis dataKey="inputSize" tick={{ fill: '#F0F6FC', fontSize: 12 }} />
               <YAxis
-                label={{ value: 'Runtime (ms)', angle: -90, position: 'insideLeft', fill: '#586B5A', fontSize: 12 }}
-                tick={{ fill: '#586B5A', fontSize: 11 }}
+                label={{ value: 'Runtime (ms)', angle: -90, position: 'insideLeft', fill: '#8B949E', fontSize: 12 }}
+                tick={{ fill: '#8B949E', fontSize: 11 }}
               />
               <Tooltip content={<RuntimeTooltip />} />
-              <Bar dataKey="runtime" fill="#748F73" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="runtime" fill="#F97316" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -302,8 +302,22 @@ function HierarchyTooltip({ active, payload }) {
   return (
     <div className={styles.tooltipBox}>
       <div style={{ fontWeight: 'bold' }}>{d.label}</div>
-      {d.isUser && <div style={{ color: '#748F73' }}>✓ Your Empirical Solution</div>}
-      {d.isOpt && <div style={{ color: '#3E7545' }}>✓ Optimal Target Solution</div>}
+      {d.isUser && (
+        <div style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>Your Empirical Solution</span>
+        </div>
+      )}
+      {d.isOpt && (
+        <div style={{ color: 'var(--accepted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span>Optimal Target Solution</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -315,7 +329,7 @@ function RuntimeTooltip({ active, payload }) {
   return (
     <div className={styles.tooltipBox}>
       <div>{d.inputSize}</div>
-      <div style={{ color: '#748F73', fontWeight: 'bold' }}>{d.runtime} ms</div>
+      <div style={{ color: '#F97316', fontWeight: 'bold' }}>{d.runtime} ms</div>
     </div>
   );
 }
