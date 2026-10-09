@@ -38,15 +38,15 @@ export default function PasswordStrengthMeter({ password = '' }) {
     switch (passedCount) {
       case 0:
       case 1:
-        return { label: 'Very Weak', color: '#B04C63', activeBars: 1 };
+        return { label: 'Very Weak', color: '#EF4444', activeBars: 1 };
       case 2:
-        return { label: 'Weak', color: '#C4687F', activeBars: 2 };
+        return { label: 'Weak', color: '#F97316', activeBars: 2 };
       case 3:
-        return { label: 'Medium', color: '#B87D4B', activeBars: 3 };
+        return { label: 'Medium', color: '#EAB308', activeBars: 3 };
       case 4:
-        return { label: 'Strong', color: '#748F73', activeBars: 4 };
+        return { label: 'Strong', color: '#38BDF8', activeBars: 4 };
       case 5:
-        return { label: 'Very Strong', color: '#4D6B4C', activeBars: 4 };
+        return { label: 'Very Strong', color: '#22C55E', activeBars: 4 };
       default:
         return { label: '', color: 'transparent', activeBars: 0 };
     }

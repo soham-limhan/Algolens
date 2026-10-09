@@ -1,81 +1,41 @@
+/* ============================================================
+   NotFound.module.css - Orange Accent Engineering Palette
+   ============================================================ */
+
 .page {
   min-height: calc(100vh - 64px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  position: relative;
-  overflow: hidden;
   background-color: var(--bg);
-}
-
-.backgroundGlow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(
-    circle,
-    rgba(246, 226, 233, 0.6) 0%,
-    rgba(181, 204, 178, 0.4) 40%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 0;
 }
 
 .card {
   position: relative;
-  z-index: 1;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: 3rem 2.5rem;
-  max-width: 640px;
+  max-width: 520px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 20px 40px rgba(45, 59, 47, 0.08);
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.9rem;
-  border-radius: 20px;
-  background: var(--accent-blush);
-  border: 1px solid var(--hard-border);
-  color: var(--hard);
-  font-family: var(--font-mono);
-  font-size: 0.825rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-}
-
-.badgeDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: var(--hard);
+  box-shadow: var(--shadow-card);
 }
 
 .errorCode {
   font-family: var(--font-mono);
-  font-size: 5.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -2px;
-  background: linear-gradient(135deg, var(--text-primary) 30%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.5rem;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
 }
 
 .title {
-  font-size: 1.6rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.75rem;
   font-family: var(--font-heading);
@@ -84,56 +44,20 @@
 .sub {
   color: var(--text-secondary);
   font-size: 0.95rem;
-  max-width: 480px;
-  margin: 0 auto 1.75rem;
-  line-height: 1.6;
-}
-
-.codeBox {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem 1.25rem;
+  max-width: 440px;
   margin: 0 auto 2rem;
-  text-align: left;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  overflow-x: auto;
-}
-
-.codeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-dim);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.codeContent {
   line-height: 1.6;
-}
-
-.keyword {
-  color: var(--hard);
-}
-
-.type {
-  color: var(--easy);
 }
 
 .path {
   color: var(--accent);
+  background: var(--surface-2);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
   word-break: break-all;
-}
-
-.comment {
-  color: var(--text-dim);
-  font-style: italic;
 }
 
 .actions {
@@ -143,19 +67,16 @@
   flex-wrap: wrap;
 }
 
-.navLink {
-  text-decoration: none;
-}
-
 .backBtn {
-  background: transparent;
+  background: var(--surface-2);
   border: 1px solid var(--border);
   color: var(--text-primary);
+  min-height: 44px;
 }
 
 .backBtn:hover {
-  background: var(--surface-3);
-  border-color: var(--accent-sage);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 @media (max-width: 480px) {
@@ -164,11 +85,11 @@
   }
 
   .errorCode {
-    font-size: 4rem;
+    font-size: 3.5rem;
   }
 
   .title {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
   }
 
   .actions {

@@ -1,5 +1,5 @@
-/* ============================================================
-   SqlTableOutput.module.css — Botanical Pastel & Alabaster Palette
+﻿/* ============================================================
+   SqlTableOutput.module.css - Orange Accent Engineering Palette
    ============================================================ */
 
 .container {
@@ -9,15 +9,9 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(45, 59, 47, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   margin-top: 10px;
   font-family: var(--font-ui);
-  animation: fadeIn 0.25s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Header Bar ────────────────────────────────────────────── */
@@ -26,7 +20,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 14px;
-  background: var(--surface-3);
+  background: var(--surface-2);
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   gap: 10px;
@@ -40,7 +34,7 @@
 
 .tabs {
   display: flex;
-  background: var(--surface);
+  background: var(--bg);
   padding: 3px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -56,20 +50,20 @@
   font-size: 0.8rem;
   font-weight: 600;
   padding: 5px 12px;
-  border-radius: 6px;
+  min-height: 32px;
+  border-radius: calc(var(--radius-sm) - 2px);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.15s ease;
 }
 
 .tabBtn:hover {
   color: var(--text-primary);
-  background: var(--surface-3);
 }
 
 .activeTab {
   background: var(--accent) !important;
-  color: #FFFDF7 !important;
-  box-shadow: 0 2px 6px rgba(101, 132, 100, 0.35);
+  color: #0D1117 !important;
+  font-weight: 700;
 }
 
 .icon {
@@ -88,15 +82,14 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  background: var(--surface);
-  color: var(--accent);
-  border: 1px solid var(--accent-sage);
+  background: var(--bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
   font-weight: 700;
   font-family: var(--font-mono);
-  box-shadow: 0 1px 3px rgba(45, 59, 47, 0.04);
 }
 
 .statIcon {
@@ -107,7 +100,7 @@
 
 .buttonGroup {
   display: flex;
-  background: var(--surface);
+  background: var(--bg);
   padding: 2px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -120,7 +113,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 4px 10px;
-  border-radius: 4px;
+  border-radius: calc(var(--radius-sm) - 2px);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -130,10 +123,9 @@
 }
 
 .activeToggle {
-  background: var(--surface-3);
-  color: var(--accent) !important;
+  background: var(--surface-2);
+  color: var(--text-primary) !important;
   font-weight: 700;
-  border: 1px solid var(--accent-sage);
 }
 
 /* ── Content Area ──────────────────────────────────────────── */
@@ -157,7 +149,7 @@
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--accent-sage);
+  border: 3px solid var(--surface-2);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -169,8 +161,8 @@
 
 /* Error Banner */
 .errorBanner {
-  background: var(--hard-bg);
-  border: 1px solid var(--hard-border);
+  background: var(--wrong-bg);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   border-radius: var(--radius-sm);
   padding: 12px 16px;
   margin-bottom: 14px;
@@ -180,7 +172,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--hard);
+  color: var(--wrong);
   font-weight: 700;
   font-size: 0.88rem;
   margin-bottom: 6px;
@@ -188,7 +180,7 @@
 
 .errorPre {
   margin: 0;
-  color: var(--hard);
+  color: var(--wrong);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   white-space: pre-wrap;
@@ -210,20 +202,19 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(45, 59, 47, 0.03);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .passedCard {
-  border-color: var(--easy-border);
+  border-color: rgba(34, 197, 94, 0.4);
 }
 
 .failedCard {
-  border-color: var(--hard-border);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .expectedCard {
-  border-color: var(--accent-sage);
+  border-color: rgba(249, 115, 22, 0.4);
 }
 
 .tableCardHeader {
@@ -231,7 +222,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: var(--surface-3);
+  background: var(--surface-2);
   border-bottom: 1px solid var(--border);
 }
 
@@ -256,50 +247,38 @@
 }
 
 .rowCountBadge {
-  background: var(--surface);
+  background: var(--bg);
   color: var(--text-secondary);
   border: 1px solid var(--border);
   font-size: 0.72rem;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 
 .statusPill {
   font-size: 0.72rem;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 
 .statusPassed {
-  background: var(--easy-bg);
-  color: var(--easy);
-  border: 1px solid var(--easy-border);
+  background: var(--accepted-bg);
+  color: var(--accepted);
+  border: 1px solid rgba(34, 197, 94, 0.35);
 }
 
 .statusFailed {
-  background: var(--hard-bg);
-  color: var(--hard);
-  border: 1px solid var(--hard-border);
+  background: var(--wrong-bg);
+  color: var(--wrong);
+  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
 /* ── Data Grid Table ───────────────────────────────────────── */
 .tableWrapper {
   overflow-x: auto;
   max-height: 340px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent-sage) var(--surface-3);
-}
-
-.tableWrapper::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.tableWrapper::-webkit-scrollbar-thumb {
-  background: var(--accent-sage);
-  border-radius: 3px;
 }
 
 .dataTable {
@@ -311,11 +290,11 @@
 }
 
 .dataTable th {
-  background: var(--surface-3);
+  background: var(--surface-2);
   color: var(--text-primary);
   padding: 8px 12px;
   font-weight: 700;
-  border-bottom: 2px solid var(--accent-sage);
+  border-bottom: 2px solid var(--accent);
   position: sticky;
   top: 0;
   z-index: 1;
@@ -330,14 +309,14 @@
 }
 
 .dataTable tr:hover td {
-  background: var(--accent-blush);
+  background: var(--surface-2);
 }
 
 .nullValue {
   color: var(--text-dim);
   font-style: italic;
   font-size: 0.78rem;
-  background: var(--surface-3);
+  background: var(--surface-2);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -405,7 +384,7 @@
 
 .rawHeader {
   padding: 8px 12px;
-  background: var(--surface-3);
+  background: var(--surface-2);
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -421,5 +400,5 @@
   white-space: pre;
   overflow-x: auto;
   line-height: 1.5;
-  background: #FFFDF7;
+  background: var(--bg);
 }

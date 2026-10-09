@@ -28,7 +28,19 @@ export default function ProblemDetail() {
   const [activeTestCaseTab, setActiveTestCaseTab] = useState(0);
   const [testCasesHeight, setTestCasesHeight] = useState(210);
   const [isTestCasesOpen, setIsTestCasesOpen] = useState(true);
+  const [mobileTab, setMobileTab] = useState('description'); // 'description' | 'editor'
   const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [code, language, id]);
 
   useEffect(() => {
     if (location.state?.sourceCode !== undefined || location.state?.code !== undefined) {
@@ -36,6 +48,9 @@ export default function ProblemDetail() {
       const passedLang = (location.state?.language || 'java').toLowerCase();
       setLanguage(passedLang);
       setCode(passedCode);
+      if (typeof window !== 'undefined' && window.innerWidth <= 860) {
+        setMobileTab('editor');
+      }
     }
   }, [id, location.state]);
 
@@ -160,8 +175,30 @@ export default function ProblemDetail() {
 
   return (
     <div className={styles.layout}>
+      {/* ── Mobile Tab Bar (Visible only <= 860px) ──────── */}
+      <div className={styles.mobileTabBar} role="tablist" aria-label="Problem View Tabs">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobileTab === 'description'}
+          className={`${styles.mobileTabBtn} ${mobileTab === 'description' ? styles.mobileTabActive : ''}`}
+          onClick={() => setMobileTab('description')}
+        >
+          Problem Statement
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobileTab === 'editor'}
+          className={`${styles.mobileTabBtn} ${mobileTab === 'editor' ? styles.mobileTabActive : ''}`}
+          onClick={() => setMobileTab('editor')}
+        >
+          Editor &amp; Output
+        </button>
+      </div>
+
       {/* ── Left: problem description ─────────────────────── */}
-      <div className={styles.description}>
+      <div className={`${styles.description} ${mobileTab === 'description' ? styles.paneActiveMobile : styles.paneHiddenMobile}`}>
         <div className={styles.problemHeader}>
           <h1 className={styles.title}>{problem?.title}</h1>
           <span className={`badge badge-${problem?.difficulty}`}>{problem?.difficulty}</span>
@@ -178,7 +215,7 @@ export default function ProblemDetail() {
       </div>
 
       {/* ── Right: editor + submit ────────────────────────── */}
-      <div className={styles.editorPanel}>
+      <div className={`${styles.editorPanel} ${mobileTab === 'editor' ? styles.paneActiveMobile : styles.paneHiddenMobile}`}>
         <div className={styles.editorHeader}>
           <div className={styles.editorTitle}>
             <svg className={styles.codeIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -318,7 +355,19 @@ export default function ProblemDetail() {
                       className={`${styles.caseTab} ${activeTestCaseTab === idx ? styles.caseTabActive : ''} ${tabResultClass}`}
                       onClick={() => setActiveTestCaseTab(idx)}
                     >
-                      {outcome ? (outcome.passed ? '✓ ' : '✕ ') : ''}Case {idx + 1}
+                      {outcome && (
+                        outcome.passed ? (
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        ) : (
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        )
+                      )}
+                      <span>Case {idx + 1}</span>
                     </button>
                   );
                 })}
@@ -327,11 +376,29 @@ export default function ProblemDetail() {
               {runResults && (
                 <div className={styles.verdictHeader}>
                   {runResults.verdict === 'Accepted' ? (
-                    <span className={`${styles.verdictPill} ${styles.verdictAccepted}`}>✓ Accepted</span>
+                    <span className={`${styles.verdictPill} ${styles.verdictAccepted}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>Accepted</span>
+                    </span>
                   ) : runResults.verdict === 'Wrong Answer' ? (
-                    <span className={`${styles.verdictPill} ${styles.verdictWrong}`}>✕ Wrong Answer</span>
+                    <span className={`${styles.verdictPill} ${styles.verdictWrong}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                      <span>Wrong Answer</span>
+                    </span>
                   ) : (
-                    <span className={`${styles.verdictPill} ${styles.verdictError}`}>⚠️ {runResults.verdict}</span>
+                    <span className={`${styles.verdictPill} ${styles.verdictError}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                      <span>{runResults.verdict}</span>
+                    </span>
                   )}
                 </div>
               )}
@@ -461,7 +528,7 @@ function markdownToHtml(md) {
   text = text.replace(/<details>\s*<summary>(.*?)<\/summary>([\s\S]*?)<\/details>/gi, (_, summary, body) => {
     detailsBlocks.push(
       `<details class="${styles.hintAccordion}">` +
-        `<summary class="${styles.hintSummary}"><span class="${styles.hintIcon}">💡</span><span>${summary.replace(/💡\s*/, '')}</span></summary>` +
+        `<summary class="${styles.hintSummary}"><span class="${styles.hintIcon}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.7 3.5 6h7c2-1.3 3.5-3.5 3.5-6a7 7 0 0 0-7-7z"/></svg></span><span>${summary.replace(/💡\s*/, '')}</span></summary>` +
         `<div class="${styles.hintContent}"><p>${body.trim()}</p></div>` +
       `</details>`
     );

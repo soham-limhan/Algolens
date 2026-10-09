@@ -1,8 +1,8 @@
-import { Navigate, useLocation } from 'react-router-dom';
+﻿import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 
 /**
- * Guards a route — redirects to /login, preserving the intended destination
+ * Guards a route - redirects to /login, preserving the intended destination
  * so redirect-back-after-login works (not a generic dashboard dump).
  */
 export default function RequireAuth({ children }) {

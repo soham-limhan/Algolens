@@ -1,7 +1,7 @@
-/**
- * api/client.js — Axios instance with JWT auth interceptors and silent refresh.
+﻿/**
+ * api/client.js - Axios instance with JWT auth interceptors and silent refresh.
  *
- * Token storage: localStorage — chosen for simplicity.
+ * Token storage: localStorage - chosen for simplicity.
  * Known tradeoff: vulnerable to XSS if a script injection vulnerability is ever
  * introduced elsewhere in the frontend. httpOnly cookies would be more secure but
  * require backend CSRF handling not yet built. Documented explicitly per SECURITY.md.
@@ -24,14 +24,14 @@ export const clearTokens = () => {
   localStorage.removeItem('refresh_token');
 };
 
-// ── Request interceptor — attach access token ────────────────────────────────
+// ── Request interceptor - attach access token ────────────────────────────────
 api.interceptors.request.use(config => {
   const token = getAccessToken();
   if (token) config.headers['Authorization'] = `Bearer ${token}`;
   return config;
 });
 
-// ── Response interceptor — silent refresh on 401 ────────────────────────────
+// ── Response interceptor - silent refresh on 401 ────────────────────────────
 let isRefreshing = false;
 let failedQueue = [];
 

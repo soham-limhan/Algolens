@@ -209,7 +209,13 @@ export default function SqlTableOutput({
                 <div key={idx} className={styles.tableCard}>
                   <div className={styles.tableCardHeader}>
                     <span className={styles.tableName}>
-                      <span className={styles.tableIcon}>📋</span> {tbl.name}
+                      <span className={styles.tableIcon}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <path d="M3 9h18M9 21V9" />
+                        </svg>
+                      </span>
+                      <span>{tbl.name}</span>
                     </span>
                     <span className={styles.rowCountBadge}>{tbl.rows.length} rows</span>
                   </div>
@@ -295,7 +301,22 @@ export default function SqlTableOutput({
                     <div className={styles.headerTitleGroup}>
                       <span className={styles.tableName}>Your Query Output</span>
                       <span className={`${styles.statusPill} ${passed ? styles.statusPassed : styles.statusFailed}`}>
-                        {passed ? '✓ Matches Expected' : '✗ Output Mismatch'}
+                        {passed ? (
+                          <>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Matches Expected</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                            <span>Output Mismatch</span>
+                          </>
+                        )}
                       </span>
                     </div>
                     <span className={styles.rowCountBadge}>{userRows.length} rows</span>

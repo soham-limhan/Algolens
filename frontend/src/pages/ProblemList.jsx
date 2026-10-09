@@ -63,12 +63,12 @@ const PROBLEM_METADATA = {
 };
 
 const CATEGORIES = [
-  { id: 'all', name: 'All Topics', icon: '⬚' },
-  { id: 'algo', name: 'Algorithms', icon: '⚙' },
-  { id: 'sql', name: 'Database / SQL', icon: '🗄' },
-  { id: 'dp', name: 'Dynamic Programming', icon: '⚡' },
-  { id: 'ds', name: 'Data Structures', icon: '🧱' },
-  { id: 'math', name: 'Math & Logic', icon: '📐' },
+  { id: 'all', name: 'All Topics' },
+  { id: 'algo', name: 'Algorithms' },
+  { id: 'sql', name: 'Database / SQL' },
+  { id: 'dp', name: 'Dynamic Programming' },
+  { id: 'ds', name: 'Data Structures' },
+  { id: 'math', name: 'Math & Logic' },
 ];
 
 export default function ProblemList() {
@@ -293,6 +293,9 @@ export default function ProblemList() {
     }
   };
 
+  const displayName = user?.name || user?.email?.split('@')[0] || 'Coder';
+  const userInitial = displayName.charAt(0).toUpperCase();
+
   const shuffleProblems = () => {
     if (filteredAndSortedProblems.length === 0) return;
     const randomItem = filteredAndSortedProblems[Math.floor(Math.random() * filteredAndSortedProblems.length)];
@@ -306,31 +309,59 @@ export default function ProblemList() {
         {/* Header Hero */}
         <div className={styles.headerHero}>
           <div className={styles.heroLeft}>
-            {user && (
-              <div className={styles.heroWelcomeBadge}>
-                <span className={styles.welcomeDot} />
-                <span>Welcome, <strong className={styles.welcomeName}>{user.name || user.email?.split('@')[0] || 'Coder'}</strong></span>
+            <div className={styles.userGreetingRow}>
+              <div className={styles.userAvatar}>
+                <span>{userInitial}</span>
+                <span className={styles.avatarOnlineDot} />
               </div>
-            )}
-            <h1 className={styles.heroTitle}>Problem Bank & Complexity Lab</h1>
-            <p className={styles.heroSubtitle}>
-              Benchmark algorithms, analyze asymptotic behavior, and solve SQL query challenges.
-            </p>
-          </div>
-          <div className={styles.heroStats}>
-            <div className={styles.statCard}>
-              <span className={styles.statIcon}>⚡</span>
-              <div className={styles.statInfo}>
-                <span className={styles.statVal}>{formattedProblems.length}</span>
-                <span className={styles.statLabel}>Challenges</span>
+              <div>
+                <h1 className={styles.heroTitle}>
+                  Welcome, <span className={styles.userNameHighlight}>{displayName}</span>
+                </h1>
               </div>
             </div>
-            <div className={styles.statCard}>
-              <span className={styles.statIcon} style={{ color: 'var(--easy)' }}>✓</span>
-              <div className={styles.statInfo}>
-                <span className={styles.statVal}>{solvedCount}</span>
-                <span className={styles.statLabel}>Mastered</span>
+            <p className={styles.heroSubtitle}>
+              Benchmark algorithmic performance, evaluate asymptotic Big-O growth curves, and master SQL database queries.
+            </p>
+          </div>
+
+          <div className={styles.heroRight}>
+            <div className={styles.heroStats}>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </span>
+                <div className={styles.statInfo}>
+                  <span className={styles.statVal}>{formattedProblems.length}</span>
+                  <span className={styles.statLabel}>Total Challenges</span>
+                </div>
               </div>
+              <div className={styles.statCard}>
+                <span className={styles.statIcon} style={{ color: 'var(--accepted)' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                </span>
+                <div className={styles.statInfo}>
+                  <span className={styles.statVal}>{solvedCount} / {formattedProblems.length}</span>
+                  <span className={styles.statLabel}>Mastered</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.heroActionBtns}>
+              <button className="btn btn-primary" onClick={shuffleProblems} style={{ fontSize: '0.85rem', padding: '0.55rem 1rem' }}>
+                Pick Random
+              </button>
+              {user && (
+                <Link to="/history" className="btn btn-secondary" style={{ fontSize: '0.85rem', padding: '0.55rem 1rem' }}>
+                   History
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -343,7 +374,6 @@ export default function ProblemList() {
               className={`${styles.categoryTab} ${activeCategory === cat.id ? styles.categoryTabActive : ''}`}
               onClick={() => setActiveCategory(cat.id)}
             >
-              <span className={styles.catIcon}>{cat.icon}</span>
               <span>{cat.name}</span>
             </button>
           ))}
@@ -363,7 +393,7 @@ export default function ProblemList() {
           ))}
           {selectedTag && (
             <button className={styles.expandTagBtn} onClick={() => setSelectedTag('')}>
-              ✕ Clear Tag
+              Clear Tag
             </button>
           )}
         </div>
@@ -371,7 +401,11 @@ export default function ProblemList() {
         {/* Controls Bar */}
         <div className={styles.controlsBar}>
           <div className={styles.searchWrapper}>
-            <span className={styles.searchIcon}>🔍</span>
+            <span className={styles.searchIcon}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+              </svg>
+            </span>
             <input
               type="text"
               placeholder="Search questions by name or number"
@@ -413,20 +447,25 @@ export default function ProblemList() {
               title="Toggle sort order"
               onClick={() => toggleSort(sortField === 'difficulty' ? 'acceptance' : sortField === 'acceptance' ? 'num' : 'difficulty')}
             >
-              ⚡ Sort: {sortField.toUpperCase()} ({sortDirection})
+              Sort: {sortField.toUpperCase()} ({sortDirection})
             </button>
 
             <button className={styles.controlBtn} title="Random Shuffle" onClick={shuffleProblems}>
-              🔀 Pick Random
+              Pick Random
             </button>
 
             {user ? (
               <Link to="/history" className={styles.solvedCountLink} title="View your full submission history">
-                <span className={styles.solvedIcon}>✓</span> {solvedCount}/{formattedProblems.length} Solved ↗
+                <span className={styles.solvedIcon}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span>{solvedCount}/{formattedProblems.length} Solved</span>
               </Link>
             ) : (
               <span className={styles.solvedCount}>
-                <span className={styles.solvedIcon}>◯</span> {solvedCount}/{formattedProblems.length} Solved
+                <span>{solvedCount}/{formattedProblems.length} Solved</span>
               </span>
             )}
           </div>
@@ -437,9 +476,9 @@ export default function ProblemList() {
           {/* Column Header */}
           <div className={styles.tableHeaderRow}>
             <span className={styles.colHeaderStatus}>Status</span>
-            <span className={styles.colHeaderTitle} onClick={() => toggleSort('title')}>Title ↕</span>
-            <span className={styles.colHeaderAcc} onClick={() => toggleSort('acceptance')}>Acceptance ↕</span>
-            <span className={styles.colHeaderDiff} onClick={() => toggleSort('difficulty')}>Difficulty ↕</span>
+            <span className={styles.colHeaderTitle} onClick={() => toggleSort('title')}>Title</span>
+            <span className={styles.colHeaderAcc} onClick={() => toggleSort('acceptance')}>Acceptance</span>
+            <span className={styles.colHeaderDiff} onClick={() => toggleSort('difficulty')}>Difficulty</span>
           </div>
 
           {/* Problem List Rows */}
@@ -457,7 +496,11 @@ export default function ProblemList() {
                 <div key={p.id} className={styles.tableRow}>
                   <div className={styles.colStatus}>
                     {p.status === 'solved' ? (
-                      <span className={styles.solvedCheck} title="Solved">✓</span>
+                      <span className={styles.solvedCheck} title="Solved">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
                     ) : p.status === 'attempted' ? (
                       <span className={styles.attemptedDot} title="Attempted"></span>
                     ) : (

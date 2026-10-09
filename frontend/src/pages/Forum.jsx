@@ -192,7 +192,10 @@ function ReplyCard({ reply, onReplyTo, formatDate, user }) {
             onClick={() => onReplyTo(reply)}
             title={`Reply to @${reply.author}`}
           >
-            💬 Reply
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>Reply</span>
           </button>
         </div>
       )}
@@ -421,7 +424,7 @@ export default function Forum() {
           </div>
           {user ? (
             <button className="btn btn-primary" onClick={() => setView("create")}>
-              + New Topic
+              New Topic
             </button>
           ) : (
             <Link to="/login" className="btn btn-secondary">
@@ -437,7 +440,12 @@ export default function Forum() {
           <div className={styles.controls}>
             <div className={styles.searchAndSort}>
               <div className={styles.searchWrapper}>
-                <span className={styles.searchIcon}>🔍</span>
+                <span className={styles.searchIcon}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </span>
                 <input
                   type="text"
                   placeholder="Search topics or content..."
@@ -476,7 +484,11 @@ export default function Forum() {
               </div>
             ) : threads.length === 0 ? (
               <div className={styles.emptyState}>
-                <div className={styles.emptyStateIcon}>💬</div>
+                <div className={styles.emptyStateIcon}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
                 <h3>No threads found</h3>
                 <p>Be the first to start a conversation in this category!</p>
               </div>
@@ -514,11 +526,14 @@ export default function Forum() {
                           ▲ {t.likes}
                         </button>
                         <span className={styles.statItem}>
-                          💬 {replyCount} replies
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                          </svg>
+                          <span>{replyCount} {replyCount === 1 ? 'reply' : 'replies'}</span>
                         </span>
                       </div>
                       <span style={{ fontSize: "0.85rem", color: "var(--accent-light)" }}>
-                        Read Thread →
+                        Read thread
                       </span>
                     </div>
                   </div>
@@ -544,7 +559,10 @@ export default function Forum() {
                 setNewComment("");
               }}
             >
-              ← Back to Forum
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 6 }}>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>Back to Forum</span>
             </button>
 
             <div className={styles.detailCard}>
@@ -577,7 +595,7 @@ export default function Forum() {
 
             <div className={styles.commentsSection}>
               <h3 className={styles.sectionTitle}>
-                <span>💬</span> Replies ({(currentThreadDetail.replies || []).length})
+                Replies ({(currentThreadDetail.replies || []).length})
               </h3>
 
               <div className={styles.commentList}>
@@ -619,7 +637,7 @@ export default function Forum() {
                           }
                         }}
                       >
-                        ✕ Cancel
+                        Cancel
                       </button>
                     </div>
                   )}
@@ -645,7 +663,12 @@ export default function Forum() {
           </div>
         ) : (
           <div>
-            <button className="btn btn-secondary backButton" onClick={() => setView("list")}>← Back to Forum</button>
+            <button className="btn btn-secondary backButton" onClick={() => setView("list")}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 6 }}>
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>Back to Forum</span>
+            </button>
             <p style={{ marginTop: "1rem" }}>Thread not found.</p>
           </div>
         )

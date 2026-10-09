@@ -45,7 +45,7 @@ export default function AiInsightsCard({ submissionId, userCode, optimalCode, em
   const handleCopyInsights = () => {
     if (!insights) return;
 
-    const text = `# 🧠 ALGOLENS AI TIME COMPLEXITY & COMPARATIVE ANALYSIS REPORT
+    const text = `# ALGOLENS AI TIME COMPLEXITY & COMPARATIVE ANALYSIS REPORT
 Powered by Groq AI (${insights.model_used || 'Groq LLM Engine'})
 
 ---
@@ -74,7 +74,7 @@ ${optAnalysis.mathematical_derivation || timeComp.optimal_derivation ? `\n**Opti
 ${optAnalysis.theoretical_lower_bound ? `\n**Theoretical Lower Bound:** ${optAnalysis.theoretical_lower_bound}` : ''}
 
 ### Comparative Assessment:
-- **Status:** ${isGap ? '⚡ Asymptotic Complexity Gap Detected' : '✓ Optimal Complexity Matched'}
+- **Status:** ${isGap ? 'Asymptotic Complexity Gap Detected' : 'Optimal Complexity Matched'}
 ${compAnalysis.gap_summary ? `- **Gap Summary:** ${compAnalysis.gap_summary}` : ''}
 ${compAnalysis.speedup_factor ? `- **Expected Speedup:** ${compAnalysis.speedup_factor}` : ''}
 ${compAnalysis.space_time_tradeoff || spaceComp.tradeoff_analysis ? `- **Space-Time Tradeoff:** ${compAnalysis.space_time_tradeoff || spaceComp.tradeoff_analysis}` : ''}
@@ -105,7 +105,7 @@ ${i.recommendation ? `- **Recommendation:** ${i.recommendation}` : ''}`;
 
 ## 5. Code Bottlenecks
 ${bottlenecks.length > 0
-  ? bottlenecks.map(b => `### ⚠️ ${b.type || 'Bottleneck'} (${b.severity || 'High'})
+  ? bottlenecks.map(b => `### ${b.type || 'Bottleneck'} (${b.severity || 'High'})
 - **Construct:** \`${b.construct || 'N/A'}\`
 - **Explanation:** ${b.explanation || ''}`).join('\n\n')
   : 'No critical bottlenecks detected.'}
@@ -158,12 +158,12 @@ ${proTips.length > 0
               <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
               <path d="M12 6v6l4 2" />
             </svg>
-            <span>GROQ DUAL AI PROFILER</span>
+            <span>AI COMPLEXITY PROFILER</span>
           </div>
           <div>
             <h3 className={styles.title}>AI Time Complexity & Asymptotic Profiler</h3>
             <p className={styles.subtitle}>
-              AI evaluation of your code vs. optimal reference solution • Mathematical derivations & proofs
+              Dual analysis of your code vs. optimal reference solution • Mathematical derivations & proofs
             </p>
           </div>
         </div>
@@ -171,7 +171,7 @@ ${proTips.length > 0
         <div className={styles.headerActions}>
           {!insights && !loading && (
             <button className={styles.generateBtn} onClick={handleGenerate}>
-              <span>⚡ Check Complexity with AI</span>
+              <span>Analyze Complexity with AI</span>
             </button>
           )}
         </div>
@@ -209,7 +209,7 @@ ${proTips.length > 0
 
             <div className={styles.heroGapCenter}>
               <div className={isGap ? styles.gapStatusPillWarn : styles.gapStatusPillSuccess}>
-                {isGap ? '⚡ COMPLEXITY GAP' : '✓ OPTIMAL MATCH'}
+                {isGap ? 'COMPLEXITY GAP DETECTED' : 'OPTIMAL COMPLEXITY MATCHED'}
               </div>
               <div className={styles.gapExplanationText}>
                 {compAnalysis.gap_summary || (isGap ? `User ${userTimeDisplay} vs Optimal ${optTimeDisplay}` : `Both match ${optTimeDisplay}`)}
@@ -236,37 +236,37 @@ ${proTips.length > 0
                 className={`${styles.tabBtn} ${activeTab === 'summary' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('summary')}
               >
-                💡 Summary & Paradigm
+                Summary & Paradigm
               </button>
               <button
                 className={`${styles.tabBtn} ${activeTab === 'bottlenecks' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('bottlenecks')}
               >
-                ⚡ Derivations & Bottlenecks
+                Derivations & Bottlenecks
                 {bottlenecks.length > 0 && <span className={styles.tabCount}>{bottlenecks.length}</span>}
               </button>
               <button
                 className={`${styles.tabBtn} ${activeTab === 'refactoring' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('refactoring')}
               >
-                🛠️ Refactoring Roadmap
+                Refactoring Roadmap
                 {roadmap.length > 0 && <span className={styles.tabCount}>{roadmap.length}</span>}
               </button>
               <button
                 className={`${styles.tabBtn} ${activeTab === 'protips' ? styles.tabActive : ''}`}
                 onClick={() => setActiveTab('protips')}
               >
-                🚀 Pro Optimizations
+                Optimization Strategies
                 {proTips.length > 0 && <span className={styles.tabCount}>{proTips.length}</span>}
               </button>
             </div>
 
             <div className={styles.rightActions}>
               <button className={styles.copyBtn} onClick={handleCopyInsights}>
-                {copied ? '✓ Copied Full Report' : '📋 Copy Report'}
+                {copied ? 'Copied Full Report' : 'Copy Report'}
               </button>
               <button className={styles.regenBtn} onClick={handleGenerate}>
-                🔄 Re-analyze
+                Re-analyze
               </button>
             </div>
           </div>
@@ -277,7 +277,10 @@ ${proTips.length > 0
               {/* Paradigm Comparison Card */}
               <div className={styles.paradigmCard}>
                 <div className={styles.paradigmHeader}>
-                  <span className={styles.paradigmIcon}>🧭</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.paradigmIcon} aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                  </svg>
                   <h4 className={styles.paradigmTitle}>Algorithmic Paradigm Shift</h4>
                 </div>
                 <div className={styles.paradigmFlow}>
@@ -285,7 +288,12 @@ ${proTips.length > 0
                     <span className={styles.paradigmRole}>Your Approach</span>
                     <span className={styles.paradigmName}>{paradigm.user_approach || 'User Approach'}</span>
                   </div>
-                  <div className={styles.paradigmArrow}>➔</div>
+                  <div className={styles.paradigmArrow}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </div>
                   <div className={styles.paradigmBoxOpt}>
                     <span className={styles.paradigmRole}>Optimal Target</span>
                     <span className={styles.paradigmName}>{paradigm.optimal_approach || 'Optimal Approach'}</span>
@@ -298,7 +306,11 @@ ${proTips.length > 0
 
               {/* Executive Summary */}
               <div className={styles.summaryCallout}>
-                <span className={styles.calloutIcon}>💬</span>
+                <span className={styles.calloutIcon}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </span>
                 <div>
                   <div className={styles.calloutTitle}>Executive Analysis</div>
                   <p className={styles.summaryText}>{insights.summary}</p>
@@ -328,7 +340,13 @@ ${proTips.length > 0
                       <p className={styles.insightCardText}>{obs}</p>
                       {rec && (
                         <div className={styles.recBox}>
-                          <span className={styles.recIcon}>💡</span>
+                          <span className={styles.recIcon}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <path d="M9 18h6" />
+                              <path d="M10 22h4" />
+                              <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.7 3.5 6h7c2-1.3 3.5-3.5 3.5-6a7 7 0 0 0-7-7z" />
+                            </svg>
+                          </span>
                           <span className={styles.recText}><strong>Action:</strong> {rec}</span>
                         </div>
                       )}
@@ -398,7 +416,13 @@ ${proTips.length > 0
                   </div>
                   {scaleSim.asymptotic_verdict && (
                     <div className={styles.verdictCallout}>
-                      <span className={styles.verdictIcon}>⚠️</span>
+                      <span className={styles.verdictIcon}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                          <line x1="12" y1="9" x2="12" y2="13" />
+                          <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                      </span>
                       <span><strong>Asymptotic Verdict:</strong> {scaleSim.asymptotic_verdict}</span>
                     </div>
                   )}
@@ -442,7 +466,7 @@ ${proTips.length > 0
                       <div className={styles.stepTitleGroup}>
                         <h5 className={styles.stepTitle}>{step.title}</h5>
                         {step.expected_gain && (
-                          <span className={styles.gainBadge}>⚡ {step.expected_gain}</span>
+                          <span className={styles.gainBadge}>{step.expected_gain}</span>
                         )}
                       </div>
                     </div>
@@ -468,7 +492,11 @@ ${proTips.length > 0
               <div className={styles.proTipsGrid}>
                 {proTips.map((tip, idx) => (
                   <div key={idx} className={styles.proTipCard}>
-                    <span className={styles.proTipIcon}>💎</span>
+                    <span className={styles.proTipIcon}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    </span>
                     <p className={styles.proTipText}>{tip}</p>
                   </div>
                 ))}

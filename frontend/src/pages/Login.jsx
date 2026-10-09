@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
 import algolensLogo from '../assets/algolenslogo.png';
+import AuthShowcase from '../components/AuthShowcase';
 import styles from './Auth.module.css';
 
 function EyeIcon() {
@@ -60,56 +61,61 @@ export default function Login() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <Link to="/" className={styles.logoWrap}>
-          <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
-          <span className={styles.logoText}>AlgoLens</span>
-        </Link>
-        <h1 className={styles.title}>Welcome back</h1>
-        <p className={styles.sub}>Log in to continue practicing</p>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.field}>
-            <label htmlFor="email">Email</label>
-            <input
-              id="email" type="email" value={email} required autoComplete="email"
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-            />
-          </div>
-          <div className={styles.field}>
-            <label htmlFor="password">Password</label>
-            <div className={styles.passwordWrapper}>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                required
-                autoComplete="current-password"
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                className={styles.toggleBtn}
-                onClick={() => setShowPassword(prev => !prev)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                title={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+      <div className={styles.container}>
+        <AuthShowcase />
+        <div className={styles.formSide}>
+          <div className={styles.card}>
+            <Link to="/" className={styles.logoWrap}>
+              <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
+              <span className={styles.logoText}>AlgoLens</span>
+            </Link>
+            <h1 className={styles.title}>Welcome back</h1>
+            <p className={styles.sub}>Log in to continue practicing</p>
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.field}>
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email" type="email" value={email} required autoComplete="email"
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                />
+              </div>
+              <div className={styles.field}>
+                <label htmlFor="password">Password</label>
+                <div className={styles.passwordWrapper}>
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    required
+                    autoComplete="current-password"
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    className={styles.toggleBtn}
+                    onClick={() => setShowPassword(prev => !prev)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                <p className={styles.link} style={{ marginTop: '0.4rem', textAlign: 'right' }}>
+                  <Link to="/forgetpassword">Forget Password?</Link>
+                </p>
+              </div>
+              {error && <div className={styles.error}>{error}</div>}
+              <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', padding: '0.75rem' }}>
+                {loading ? <span className="spinner" /> : 'Log in'}
               </button>
-            </div>
-            <p className={styles.link} style={{ marginTop: '0.4rem', textAlign: 'right' }}>
-              <Link to="/forgetpassword">Forget Password?</Link>
+            </form>
+            <p className={styles.link}>
+              No account? <Link to="/register">Sign up for free</Link>
             </p>
           </div>
-          {error && <div className={styles.error}>{error}</div>}
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', justifyContent: 'center', padding: '0.75rem' }}>
-            {loading ? <span className="spinner" /> : 'Log in'}
-          </button>
-        </form>
-        <p className={styles.link}>
-          No account? <Link to="/register">Sign up for free</Link>
-        </p>
+        </div>
       </div>
     </div>
   );

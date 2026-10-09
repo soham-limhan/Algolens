@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+﻿import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/Navbar';
@@ -34,7 +34,7 @@ export default function App() {
             <Route path="/verify-otp" element={<VerifyOtp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Auth-gated routes — redirect to /login, preserve destination */}
+            {/* Auth-gated routes - redirect to /login, preserve destination */}
             <Route path="/problems" element={<RequireAuth><ProblemList /></RequireAuth>} />
             <Route path="/problems/:id" element={<RequireAuth><ProblemDetail /></RequireAuth>} />
             <Route path="/uploadproblem" element={<RequireAuth><UploadProblem /></RequireAuth>} />

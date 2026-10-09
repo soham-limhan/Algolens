@@ -68,6 +68,7 @@ class SubmissionResponse(BaseModel):
     language: Optional[str] = "java"
     empirical_complexity: Optional[str] = None
     confidence_score: Optional[float] = None
+    complexity_reasoning: Optional[str] = None
     structural_hint: Optional[str] = None
     failure_detail: Optional[str] = None
     test_results: Optional[List[TestCaseResult]] = None
@@ -87,6 +88,7 @@ class SubmissionHistoryItem(BaseModel):
     language: Optional[str] = "java"
     empirical_complexity: Optional[str] = None
     confidence_score: Optional[float] = None
+    complexity_reasoning: Optional[str] = None
     submitted_at: datetime
     source_code: Optional[str] = None
 

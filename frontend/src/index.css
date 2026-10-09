@@ -1,72 +1,102 @@
-/* ============================================================
-   AlgoLens Design System — Botanical Pastel & Alabaster Palette
-   Exact User Palette:
-   • Soft Blush Pink:  #F6E2E9
-   • Alabaster Cream:  #FFFDF7 / #FAF7F2
-   • Celadon Sage:     #B5CCB2
-   • Forest Sage:      #748F73 / #658464
+﻿/* ============================================================
+   AlgoLens Design System - Orange Accent Engineering Palette
+   Competitive Coding & Empirical Complexity Analyzer
+   Adheres strictly to UI_UX.md and Anti-Slop Guidelines
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* ── Canvas & Surface Tokens ────────────────────────────── */
-  --bg:             #FAF7F2;    /* Warm soothing alabaster background */
-  --bg-subtle:      #FFFDF7;    /* Pure warm cream */
-  --surface:        #FFFFFF;    /* Crisp primary cards */
-  --surface-2:      #F6E2E9;    /* Soft Blush Pink elevated elements */
-  --surface-3:      #E4EEE2;    /* Soft Celadon / Sage tint */
-  --surface-glass:  rgba(255, 253, 247, 0.92);
+  /* ── 1. Core Surfaces & Backgrounds ──────────────────────── */
+  --bg:               #0D1117;    /* Deep dark slate canvas */
+  --bg-subtle:        #131922;    /* Subtle contrast background */
+  --surface:          #161B22;    /* Primary cards & panels */
+  --surface-2:        #21262D;    /* Elevated surface (modals, dropdowns) */
+  --surface-3:        #30363D;    /* Active / container surface */
+  --surface-sunken:   #0A0D12;    /* Sunken editor / terminal code blocks */
+  --surface-glass:    rgba(22, 27, 34, 0.95);
 
-  --border:         #E3DCD5;    /* Warm subtle border */
-  --border-light:   #EFEAE4;    /* Highlight border */
-  --border-focus:   #748F73;    /* Focus indicator */
-  --border-sage:    #B5CCB2;    /* Celadon border */
-  --border-blush:   #F6E2E9;    /* Blush border */
+  /* ── 2. Borders & Separators ─────────────────────────────── */
+  --border:           #30363D;    /* Standard crisp border */
+  --border-light:     #484F58;    /* Interactive border hover */
+  --border-subtle:    #21262D;    /* Internal card divider */
+  --border-focus:     #F97316;    /* High-contrast orange focus ring */
 
-  /* ── Typography & Text ──────────────────────────────────── */
-  --text-primary:   #223124;    /* Deep Forest Charcoal — optimal readability */
-  --text-secondary: #586B5A;    /* Soft Forest Slate */
-  --text-dim:       #839485;    /* Muted Sage text */
+  /* Compatibility aliases for existing component css */
+  --border-aurora:    #F97316;
+  --border-cyan:      #30363D;
+  --border-purple:    #30363D;
+  --border-coral:     #F97316;
+  --border-gold:      #F59E0B;
+  --border-sage:      #30363D;
+  --border-blush:     #30363D;
 
-  /* ── Signature Brand Colors (Exact User Swatches) ────────── */
-  --accent:         #658464;    /* Forest Sage */
-  --accent-hover:   #527051;    /* Deep Forest Sage */
-  --accent-light:   #748F73;    /* Base Forest Sage */
-  --accent-dim:     rgba(116, 143, 115, 0.16);
-  --accent-sage:    #B5CCB2;    /* Celadon Sage */
-  --accent-blush:   #F6E2E9;    /* Soft Blush Pink */
-  --accent-cream:   #FFFDF7;    /* Pure Alabaster Cream */
-  --accent-gradient: linear-gradient(135deg, #748F73 0%, #5E7D5D 60%, #B5CCB2 100%);
-  --glow-accent:    0 4px 20px rgba(116, 143, 115, 0.25);
+  /* ── 3. High-Contrast Typography ─────────────────────────── */
+  --text-primary:     #F0F6FC;    /* Crisp near-white (contrast > 15:1 against #0D1117) */
+  --text-secondary:   #9CA3AF;    /* Readable slate body/muted (contrast > 6:1 against #0D1117) */
+  --text-dim:         #6E7681;    /* Auxiliary labels / metadata (contrast > 4.5:1 against #161B22) */
 
-  /* ── Difficulty & Metric Indicators ─────────────────────── */
-  --easy:           #3E7545;    /* Botanical Green */
-  --easy-bg:        #EBF4EA;
-  --easy-border:    #B5CCB2;
-  --medium:         #9E6F3E;    /* Earth Ochre */
-  --medium-bg:      #F8EFE4;
-  --medium-border:  #E5D3BD;
-  --hard:           #B04C63;    /* Deep Berry Rose */
-  --hard-bg:        #F6E2E9;
-  --hard-border:    #E5BAC6;
+  /* ── 4. Brand Accent (Orange Theme - reserved for primary brand/actions) ── */
+  --accent:           #F97316;    /* Primary warm orange */
+  --accent-hover:     #EA580C;    /* Deeper orange on hover */
+  --accent-light:     #FB923C;    /* Highlight accent */
+  --accent-dim:       rgba(249, 115, 22, 0.12); /* Subtle pill / active background */
+  --accent-gradient:  linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  --brand-gradient:   linear-gradient(135deg, #161B22 0%, #21262D 100%);
 
-  /* ── Status Colors ──────────────────────────────────────── */
-  --accepted:       #3E7545;
-  --wrong:          #B04C63;
+  /* Compatibility aliases */
+  --accent-cyan:      #38BDF8;
+  --accent-cyan-hover:#0284C7;
+  --accent-cyan-dim:  rgba(56, 189, 248, 0.12);
+  --accent-gold:      #F59E0B;
+  --accent-gold-hover:#D97706;
+  --accent-gold-dim:  rgba(245, 158, 11, 0.12);
+  --accent-purple:    #8B5CF6;
+  --accent-midnight:  #0D1117;
+  --accent-sage:      #30363D;
+  --accent-blush:     rgba(249, 115, 22, 0.15);
+  --accent-cream:     #F0F6FC;
 
-  /* ── Typography Fonts ───────────────────────────────────── */
-  --font-ui:        'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-heading:   'Outfit', 'Inter', sans-serif;
-  --font-mono:      'JetBrains Mono', 'Fira Code', monospace;
+  /* ── 5. Semantic Verdict Colors (visibly distinct from orange accent) ── */
+  --accepted:         #22C55E;    /* Standard judge green */
+  --accepted-bg:      rgba(34, 197, 94, 0.12);
+  --wrong:            #EF4444;    /* Standard judge red */
+  --wrong-bg:         rgba(239, 68, 68, 0.12);
+  --ce-re:            #EAB308;    /* Compilation/Runtime error amber-yellow */
+  --ce-re-bg:         rgba(234, 179, 8, 0.12);
+  --tle:              #A855F7;    /* Time Limit Exceeded purple */
+  --tle-bg:           rgba(168, 85, 247, 0.12);
 
-  /* ── Radii & Shadows ────────────────────────────────────── */
-  --radius-sm:      8px;
-  --radius:         12px;
-  --radius-lg:      16px;
-  --radius-xl:      24px;
-  --shadow-card:    0 4px 20px -2px rgba(45, 59, 47, 0.06), 0 0 0 1px rgba(116, 143, 115, 0.1);
-  --shadow-hover:   0 10px 30px -4px rgba(45, 59, 47, 0.12), 0 0 0 1px rgba(116, 143, 115, 0.2);
+  /* ── 6. Difficulty Tags (Easy / Medium / Hard) ───────────── */
+  --easy:             #10B981;    /* Emerald green */
+  --easy-bg:          rgba(16, 185, 129, 0.12);
+  --easy-border:      rgba(16, 185, 129, 0.28);
+
+  --medium:           #F59E0B;    /* Amber */
+  --medium-bg:        rgba(245, 158, 11, 0.12);
+  --medium-border:    rgba(245, 158, 11, 0.28);
+
+  --hard:             #F43F5E;    /* Rose red */
+  --hard-bg:          rgba(244, 63, 94, 0.12);
+  --hard-border:      rgba(244, 63, 94, 0.28);
+
+  /* ── 7. Typography Fonts ─────────────────────────────────── */
+  --font-ui:          'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading:     'Montserrat', 'Inter', sans-serif;
+  --font-mono:        'JetBrains Mono', 'Fira Code', monospace;
+
+  /* ── 8. Radii (Intentional scale, no universal pill buttons) ─ */
+  --radius-xs:        4px;
+  --radius-sm:        6px;
+  --radius:           8px;
+  --radius-lg:        12px;
+  --radius-xl:        16px;
+
+  /* ── 9. Elevation Shadows (subtle, elevation-driven, no glow) ─ */
+  --shadow-sm:        0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-card:      0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
+  --shadow-hover:     0 4px 14px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-light);
+  --shadow-dropdown:  0 10px 28px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--border);
 }
 
 /* ── Global Reset ─────────────────────────────────────────── */
@@ -78,26 +108,25 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
   background-color: var(--bg);
-  background-image: 
-    radial-gradient(circle at 12% 15%, rgba(246, 226, 233, 0.45) 0%, transparent 45%),
-    radial-gradient(circle at 88% 85%, rgba(181, 204, 178, 0.35) 0%, transparent 45%);
-  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   letter-spacing: -0.02em;
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 a {
@@ -110,29 +139,29 @@ code, pre, .mono {
   font-size: 0.9em;
 }
 
-/* ── Scrollbar ────────────────────────────────────────────── */
+/* ── Clean Engineering Scrollbar ──────────────────────────── */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-sage);
-  border-radius: 999px;
+  background: var(--surface-3);
+  border-radius: var(--radius-xs);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--border-light);
 }
 
-/* ── Focus visible ────────────────────────────────────────── */
+/* ── Accessibility: Clear Focus States (WCAG AA compliant) ─── */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
 
-/* ── Global Components & Helpers ──────────────────────────── */
+/* ── Common Components & Primitives ────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -146,52 +175,65 @@ code, pre, .mono {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.55rem 1.1rem;
+  min-height: 38px;
+  padding: 0.5rem 1.15rem;
   border-radius: var(--radius);
-  border: none;
+  border: 1px solid transparent;
   font-family: var(--font-ui);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   white-space: nowrap;
   user-select: none;
 }
 
+/* Primary CTA: High contrast warm orange */
 .btn-primary {
-  background: var(--accent-gradient);
-  color: #FFFDF7;
-  box-shadow: 0 4px 14px rgba(101, 132, 100, 0.3);
+  background: var(--accent);
+  color: #0D1117;
+  font-weight: 700;
+  border-color: var(--accent);
 }
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(101, 132, 100, 0.45);
-  background: linear-gradient(135deg, #5D7B5C 0%, #4D6B4C 60%, #9EB89B 100%);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #0D1117;
 }
 
+/* Secondary CTA: Solid surface with clear border */
 .btn-secondary {
   background: var(--surface);
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
 .btn-secondary:hover:not(:disabled) {
-  background: var(--surface-3);
-  border-color: var(--accent-sage);
-  transform: translateY(-1px);
+  background: var(--surface-2);
+  border-color: var(--border-light);
+}
+
+.btn-danger {
+  background: var(--wrong-bg);
+  color: var(--wrong);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--wrong);
 }
 
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  transform: none !important;
 }
 
+/* Difficulty & State Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.22rem 0.65rem;
-  border-radius: 999px;
-  font-size: 0.74rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
@@ -214,14 +256,25 @@ code, pre, .mono {
   border: 1px solid var(--hard-border);
 }
 
+/* Spinner indicator with accessible fallback */
 .spinner {
-  width: 22px;
-  height: 22px;
-  border: 2.5px solid var(--accent-sage);
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--surface-3);
   border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
+
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

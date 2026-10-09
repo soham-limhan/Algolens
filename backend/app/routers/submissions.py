@@ -115,6 +115,7 @@ def _build_response(submission: Submission, db: Session) -> SubmissionResponse:
         language=submission.language,
         empirical_complexity=submission.empirical_complexity,
         confidence_score=submission.confidence_score,
+        complexity_reasoning=submission.complexity_reasoning,
         structural_hint=submission.structural_hint,
         failure_detail=submission.failure_detail,
         test_results=test_results,
@@ -315,6 +316,7 @@ def get_user_history(
                 language=s.language,
                 empirical_complexity=s.empirical_complexity,
                 confidence_score=s.confidence_score,
+                complexity_reasoning=s.complexity_reasoning,
                 submitted_at=s.submitted_at,
                 source_code=s.source_code,
             )

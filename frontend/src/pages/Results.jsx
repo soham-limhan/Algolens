@@ -139,15 +139,33 @@ export default function Results() {
 
           <div className={styles.stepsGrid}>
             <div className={`${styles.stepBox} ${simulationStep >= 1 ? styles.stepActive : ''}`}>
-              <span className={styles.stepNum}>{simulationStep > 1 ? '✓' : '1'}</span>
+              <span className={styles.stepNum}>
+                {simulationStep > 1 ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : '1'}
+              </span>
               <span>Compile Source</span>
             </div>
             <div className={`${styles.stepBox} ${simulationStep >= 2 ? styles.stepActive : ''}`}>
-              <span className={styles.stepNum}>{simulationStep > 2 ? '✓' : '2'}</span>
+              <span className={styles.stepNum}>
+                {simulationStep > 2 ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : '2'}
+              </span>
               <span>Testcase Correctness</span>
             </div>
             <div className={`${styles.stepBox} ${simulationStep >= 3 ? styles.stepActive : ''}`}>
-              <span className={styles.stepNum}>{simulationStep > 3 ? '✓' : '3'}</span>
+              <span className={styles.stepNum}>
+                {simulationStep > 3 ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                ) : '3'}
+              </span>
               <span>Benchmark Complexity</span>
             </div>
           </div>
@@ -161,6 +179,7 @@ export default function Results() {
           empiricalComplexity={submission?.empirical_complexity}
           confidence={submission?.confidence_score}
           optimalComplexity={optTime}
+          complexityReasoning={submission?.complexity_reasoning}
         />
       )}
 
@@ -172,7 +191,26 @@ export default function Results() {
         </div>
       )}
 
-      {/* ── 2. Solution Code Comparison Panel ──────────────────────── */}
+      {/* ── 2. Test Case Results Panel (directly beneath banner) ───── */}
+      {displayTestResults && displayTestResults.length > 0 && (
+        <TestCasePanel testResults={displayTestResults} />
+      )}
+
+      {/* ── 3. Visual Complexity Graphs (The Signature Moment) ─────── */}
+      {isTerminal && (
+        <ComplexityChart
+          benchmarkCurve={displayBenchmarkCurve}
+          empiricalClass={submission?.empirical_complexity || 'O(n)'}
+          optimalClass={optTime || 'O(n)'}
+        />
+      )}
+
+      {/* ── 4. Optimization Hint Card (gap only, structural voice) ─── */}
+      {isComplete && submission?.structural_hint && (
+        <HintCard hint={submission.structural_hint} />
+      )}
+
+      {/* ── 5. Solution Code Inspection & Algorithmic Insights ─────── */}
       {isTerminal && (
         <CodeComparisonPanel
           userCode={submission?.source_code || '// Source code loading...'}
@@ -184,7 +222,6 @@ export default function Results() {
         />
       )}
 
-      {/* ── 2.5. Groq AI Algorithmic Insights Card ──────────────────── */}
       {isTerminal && (
         <AiInsightsCard
           submissionId={id}
@@ -193,25 +230,6 @@ export default function Results() {
           empiricalComplexity={submission?.empirical_complexity}
           optimalComplexity={optTime}
         />
-      )}
-
-      {/* ── 3. Visual Complexity Graphs ────────────────────────────── */}
-      {isTerminal && (
-        <ComplexityChart
-          benchmarkCurve={displayBenchmarkCurve}
-          empiricalClass={submission?.empirical_complexity || 'O(n)'}
-          optimalClass={optTime || 'O(n)'}
-        />
-      )}
-
-      {/* ── 4. Test Case Results Panel ──────────────────────────────── */}
-      {displayTestResults && displayTestResults.length > 0 && (
-        <TestCasePanel testResults={displayTestResults} />
-      )}
-
-      {/* ── 5. Optimization Hint Card (gap only) ────────────────────── */}
-      {isComplete && submission?.structural_hint && (
-        <HintCard hint={submission.structural_hint} />
       )}
 
       {/* ── Action Navigation Buttons ───────────────────────────────── */}

@@ -4,6 +4,7 @@ import { useAuth, useSendRegisterOtp } from '../auth/AuthContext';
 import { useToast } from '../context/ToastContext';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 import algolensLogo from '../assets/algolenslogo.png';
+import AuthShowcase from '../components/AuthShowcase';
 import styles from './Auth.module.css';
 
 function EyeIcon() {
@@ -130,11 +131,14 @@ export default function Register() {
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
-        <Link to="/" className={styles.logoWrap}>
-          <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
-          <span className={styles.logoText}>AlgoLens</span>
-        </Link>
+      <div className={styles.container}>
+        <AuthShowcase />
+        <div className={styles.formSide}>
+          <div className={styles.card}>
+            <Link to="/" className={styles.logoWrap}>
+              <img src={algolensLogo} alt="AlgoLens Logo" className={styles.logoImg} />
+              <span className={styles.logoText}>AlgoLens</span>
+            </Link>
         {step === 1 ? (
           <>
             <h1 className={styles.title}>Create account</h1>
@@ -267,7 +271,7 @@ export default function Register() {
                   onClick={() => { setStep(1); setGeneralError(''); }}
                   style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '0.875rem' }}
                 >
-                  ← Change details
+                  Change details
                 </button>
                 <button
                   type="button"
@@ -284,6 +288,8 @@ export default function Register() {
             </p>
           </>
         )}
+          </div>
+        </div>
       </div>
     </div>
   );

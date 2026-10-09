@@ -50,7 +50,7 @@ export default function StreakMap({
   };
 
   const handleRedeem = () => {
-    alert(`Redeemed! Current Diamond balance: ${diamonds} 💎`);
+    alert(`Redeemed! Current Diamond balance: ${diamonds}`);
   };
 
   // Build calendar cells (empty offset cells + day numbers)
@@ -128,7 +128,11 @@ export default function StreakMap({
             onClick={() => setShowInfo(!showInfo)}
             title="Weekly info"
           >
-            ⓘ
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
           </button>
         </div>
 
@@ -144,7 +148,10 @@ export default function StreakMap({
       {/* Footer Action Bar */}
       <div className={styles.footerBar}>
         <button className={styles.redeemBtn} onClick={handleRedeem}>
-          💎 {diamonds} Redeem
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}>
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <span>{diamonds} Redeem</span>
         </button>
 
         <button className={styles.rulesLink} onClick={() => setShowRules(true)}>
@@ -159,7 +166,7 @@ export default function StreakMap({
             <div className={styles.modalTitle}>Streak Rules</div>
             <ul className={styles.rulesList}>
               <li>Check in daily to build and preserve your solving streak!</li>
-              <li>Every successful check-in grants +10 💎 diamonds.</li>
+              <li>Every successful check-in grants +10 diamonds.</li>
               <li>Complete 7 consecutive days to unlock Weekly Premium rewards.</li>
               <li>Use your earned diamonds to redeem streak freeze cards or exclusive badges.</li>
             </ul>
