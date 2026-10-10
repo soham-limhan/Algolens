@@ -42,11 +42,11 @@
 
 ## 🌟 Overview
 
-**AlgoLens** is an open-source, next-generation competitive programming and benchmarking platform that goes beyond traditional binary pass/fail judging. While standard judges only test whether a submission produces the expected output for small or static test suites, AlgoLens **empirically measures execution runtime across programmatically scaled inputs**, fits empirical growth curves using log-log ordinary least squares regression, and determines your algorithm's real-world **Big-O time complexity class**.
+**AlgoLens** is an open-source competitive programming and performance benchmarking platform that goes beyond binary pass/fail judging. While standard judges only test whether a submission produces expected output on static test suites, AlgoLens **measures execution runtime across programmatically scaled inputs ($N = 100 \dots 1,000,000$)**, fits empirical growth curves, and determines your algorithm's real-world **Big-O time complexity class**.
 
-If your solution passes all test cases but exhibits suboptimal asymptotic scaling (e.g., $O(n^2)$ instead of the optimal $O(n)$), AlgoLens detects the complexity gap, reveals non-spoiler structural inefficiency hints, generates interactive performance comparison graphs, and provides AI-powered algorithmic deep-dives via Groq LLMs.
+If your solution passes all test cases but exhibits suboptimal asymptotic scaling (such as $O(n^2)$ instead of an optimal $O(n)$), AlgoLens detects the complexity gap, reveals non-spoiler structural inefficiency hints, plots interactive empirical runtime curves against theoretical limits, and provides comparative algorithmic deep-dives powered by Groq LLMs.
 
-In addition to core algorithmic challenges, AlgoLens features **full-fledged SQL & MySQL database challenges** with interactive tabular visualizers, high-throughput **Redis caching**, **fast sample test runs**, and a **vibrant developer community forum** with threaded discussions and @mentions.
+AlgoLens also features **SQL & MySQL database challenges** with tabular visualizers and diff inspectors, **instant sample test runs**, **high-throughput Redis caching**, an **interactive community forum** with user mentions and threaded discussions, and a **global navigation search** with keyboard shortcuts.
 
 ---
 
@@ -54,12 +54,12 @@ In addition to core algorithmic challenges, AlgoLens features **full-fledged SQL
 
 | Traditional Online Judges (LeetCode, HackerRank, etc.) | AlgoLens |
 |---|---|
-| Binary pass/fail verdict (AC, WA, TLE). | Two-stage evaluation: Correctness verification followed by empirical scaling benchmarking. |
-| Inefficient $O(n^2)$ solutions often pass if test cases or timeouts are lenient. | Quantifies exact asymptotic scaling across scaled input sizes ($n = 100 \dots 1,000,000$). |
-| Leaves the developer guessing why runtime was high. | Classifies empirical Big-O ($O(1)$, $O(\log n)$, $O(n)$, $O(n \log n)$, $O(n^2)$, $O(2^n)$). |
-| Complete solutions are often spoiled in discussion forums. | Provides non-spoiler structural hints (e.g., "Consider a HashMap lookup instead of nested iteration"). |
+| Binary pass/fail verdict (AC, WA, TLE). | Dual-stage evaluation: Functional correctness verification followed by empirical scaling benchmarking. |
+| Inefficient $O(n^2)$ solutions pass if test inputs or timeouts are lenient. | Quantifies asymptotic scaling across dynamically scaled inputs ($n = 100 \dots 1,000,000$). |
+| Leaves the developer guessing why runtime was high. | Classifies empirical Big-O ($O(1)$, $O(\log n)$, $O(n)$, $O(n \log n)$, $O(n^2)$, $O(n^3)$, $O(2^n)$) with $R^2$ confidence. |
+| Complete solutions are often spoiled in discussion forums. | Provides non-spoiler structural hints (e.g., "Consider a hash table lookup instead of nested iteration"). |
 | Single-language judge or rigid execution without tabular feedback. | Multi-language support (Java, Python, C++, C, JS, SQL, MySQL) with interactive SQL table diffs. |
-| Static runtime percentiles dependent on server load. | Multi-run warmup-filtered benchmarking with theoretical vs. empirical curve comparisons. |
+| Static runtime percentiles dependent on arbitrary server load. | Multi-run warmup-filtered benchmarking with theoretical vs. empirical curve comparisons and execution timeout safeguards. |
 
 ---
 
@@ -67,33 +67,51 @@ In addition to core algorithmic challenges, AlgoLens features **full-fledged SQL
 
 - ⚙️ **Dual-Stage Judging Pipeline**:
   - **Stage 1 (Correctness)**: Validates logic against curated edge cases, problem constraints, and custom inputs.
-  - **Stage 2 (Empirical Benchmarking)**: Executes code against dynamically scaled input batches ($n_1 \dots n_k$) to record execution times across orders of magnitude.
-- ⚡ **Instant "Run Code" Mode**: Test sample inputs and view instant correctness verdicts without waiting for full asynchronous asymptotic benchmarking.
+  - **Stage 2 (Empirical Benchmarking)**: Executes compiled code against scaled input batches ($n_1 \dots n_k$) to record execution times across orders of magnitude.
+- ⏱️ **Benchmark Timeout & Safety Guard**:
+  - Strict total wall-clock budget limit (`BENCHMARK_TOTAL_TIMEOUT_S`, default 10.0s).
+  - Early-abort heuristics for consecutive timeouts and budget exhaustion, preventing long-running or non-terminating submissions from blocking workers.
+  - Warmup runs and median aggregation across repetitions to filter JIT and system noise.
+- 🔍 **Instant Global Search (`Ctrl+K` / `Cmd+K`)**:
+  - Real-time search in the navbar across problem titles, tags, and forum discussions.
+  - Keyboard navigation (`Up`/`Down`/`Enter`) and quick difficulty and category indicators.
+- 📐 **Dual Complexity Classifier (AI + Mathematical Regression)**:
+  - **Groq AI Evaluation**: Evaluates AST structure, loop nesting, recursive branching, and empirical points to explain asymptotic behavior and trade-offs.
+  - **Log-Log Regression Fallback**: Fits power-law curves ($T(n) = c \cdot n^k$) using ordinary least squares regression, baseline overhead subtraction, tail slope analysis, and $R^2$ goodness-of-fit confidence calculation.
+- ⚡ **Instant "Run Code" Mode**:
+  - Test sample inputs and view instant correctness verdicts without waiting for full asynchronous asymptotic benchmarking.
 - 🌐 **Polyglot & Multi-Language Support**:
-  - Full first-class support for **Java 21**, **Python 3**, **C++ (C++20)**, **C (C11)**, **JavaScript (Node.js)**, **SQL**, and **MySQL**.
-  - Intelligent starter code generation tailored to each specific problem and language.
+  - First-class support for **Java 21**, **Python 3.12+**, **C++ (C++20)**, **C (C11)**, **JavaScript (Node.js)**, **SQL**, and **MySQL**.
+  - Context-aware starter code generation for each problem and language.
 - 🗄️ **Database & SQL Sandbox Engine**:
   - Dedicated database problems covering joins, window functions, aggregations, self-joins, and subqueries.
   - Built-in SQLite execution engine with MySQL function compatibility shims (`DATEDIFF`, `IF`, `CONCAT`, `MOD`, `NOW`, `CURDATE`).
   - Interactive **SQL Table Visualizer** (`SqlTableOutput`) that renders formatted tables, row counts, and column-by-column expected vs. actual diffs.
-- 📐 **Empirical Complexity Classifier**: Fits power-law curves ($T(n) = c \cdot n^k$) using log-log ordinary least squares regression to calculate slope $k$, classifying the true empirical Big-O class.
-- 💡 **Structural Inefficiency Hint Engine**: Pattern matcher that inspects source code AST and structure for redundant nested loops, missing hash indexes, or inefficient lookups without spoiling the solution.
-- 🤖 **AI-Powered Groq Engine**: Deep comparative algorithmic insights powered by Groq LLMs (Llama 3 / GPT-OSS models), breaking down time/space trade-offs, cache locality, and algorithmic paradigms.
+- 💡 **Structural Inefficiency Hint Engine**:
+  - Pattern matcher that inspects source code AST and structure for redundant nested loops, missing hash indexes, or inefficient lookups without spoiling the solution.
+- 🤖 **AI-Powered Groq Engine**:
+  - Comparative algorithmic insights powered by Groq LLMs (Llama 3 / GPT-OSS models), breaking down time/space trade-offs, cache locality, and algorithmic paradigms.
 - 🚀 **High-Performance Redis Caching**:
-  - Intelligent caching layer for problem catalogs, problem details, forum threads, user history, and user mentions.
+  - Caching layer for problem catalogs, problem details, forum threads, user history, and user mentions.
   - Automatic pattern-based cache invalidation on writes with graceful fallback when Redis is offline.
 - 🛡️ **Hardened Multi-Layer Sandbox**:
-  - Disposable, ephemeral Linux containers with CPU quotas, memory limits (256MB), process limits (pids=64), wall-clock timeouts, and disabled networking.
+  - Ephemeral Linux containers with CPU quotas (50% single-core cap), memory limits (256MB), process limits (pids=64), wall-clock timeouts, and disabled networking.
   - Automatic fallback to secure local subprocess isolation when running without Docker.
 - 💬 **Interactive Community Forum**:
   - Threaded discussions with category filters, popular/newest sorting, and keyword search.
   - Autocomplete user `@mentions`, multi-level nested replies, and like/upvote toggles.
+- 📊 **Revamped Submission History & Analytics**:
+  - User statistics dashboard tracking unique problems solved, acceptance rates, and language breakdown.
+  - Filter by verdict status (`All`, `Accepted`, `Failed`), language, and problem title.
+  - In-browser code preview modal with a one-click "Open in Editor" shortcut.
 - 🔐 **Production-Grade Auth & Security**:
   - JWT authentication with access/refresh token rotation.
   - Dual email OTP verification: secure OTP verification on **Registration** and **Password Reset** via SMTP with HTML email templates.
   - Interactive profile management with live password strength meters and username updates.
-- 📊 **Interactive Data Visualizations**: Real-time charts rendered using Recharts comparing user runtime curves against optimal theoretical curves.
-- 🚀 **One-Click Local Launcher**: Pre-configured Windows batch scripts (`start-all.bat`) to launch backend and frontend simultaneously in dedicated console windows.
+- 🎨 **Unified Modern Dark UI**:
+  - Custom Monaco editor theme (`algolens-dark`), responsive split-pane problem detail views, interactive Recharts curves, and styled verdict badges.
+- 🚀 **One-Click Local Launcher**:
+  - Pre-configured Windows batch scripts (`start-all.bat`) to launch backend and frontend simultaneously in dedicated console windows.
 
 ---
 
@@ -115,21 +133,22 @@ In addition to core algorithmic challenges, AlgoLens features **full-fledged SQL
 ```
                                   ┌───────────────────────────┐
                                   │   React + Vite Frontend   │
-                                  │ (Monaco, Charts, SQL View)│
+                                  │ (Monaco, Global Search,   │
+                                  │  Charts, SQL Table Viewer)│
                                   └─────────────┬─────────────┘
                                                 │ REST API (JWT)
                                                 ▼
                                   ┌───────────────────────────┐
                                   │   FastAPI Application     │
                                   │  - Auth, OTP & Rate Limit │
-                                  │  - Background Pipeline    │
+                                  │  - Pipeline Orchestrator  │
                                   └─────┬───────────────┬─────┘
                                         │               │
                  ┌──────────────────────┴──────┐        │ Cache & Lookups
                  ▼                             ▼        ▼
   ┌─────────────────────────────┐   ┌─────────────────────────────┐
   │     Execution Sandbox       │   │    Redis Caching Layer      │
-  │  - Java, Python, C++, C, JS │   │  - Problems & Details       │
+  │  - Java, Python, C++, C, JS │   │  - Problem Catalog & Detail │
   │  - SQLite / MySQL Sandbox   │   │  - Forum & User Mentions    │
   │  - Ephemeral Docker Cgroup  │   └─────────────────────────────┘
   └──────────────┬──────────────┘               │
@@ -138,14 +157,15 @@ In addition to core algorithmic challenges, AlgoLens features **full-fledged SQL
   ┌─────────────────────────────┐   │       Database Layer        │
   │    Benchmarking Stage       │   │   PostgreSQL / MySQL / SQLite│
   │   - Scaled Inputs n1..nk    │   │   - Users & Submissions     │
-  │   - Multi-Run Runtime Avg   │   │   - Benchmark Data & Forum  │
-  └──────────────┬──────────────┘   └─────────────────────────────┘
-                 ▼                              ▲
+  │   - Timeout Protection      │   │   - Benchmark Data & Forum  │
+  │   - Multi-Run Median        │   └─────────────────────────────┘
+  └──────────────┬──────────────┘               ▲
+                 ▼                              │
   ┌─────────────────────────────┐               │
   │    Complexity Classifier    │ ──────────────┤
-  │   - Log-Log OLS Regression  │  Persist &    │
-  │   - Empirical Big-O Fit     │  Stream via   │
-  │   - Structural Hint & Groq  │  API Polling  │
+  │   - Groq AI Code & Points   │  Persist &    │
+  │   - Log-Log OLS Regression  │  Stream via   │
+  │   - R² Confidence & Hints   │  API Polling  │
   └─────────────────────────────┘
 ```
 
@@ -161,16 +181,19 @@ Taking the natural logarithm of both sides yields a linear equation:
 
 $$\ln T(n) = \ln c + k \cdot \ln n$$
 
-By running ordinary least squares linear regression over $(\ln n_i, \ln T_i)$, the engine calculates slope $k$:
+By running ordinary least squares linear regression over $(\ln n_i, \ln T_i)$, correcting for constant process overhead at lower input sizes, and evaluating asymptotic tail growth, the engine determines slope $k$:
 
 | Measured Slope ($k$) / Growth | Classified Complexity | Common Examples |
 |---|---|---|
-| $k \approx 0$ | $O(1)$ | Hash table lookups, constant arithmetic |
-| $k \in (0, 0.5)$ | $O(\log n)$ | Binary search, Euclidean GCD |
-| $k \in [0.8, 1.25]$ | $O(n)$ | Linear scan, Two Pointers, Sliding Window |
-| $k \in (1.25, 1.65]$ | $O(n \log n)$ | Merge Sort, Heap Sort, Divide & Conquer |
-| $k \in (1.65, 2.4]$ | $O(n^2)$ | Nested iterations, Bubble Sort |
-| $k > 2.4$ or exponential | $O(2^n) \text{ or } O(n^3)$ | Naive recursion, Matrix multiplication |
+| $k < 0.15$ or ratio $< 1.35$ | $O(1)$ | Hash table lookups, constant-time math |
+| $k \in [0.15, 0.50)$ and ratio $< 6.0$ | $O(\log n)$ | Binary search, Euclidean GCD |
+| $k \in [0.50, 1.06)$ | $O(n)$ | Linear scan, Two Pointers, Sliding Window |
+| $k \in [1.06, 1.45)$ | $O(n \log n)$ | Merge Sort, Heap Sort, Divide & Conquer |
+| $k \in [1.45, 2.45)$ | $O(n^2)$ | Nested iterations, Bubble Sort |
+| $k \in [2.45, 3.45)$ | $O(n^3)$ | Floyd-Warshall, Matrix multiplication |
+| $k \ge 3.45$ or exponential | $O(2^n)$ | Unmemoized recursion, subsets |
+
+When Groq AI is enabled, the classifier performs a hybrid evaluation: analyzing source code control flow, recursion trees, and helper functions alongside empirical timing points, providing both an asymptotic class and an explanation of the underlying structural trade-offs.
 
 ---
 
@@ -178,8 +201,8 @@ By running ordinary least squares linear regression over $(\ln n_i, \ln T_i)$, t
 
 ### **Frontend**
 - **Framework**: React 19 + Vite 6
-- **Styling**: CSS Modules, Responsive Dark Theme Design System
-- **Code Editor**: Monaco Editor (`@monaco-editor/react`)
+- **Styling**: CSS Modules, Custom Dark Design System (`index.css`)
+- **Code Editor**: Monaco Editor (`@monaco-editor/react`) with custom syntax theme (`monacoTheme.js`)
 - **Visualizations**: Recharts (Interactive Line & Scatter Charts)
 - **Database Output Viewer**: Custom `SqlTableOutput` with ASCII grid & HTML comparison tables
 - **Routing & State**: React Router v7, React Context API, Lucide Icons
@@ -192,7 +215,7 @@ By running ordinary least squares linear regression over $(\ln n_i, \ln T_i)$, t
   - **MySQL 8.0+ / MariaDB** (Production/Enterprise)
 - **Caching**: Redis 5.0+ via `redis-py` (with automatic graceful fallback)
 - **Data Validation**: Pydantic v2 & Pydantic-Settings
-- **Analysis Engine**: NumPy (Log-log OLS curve fitting & variance calculations)
+- **Analysis Engine**: NumPy (Log-log OLS curve fitting, tail slope, and variance calculations)
 - **AI Engine**: Groq Cloud SDK / HTTP client (Llama 3 / GPT-OSS models)
 - **Authentication**: PyJWT, Passlib (Bcrypt hashing)
 - **Email & OTP System**: Standard `smtplib` / `aiosmtplib` with HTML transactional templates
@@ -233,30 +256,56 @@ Algolens/
 │   │   ├── problems_data/       # Scaled generators for algorithmic & SQL problems
 │   │   │   ├── registry.py      # Generator registry mapping
 │   │   │   └── sql_generators.py# Dynamic SQL test data scaling generators
-│   │   └── services/            # Correctness, cache, benchmark, complexity, Groq, email
+│   │   └── services/            # Pipeline, benchmark, complexity, Groq, cache, email
+│   │       ├── benchmark.py     # Scaled-input benchmarking with timeout guards
 │   │       ├── cache.py         # Redis caching service with pattern invalidation
+│   │       ├── complexity.py    # AI + log-log regression complexity classifier
 │   │       ├── correctness.py   # Multi-language & SQL tabular correctness verifier
-│   │       └── email.py         # SMTP OTP and account creation notification sender
+│   │       ├── email.py         # SMTP OTP and account creation notification sender
+│   │       ├── hints.py         # Structural inefficiency non-spoiler hints
+│   │       └── pipeline.py      # Dual-stage submission pipeline orchestrator
 │   ├── sandbox/
 │   │   └── Dockerfile           # Multi-language execution sandbox base image
-│   └── tests/                   # Pytest test suite (cache, email, forum, sandbox, SQL)
+│   └── tests/                   # Pytest test suite (12 comprehensive test modules)
+│       ├── test_auth_passwords.py
+│       ├── test_benchmark_timeout.py
+│       ├── test_cache.py
+│       ├── test_complexity_classifier.py
+│       ├── test_correctness_comparators.py
+│       ├── test_database_problems.py
+│       ├── test_email.py
+│       ├── test_forum.py
+│       ├── test_groq_service.py
+│       ├── test_multi_sandbox.py
+│       ├── test_sandbox_robustness.py
+│       ├── test_submission_pipeline_integration.py
+│       └── test_validation.py
 ├── frontend/
 │   ├── Dockerfile               # Nginx + React production build
 │   ├── package.json             # NPM dependencies & scripts
-│   ├── vite.config.js           # Vite build configuration (remote host & tunnel friendly)
+│   ├── vite.config.js           # Vite build configuration
 │   ├── index.html               # Main HTML entry point
 │   └── src/
 │       ├── App.jsx              # Application router & layout provider
-│       ├── api/                 # Axios / Fetch client wrappers
+│       ├── api/                 # Axios client with auth interceptors
 │       ├── auth/                # AuthContext & session state management
 │       ├── components/          # Reusable UI components
-│       │   ├── Navbar.jsx       # Header navigation with auth badges
-│       │   ├── ProfileModal.jsx # Password strength meter, email & profile updates
-│       │   ├── SqlTableOutput.jsx # Tabular SQL visualizer & diff viewer
-│       │   └── TestCasePanel.jsx# Interactive test suite runner & outcome viewer
+│       │   ├── AiInsightsCard.jsx       # Groq AI algorithmic breakdown
+│       │   ├── AuthShowcase.jsx         # Visual authentication showcase card
+│       │   ├── CodeComparisonPanel.jsx  # Submission vs optimal code diff
+│       │   ├── ComplexityChart.jsx      # Recharts empirical vs theoretical curves
+│       │   ├── HintCard.jsx             # Non-spoiler structural hints
+│       │   ├── Navbar.jsx               # Header with global search (Ctrl+K)
+│       │   ├── PasswordStrengthMeter.jsx# Real-time password entropy scoring
+│       │   ├── ProfileModal.jsx         # Profile management & password updates
+│       │   ├── SqlTableOutput.jsx       # Tabular SQL visualizer & diff viewer
+│       │   ├── StreakMap.jsx            # Activity & submission consistency heatmap
+│       │   ├── TestCasePanel.jsx        # Test suite runner & custom input runner
+│       │   └── VerdictBanner.jsx        # Status banner with complexity metrics
 │       ├── pages/               # Landing, ProblemList, Detail, Results, Forum, History
 │       └── utils/
-│           └── starterSnippets.js # Polyglot starter code generator for all problems
+│           ├── monacoTheme.js           # Custom Algolens dark theme for Monaco
+│           └── starterSnippets.js       # Polyglot starter code generator
 └── md_files/                    # In-depth architectural, security, and PRD specifications
 ```
 
@@ -275,7 +324,7 @@ Algolens/
 
 ### Method 1: One-Click Quick Launch (Windows)
 
-If you are developing locally on Windows, you can launch the complete AlgoLens stack with a single command:
+If you are developing locally on Windows, launch the complete AlgoLens stack with a single command:
 
 1. **Setup backend environment**:
    ```cmd
@@ -395,14 +444,21 @@ Configure these in `backend/.env`:
 | `REDIS_URL` | `redis://localhost:6379/0` | Redis connection URI for API caching |
 | `REDIS_ENABLED` | `true` | Enable/disable Redis caching (auto-fallbacks if down) |
 | `CACHE_TTL_PROBLEMS` | `3600` | Problem bank cache time-to-live (seconds) |
+| `CACHE_TTL_PROBLEM_DETAIL` | `3600` | Individual problem detail cache time-to-live (seconds) |
 | `CACHE_TTL_FORUM_THREADS` | `300` | Forum threads list cache time-to-live (seconds) |
-| `GROQ_API_KEY` | `""` | API key for Groq Cloud algorithmic deep-dives |
+| `CACHE_TTL_FORUM_DETAIL` | `300` | Forum thread detail cache time-to-live (seconds) |
+| `CACHE_TTL_AI_INSIGHTS` | `86400` | AI analysis cache time-to-live (seconds) |
+| `CACHE_TTL_USER_HISTORY` | `60` | User history cache time-to-live (seconds) |
+| `GROQ_API_KEY` | `""` | API key for Groq Cloud algorithmic evaluation & deep-dives |
 | `GROQ_MODEL` | `openai/gpt-oss-120b` | Groq AI LLM model identifier |
 | `SANDBOX_IMAGE_NAME` | `algolens-sandbox:latest` | Docker image tag for sandbox execution |
 | `SANDBOX_MEMORY_MB` | `256` | RAM ceiling per sandboxed execution container |
-| `SANDBOX_WALL_TIMEOUT_S` | `10` | Hard timeout limit for code execution |
+| `SANDBOX_WALL_TIMEOUT_S` | `10` | Hard timeout limit for individual test code execution |
 | `BENCHMARK_INPUT_SIZES` | `100,1000,10000,100000,1000000` | Input size array $n_1 \dots n_k$ |
 | `BENCHMARK_REPETITIONS` | `3` | Multi-run iterations per input size for variance reduction |
+| `BENCHMARK_WARMUP_RUNS` | `1` | Discarded initial executions before timing |
+| `BENCHMARK_TOTAL_TIMEOUT_S` | `10.0` | Global wall-clock budget for entire benchmark run |
+| `SUBMISSIONS_RATE_LIMIT_PER_MINUTE` | `5` | Submission rate limit per user |
 | `SMTP_ENABLED` | `false` | Enable/disable SMTP email delivery for OTPs |
 | `SMTP_HOST` | `smtp.gmail.com` | SMTP server host |
 | `SMTP_PORT` | `587` | SMTP server port |
@@ -452,7 +508,7 @@ Explore the interactive OpenAPI Swagger documentation at `http://localhost:8000/
 
 ## 🧪 Testing
 
-AlgoLens includes a comprehensive pytest test suite covering authentication, database problems, Redis caching, email delivery, forum threads, sandbox execution, and regression accuracy:
+AlgoLens includes a comprehensive pytest test suite covering authentication, database problems, Redis caching, email delivery, forum threads, sandbox execution, timeout budgets, and complexity classification:
 
 ```bash
 cd backend
@@ -464,12 +520,19 @@ pytest
 pytest -v --tb=short
 
 # Run specific functional test modules
+pytest tests/test_benchmark_timeout.py
+pytest tests/test_complexity_classifier.py
+pytest tests/test_submission_pipeline_integration.py
 pytest tests/test_database_problems.py
 pytest tests/test_cache.py
 pytest tests/test_email.py
 pytest tests/test_forum.py
-pytest tests/test_sandbox.py
-pytest tests/test_complexity.py
+pytest tests/test_groq_service.py
+pytest tests/test_sandbox_robustness.py
+pytest tests/test_multi_sandbox.py
+pytest tests/test_correctness_comparators.py
+pytest tests/test_validation.py
+pytest tests/test_auth_passwords.py
 ```
 
 ---
@@ -488,10 +551,13 @@ AlgoLens executes arbitrary, user-submitted code in an untrusted execution envir
    - Memory strictly capped at `256MB` via Docker memory cgroups.
    - CPU quota limited via cgroup CFS scheduler (`cpu_quota=50000`, `cpu_period=100000` = 50% single-core cap).
    - Process limit (`pids_limit=64`) prevents fork bombs and rogue thread spawning.
-5. **Filesystem & Database Constraints**:
+5. **Execution Budget & Timeouts**:
+   - Individual test case executions capped by `SANDBOX_WALL_TIMEOUT_S`.
+   - Comprehensive benchmark suites constrained by global wall-clock budgets (`BENCHMARK_TOTAL_TIMEOUT_S`).
+6. **Filesystem & Database Constraints**:
    - Read-only root filesystems and restricted temporary directories.
    - SQL queries execute inside ephemeral in-memory SQLite instances with transaction isolation, preventing host filesystem tampering.
-6. **Input Sanitization & Static Checks**:
+7. **Input Sanitization & Static Checks**:
    - Source code size is capped at 64 KB and inspected before compilation to prevent compiler exhaustion attacks.
 
 ---
@@ -513,5 +579,5 @@ For in-depth technical documents, check the [`md_files/`](./md_files/) directory
 
 ## 📄 License & Credits
 
-Built with ❤️ as a final-year MCA Capstone Project.
+Built as a final-year MCA Capstone Project.
 Distributed under the MIT License.
