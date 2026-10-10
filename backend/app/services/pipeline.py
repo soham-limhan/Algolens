@@ -104,7 +104,9 @@ def run_pipeline(submission_id: str, db: Session) -> None:
         compiled.cleanup()
         return
 
-    benchmark_points = run_benchmark(compiled, generator_fn)
+    benchmark_result = run_benchmark(compiled, generator_fn)
+    benchmark_points = benchmark_result.points
+    completed_within_budget = benchmark_result.completed_within_budget
     compiled.cleanup()
 
     # Persist BenchmarkRun rows (only created on an Accepted submission — invariant)
@@ -116,17 +118,47 @@ def run_pipeline(submission_id: str, db: Session) -> None:
             timed_out=point.timed_out,
         ))
     db.commit()
-    logger.info("[submission %s] benchmark complete — %d points", submission_id, len(benchmark_points))
-
-    # ── Stage 4: Complexity classification (AI-evaluated across N inputs) ──
-    classification: ClassificationResult = classify_with_ai(
-        source_code=submission.source_code,
-        language=submission.language,
-        points=benchmark_points,
-        problem_title=problem.title,
-        optimal_complexity=problem.optimal_time_complexity,
-        problem_description=problem.description,
+    logger.info(
+        "[submission %s] benchmark complete — %d points (completed_within_budget=%s, duration=%.2fs)",
+        submission_id, len(benchmark_points), completed_within_budget, benchmark_result.total_duration_s,
     )
+
+    # ── Stage 4: Complexity classification ──────────────────────────────────
+    # If the code runs within the 10-second budget: good, classify empirically from benchmark timing data.
+    # Otherwise (worst-case time complexity, benchmark timed out / exceeded 10s): calculate complexity via AI.
+    if completed_within_budget:
+        logger.info(
+            "[submission %s] benchmark completed within budget (%.2fs) — calculating empirical complexity",
+            submission_id, benchmark_result.total_duration_s,
+        )
+        classification = classify(benchmark_points)
+        if classification.insufficient_data:
+            logger.info(
+                "[submission %s] insufficient empirical data points — calculating complexity via AI",
+                submission_id,
+            )
+            classification = classify_with_ai(
+                source_code=submission.source_code,
+                language=submission.language,
+                points=benchmark_points,
+                problem_title=problem.title,
+                optimal_complexity=problem.optimal_time_complexity,
+                problem_description=problem.description,
+            )
+    else:
+        logger.info(
+            "[submission %s] benchmark exceeded time limit / timed out (%.2fs) — calculating complexity via AI",
+            submission_id, benchmark_result.total_duration_s,
+        )
+        classification = classify_with_ai(
+            source_code=submission.source_code,
+            language=submission.language,
+            points=benchmark_points,
+            problem_title=problem.title,
+            optimal_complexity=problem.optimal_time_complexity,
+            problem_description=problem.description,
+        )
+
     submission.empirical_complexity = classification.complexity_class
     submission.confidence_score = classification.confidence
     submission.complexity_reasoning = classification.reasoning

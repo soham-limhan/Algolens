@@ -89,6 +89,10 @@
 }
 
 /* ── Functional Search Bar ─────────────────────────────────── */
+.searchContainer {
+  position: relative;
+}
+
 .searchBar {
   position: relative;
   display: flex;
@@ -108,7 +112,7 @@
   color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: 0.825rem;
-  padding: 0.4rem 0.85rem 0.4rem 2.2rem;
+  padding: 0.4rem 1.8rem 0.4rem 2.2rem;
   border-radius: var(--radius-sm);
   width: 220px;
   transition: border-color 0.15s ease, width 0.2s ease;
@@ -117,11 +121,185 @@
 .searchInput:focus {
   outline: none;
   border-color: var(--border-focus);
-  width: 260px;
+  width: 270px;
 }
 
 .searchInput::placeholder {
   color: var(--text-dim);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 0.6rem;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.clearSearchBtn:hover {
+  color: var(--text-primary);
+}
+
+/* ── Instant Search Autocomplete Dropdown ──────────────────── */
+.searchDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 320px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+  z-index: 1200;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchDropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.searchDropdownShortcut {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  background: var(--surface-3);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-xs);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.searchDropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.searchDropdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background-color 0.12s ease;
+  font-size: 0.825rem;
+  gap: 0.6rem;
+}
+
+.searchDropdownItem:hover,
+.searchDropdownItemSelected {
+  background: var(--surface-3);
+}
+
+.searchDropdownItemMain {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex: 1;
+}
+
+.searchDropdownItemTitle {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchDropdownBadges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.diffBadge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-xs);
+  line-height: 1.2;
+}
+
+.diffEasy {
+  color: var(--easy);
+  background: var(--easy-bg);
+  border: 1px solid var(--easy-border);
+}
+
+.diffMedium {
+  color: var(--medium);
+  background: var(--medium-bg);
+  border: 1px solid var(--medium-border);
+}
+
+.diffHard {
+  color: var(--hard);
+  background: var(--hard-bg);
+  border: 1px solid var(--hard-border);
+}
+
+.sqlBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-xs);
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.searchDropdownEmpty {
+  padding: 1.2rem 0.85rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.825rem;
+}
+
+.searchDropdownFooter {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.775rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--surface);
+  border: none;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.12s ease, color 0.12s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.searchDropdownFooter:hover {
+  background: var(--surface-2);
+  color: var(--accent-light);
 }
 
 /* ── User & Profile Section ────────────────────────────────── */
