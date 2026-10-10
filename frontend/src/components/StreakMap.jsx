@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useToast } from '../context/ToastContext';
 import styles from './StreakMap.module.css';
 
 export default function StreakMap({
@@ -9,6 +10,7 @@ export default function StreakMap({
   monthName = 'Jul',
   startDayOffset = 0, // 0 offset so Day 1 starts under Sunday (S)
 }) {
+  const { toast } = useToast();
   const [checkedDays, setCheckedDays] = useState(() => new Set(initialCheckedDays));
   const [diamonds, setDiamonds] = useState(initialDiamonds);
   const [showRules, setShowRules] = useState(false);
@@ -50,7 +52,7 @@ export default function StreakMap({
   };
 
   const handleRedeem = () => {
-    alert(`Redeemed! Current Diamond balance: ${diamonds}`);
+    toast.success(`Redeemed! Current Diamond balance: ${diamonds}`);
   };
 
   // Build calendar cells (empty offset cells + day numbers)

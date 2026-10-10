@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    ProblemList.module.css - Orange Accent Engineering Palette
    Quiet, secondary surface focused on high scannability
    ============================================================ */
@@ -311,6 +311,22 @@
 
 .questionsSearchInput::placeholder {
   color: var(--text-dim);
+}
+
+.clearSearchBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.clearSearchBtn:hover {
+  color: var(--text-primary);
 }
 
 .controlsRight {

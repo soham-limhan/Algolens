@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     benchmark_input_sizes: str = "100,1000,10000,100000,1000000"
     benchmark_repetitions: int = 3
     benchmark_warmup_runs: int = 1
+    benchmark_total_timeout_s: float = 10.0
 
     # ── Submission constraints ────────────────────────────────────────────────
     max_source_code_bytes: int = 65536
@@ -105,6 +106,13 @@ class Settings(BaseSettings):
             raise ValueError("BENCHMARK_INPUT_SIZES must contain positive integers")
         if sizes != sorted(sizes) or len(sizes) != len(set(sizes)):
             raise ValueError("BENCHMARK_INPUT_SIZES must be in strictly ascending order")
+        return v
+
+    @field_validator("benchmark_total_timeout_s")
+    @classmethod
+    def validate_benchmark_total_timeout_s(cls, v: float) -> float:
+        if v <= 0:
+            raise ValueError("BENCHMARK_TOTAL_TIMEOUT_S must be greater than 0")
         return v
 
     @property

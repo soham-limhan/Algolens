@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import { useToast } from '../context/ToastContext';
 import api from '../api/client';
 import styles from './Forum.module.css';
 
@@ -220,6 +221,7 @@ function ReplyCard({ reply, onReplyTo, formatDate, user }) {
 
 export default function Forum() {
   const { user } = useAuth();
+  const { toast } = useToast();
 
   // ── States ────────────────────────────────────────────────────────────────
   const [threads, setThreads] = useState([]);
@@ -288,7 +290,7 @@ export default function Forum() {
   const handleLike = async (threadId, e) => {
     e.stopPropagation(); // Prevent clicking card
     if (!user) {
-      alert("Please sign in or register to like threads!");
+      toast.info("Please sign in or register to like threads!");
       return;
     }
 
@@ -311,6 +313,7 @@ export default function Forum() {
   const handleCreateThread = async (e) => {
     e.preventDefault();
     if (!user) {
+      toast.info("Please sign in or register to create a thread!");
       setFormError("You must be logged in to create a thread.");
       return;
     }
@@ -343,7 +346,11 @@ export default function Forum() {
 
   const handleAddComment = async (e) => {
     e.preventDefault();
-    if (!user || !newComment.trim() || !selectedThreadId) return;
+    if (!user) {
+      toast.info("Please sign in or register to join the discussion!");
+      return;
+    }
+    if (!newComment.trim() || !selectedThreadId) return;
 
     try {
       const { data } = await api.post(`/forum/threads/${selectedThreadId}/replies`, {
