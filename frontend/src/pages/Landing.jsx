@@ -112,7 +112,7 @@ export default function Landing() {
 
               <p className={styles.sub}>
                 Traditional judges stop at pass or fail. AlgoLens benchmarks execution
-                runtimes across generated inputs from N=10 to N=10,000, plots your empirical curve
+                runtimes across generated inputs from N=10 to N=1,000,000 plots your empirical curve
                 on log-log axes, and identifies algorithmic complexity gaps before you submit to production.
               </p>
 
